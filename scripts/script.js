@@ -90,33 +90,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
-        // Extract the route geometry from the directions data
-        const routeGeometry = directionsData.routes[0].geometry;
+        const routeLine = polyline.decode(directionsData.routes[0].geometry).map(coord => [coord[1], coord[0]]);
 
-        // Use the Mapbox GL JS library to add the route to the map
+        // Add a line to the map
         map.addSource('route', {
-            type: 'geojson',
-            data: {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'LineString',
-                    coordinates: polyline.decode(routeGeometry).map(coord => [coord[1], coord[0]])
+            'type': 'geojson',
+            'data': {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': routeLine
                 }
             }
         });
 
         map.addLayer({
-            id: 'route',
-            type: 'line',
-            source: 'route',
-            layout: {
+            'id': 'route',
+            'type': 'line',
+            'source': 'route',
+            'layout': {
                 'line-join': 'round',
                 'line-cap': 'round'
             },
-            paint: {
-                'line-color': '#3887be',
-                'line-width': 5
+            'paint': {
+                'line-color': '#888',
+                'line-width': 8
             }
         });
 
@@ -126,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function () {
         bounds.extend([destination.longitude, destination.latitude]);
         map.fitBounds(bounds, { padding: 50 });
     };
-
 
         // Function to get directions from the Mapbox API
         const getDirections = async (origin, destination) => {
@@ -150,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to handle destination selection and initiate directions
+    // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
         const destination = places.find(place => place.name === selectedDestination);
@@ -168,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateARDirections(directionsData);
 
                 // Update 2D map with route
-                updateMapWithRoute(userLocation, destination);
+                updateMapWithRoute(userLocation, destination, directionsData);
             } catch (error) {
                 console.error('Error in retrieving position', error);
             }
@@ -177,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Handle case when the selected destination is not found
         }
     };
+
 
     // Populate the dropdown with places from places.js
     places.forEach(place => {
