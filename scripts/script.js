@@ -89,52 +89,60 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-        // Create a GeoJSON object for the route
-        const geojson = {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-                'type': 'LineString',
-                'coordinates': routeCoordinates
-            }
-        };
-
-        // If the route source exists, update its data; otherwise, create a new source
-        if (map.getSource('route')) {
-            map.getSource('route').setData(geojson);
-        } else {
-            map.addSource('route', {
-                'type': 'geojson',
-                'data': geojson
-            });
-        }
-
-        // If the route layer exists, update its source; otherwise, create a new layer
-        if (map.getLayer('route')) {
-            map.setLayoutProperty('route', 'visibility', 'visible');
-        } else {
-            map.addLayer({
-                'id': 'route',
-                'type': 'line',
-                'source': 'route',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#888',
-                    'line-width': 8
+        try {
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+            // Log the route coordinates to understand the structure
+            console.log('Route Coordinates:', routeCoordinates);
+    
+            // Create a GeoJSON object for the route
+            const geojson = {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': routeCoordinates
                 }
-            });
+            };
+    
+            // If the route source exists, update its data; otherwise, create a new source
+            if (map.getSource('route')) {
+                map.getSource('route').setData(geojson);
+            } else {
+                map.addSource('route', {
+                    'type': 'geojson',
+                    'data': geojson
+                });
+            }
+    
+            // If the route layer exists, update its source; otherwise, create a new layer
+            if (map.getLayer('route')) {
+                map.setLayoutProperty('route', 'visibility', 'visible');
+            } else {
+                map.addLayer({
+                    'id': 'route',
+                    'type': 'line',
+                    'source': 'route',
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                        'line-color': '#888',
+                        'line-width': 8
+                    }
+                });
+            }
+    
+            // Fit the map to the route
+            const bounds = new mapboxgl.LngLatBounds();
+            routeCoordinates.forEach(coord => bounds.extend(coord));
+            map.fitBounds(bounds, { padding: 50 });
+        } catch (error) {
+            console.error('Error updating map with route:', error);
         }
-
-        // Fit the map to the route
-        const bounds = new mapboxgl.LngLatBounds();
-        routeCoordinates.forEach(coord => bounds.extend(coord));
-        map.fitBounds(bounds, { padding: 50 });
     };
+    
 
 
     // Function to get directions from the Mapbox API
