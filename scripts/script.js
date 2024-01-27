@@ -83,31 +83,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination) => {
-        const directions = getDirections(origin, destination);
-        map.addLayer({
-            id: 'route',
-            type: 'line',
-            source: {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: directions.routes[0].geometry.coordinates
-                    }
+        const directions = getDirections(origin, destination).then(directionsData => {
+            const route = directionsData.routes[0].geometry.coordinates;
+
+            // Create a GeoJSON object from the route coordinates
+            const routeGeoJSON = {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: route
                 }
-            },
-            layout: {
-                'line-join': 'round',
-                'line-cap': 'round'
-            },
-            paint: {
-                'line-color': '#888',
-                'line-width': 8
-            }
+            };
+
+            // Add the route as a new source to the map
+            map.addSource('route', {
+                type: 'geojson',
+                data: routeGeoJSON
+            });
+
+            // Add a new layer to the map using the route source
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: 'route',
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                paint: {
+                    'line-color': '#888',
+                    'line-width': 8
+                }
+            });
+        }).catch(error => {
+            console.error('Error fetching or processing directions:', error);
         });
     };
+
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
