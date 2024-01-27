@@ -103,8 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
-            console.log('Directions API Response:', response);
-            console.log('Directions Data:', data);
             return data;
         } catch (error) {
             console.error('Error fetching directions:', error);
