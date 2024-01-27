@@ -7,9 +7,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
         try {
-            // Initialize the map
-            map = new google.maps.Map(mapContainer, {
-                center: { lat: 0, lng: 0 },
+            // Initialize the map with Mapbox
+            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
+            map = new mapboxgl.Map({
+                container: mapContainer,
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [0, 0], // Default center
                 zoom: 15,
             });
 
@@ -42,42 +45,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map center
     const updateMapCenter = (latitude, longitude) => {
-        map.setCenter(new google.maps.LatLng(latitude, longitude));
+        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
+    };
+
+    // Function to update AR elements based on Mapbox directions
+    const updateARDirections = (directionsData) => {
+        console.log('Directions:', directionsData);
+        // Add logic to update AR elements based on Mapbox directions
     };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination) => {
-        const directionsService = new google.maps.DirectionsService();
-        const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
-
-        directionsService.route(
-            {
-                origin: new google.maps.LatLng(origin.latitude, origin.longitude),
-                destination: new google.maps.LatLng(destination.latitude, destination.longitude),
-                travelMode: 'WALKING', // Adjust as needed (WALKING, DRIVING, etc.)
-            },
-            (response, status) => {
-                if (status === 'OK') {
-                    directionsRenderer.setDirections(response);
-
-                    // Place a marker at the user's current location
-                    const userMarker = new google.maps.Marker({
-                        position: new google.maps.LatLng(origin.latitude, origin.longitude),
-                        map: map,
-                        title: 'You are here!',
-                        icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png', // Customize the marker icon
-                    });
-                } else {
-                    console.error('Directions request failed:', status);
-                }
-            }
-        );
+        const directions = getDirections(origin, destination);
+        // Update 2D map with the Mapbox route
+        // Add logic to display the route on the Mapbox map
     };
 
-    // Function to get directions from an API
+    // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
-        const apiKey = AIzaSyAsPvQ6Xe3lxNDiIl8CH1AohNlcRu1s8PE;
-        const apiUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`;
+        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
+        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}`;
 
         try {
             const response = await fetch(apiUrl);
@@ -87,12 +74,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error fetching directions:', error);
             throw error;
         }
-    };
-
-    // Function to update AR elements based on directions
-    const updateARDirections = (directionsData) => {
-        console.log('Directions:', directionsData);
-        // Add logic to update AR elements based on directions
     };
 
     // Function to handle destination selection and initiate directions
