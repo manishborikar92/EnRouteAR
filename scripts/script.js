@@ -129,18 +129,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const response = await fetch(apiUrl);
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch directions. Status: ${response.status}`);
-            }
-
             const data = await response.json();
+            console.log('Directions API Response:', response);
+            console.log('Directions Data:', data);
             return data;
         } catch (error) {
             console.error('Error fetching directions:', error);
             throw error;
         }
     };
+
 
     // Function to add a marker for a location on the map
     const addDestinationMarker = (latitude, longitude, title) => {
