@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: [0, 0], // Default center
                 zoom: 15,
             });
-    
+
             // Get and update the user's current location
             navigator.geolocation.watchPosition(
                 (position) => {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
                     };
-    
+
                     // Update 2D map with user's current location and continuously update marker
                     updateMapCenter(userLocation.latitude, userLocation.longitude);
                     updateMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error initializing map and getting initial location:', error);
         }
     };
-    
+
     // Function to update the marker on the map
     const updateMarker = (latitude, longitude, title) => {
         // Check if a marker already exists and remove it before adding a new one
@@ -47,11 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
             }
         }
-    
+
         // Add a new marker at the updated location with a popup
         addMarker(latitude, longitude, title);
     };
-    
+
     // Function to add a marker on the map
     const addMarker = (latitude, longitude, title) => {
         new mapboxgl.Marker()
@@ -120,6 +120,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const userLocation = await getCurrentLocation();
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
+
+                // Add a marker for the selected destination
+                addMarker(destination.latitude, destination.longitude, destination.name);
 
                 const directionsData = await getDirections(userLocation, destination);
                 // Update AR elements
