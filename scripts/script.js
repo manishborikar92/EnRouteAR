@@ -110,6 +110,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // Function to add a marker for a location on the map
+    const addDestinationMarker = (latitude, longitude, title) => {
+        // Add a new marker at the destination with a popup
+        addMarker(latitude, longitude, title);
+    };
+
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
@@ -122,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
 
                 // Add a marker for the selected destination
-                addMarker(destination.latitude, destination.longitude, destination.name);
+                addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
                 const directionsData = await getDirections(userLocation, destination);
                 // Update AR elements
