@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Get HTML elements
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
     let map;
+    let currentLocationMarker; // To keep track of the marker at the current location
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
@@ -24,9 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         longitude: position.coords.longitude
                     };
 
-                    // Update 2D map with user's current location and continuously update marker
                     updateMapCenter(userLocation.latitude, userLocation.longitude);
-                    updateMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+
+                    // If the current location marker exists, update its position; otherwise, create a new marker
+                    if (currentLocationMarker) {
+                        updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
+                    } else {
+                        currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+                    }
                 },
                 (error) => {
                     console.error('Error in retrieving position', error);
@@ -39,22 +46,14 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the marker on the map
-    const updateMarker = (latitude, longitude, title) => {
-        // Check if a marker already exists and remove it before adding a new one
-        const existingMarkers = document.getElementsByClassName('mapboxgl-marker');
-        if (existingMarkers.length > 0) {
-            for (let i = existingMarkers.length - 1; i >= 0; i--) {
-                existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
-            }
-        }
-
-        // Add a new marker at the updated location with a popup
-        addMarker(latitude, longitude, title);
+    const updateMarker = (marker, latitude, longitude, title) => {
+        marker.setLngLat([longitude, latitude])
+            .setPopup(new mapboxgl.Popup().setHTML(title));
     };
 
     // Function to add a marker on the map
     const addMarker = (latitude, longitude, title) => {
-        new mapboxgl.Marker()
+        return new mapboxgl.Marker()
             .setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .addTo(map);
@@ -144,10 +143,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to add a marker for a location on the map
     const addDestinationMarker = (latitude, longitude, title) => {
         // Add a new marker at the destination with a popup
-        addMarker(latitude, longitude, title);
+        return addMarker(latitude, longitude, title);
     };
 
-    // Function to handle destination selection and initiate directions
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
@@ -159,8 +157,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
 
-                // Add a marker for the selected destination
-                addDestinationMarker(destination.latitude, destination.longitude, destination.name);
+                // If the destination marker exists, update its position; otherwise, create a new marker
+                const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
                 const directionsData = await getDirections(userLocation, destination);
                 // Update AR elements
