@@ -16,15 +16,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: 15,
             });
     
-            // Get the user's current location
-            const userLocation = await getCurrentLocation();
+            // Get and update the user's current location
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    const userLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    };
     
-            // Update 2D map with user's current location and add marker
-            updateMapCenter(userLocation.latitude, userLocation.longitude);
-            addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+                    // Update 2D map with user's current location and continuously update marker
+                    updateMapCenter(userLocation.latitude, userLocation.longitude);
+                    updateMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+                },
+                (error) => {
+                    console.error('Error in retrieving position', error);
+                },
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+            );
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
+    };
+    
+    // Function to update the marker on the map
+    const updateMarker = (latitude, longitude, title) => {
+        // Check if a marker already exists and remove it before adding a new one
+        const existingMarkers = document.getElementsByClassName('mapboxgl-marker');
+        if (existingMarkers.length > 0) {
+            for (let i = existingMarkers.length - 1; i >= 0; i--) {
+                existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
+            }
+        }
+    
+        // Add a new marker at the updated location with a popup
+        addMarker(latitude, longitude, title);
     };
     
     // Function to add a marker on the map
