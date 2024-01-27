@@ -15,15 +15,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: [0, 0], // Default center
                 zoom: 15,
             });
-
+    
             // Get the user's current location
             const userLocation = await getCurrentLocation();
-
-            // Update 2D map with user's current location
+    
+            // Update 2D map with user's current location and add marker
             updateMapCenter(userLocation.latitude, userLocation.longitude);
+            addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
+    };
+    
+    // Function to add a marker on the map
+    const addMarker = (latitude, longitude, title) => {
+        new mapboxgl.Marker()
+            .setLngLat([longitude, latitude])
+            .setPopup(new mapboxgl.Popup().setHTML(title))
+            .addTo(map);
     };
 
     // Function to get the user's current location
