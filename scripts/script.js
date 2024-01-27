@@ -89,26 +89,59 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the 2D map with the route
-    const updateMapWithRoute = (origin, destination) => {
-        const directions = getDirections(origin, destination);
-        // Update 2D map with the Mapbox route
-        // Add logic to display the route on the Mapbox map
+    const updateMapWithRoute = (origin, destination, directionsData) => {
+        // Extract the route geometry from the directions data
+        const routeGeometry = directionsData.routes[0].geometry;
+
+        // Use the Mapbox GL JS library to add the route to the map
+        map.addSource('route', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: polyline.decode(routeGeometry).map(coord => [coord[1], coord[0]])
+                }
+            }
+        });
+
+        map.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-color': '#3887be',
+                'line-width': 5
+            }
+        });
+
+        // Fit the map to the route
+        const bounds = new mapboxgl.LngLatBounds();
+        bounds.extend([origin.longitude, origin.latitude]);
+        bounds.extend([destination.longitude, destination.latitude]);
+        map.fitBounds(bounds, { padding: 50 });
     };
 
-    // Function to get directions from the Mapbox API
-    const getDirections = async (origin, destination) => {
-        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}`;
 
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching directions:', error);
-            throw error;
-        }
-    };
+        // Function to get directions from the Mapbox API
+        const getDirections = async (origin, destination) => {
+            const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
+            const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching directions:', error);
+                throw error;
+            }
+        };
 
     // Function to add a marker for a location on the map
     const addDestinationMarker = (latitude, longitude, title) => {
