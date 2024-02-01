@@ -91,65 +91,60 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the 2D map with the route
-    const updateMapWithRoute = (origin, destination, directionsData) => {
+    const updateMapWithRoute = (directionsData) => {
         // Ensure the map is initialized
         if (!map) {
             console.error('Map not initialized. Unable to update route.');
             return;
         }
-
+    
         // Log directionsData to identify the structure
         console.log('Directions Data:', directionsData);
-
-        // Check if directionsData is defined
-        if (directionsData) {
-            // Check the structure of directionsData
-            if (directionsData.routes && directionsData.routes.length > 0 && directionsData.routes[0].geometry) {
-                // Extract route coordinates from Mapbox directions data
-                const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-                // Log route coordinates to identify any issues
-                console.log('Route Coordinates:', routeCoordinates);
-
-                // Add a GeoJSON source with the route coordinates
-                map.addSource('route', {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        properties: {},
-                        geometry: {
-                            type: 'LineString',
-                            coordinates: routeCoordinates,
-                        },
+    
+        // Check if directionsData is defined and contains route information
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            // Extract route coordinates from Mapbox directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+            // Log route coordinates to identify any issues
+            console.log('Route Coordinates:', routeCoordinates);
+    
+            // Add a GeoJSON source with the route coordinates
+            map.addSource('route', {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: routeCoordinates,
                     },
-                });
-
-                // Add a line layer to the map using the route source
-                map.addLayer({
-                    id: 'route',
-                    type: 'line',
-                    source: 'route',
-                    layout: {
-                        'line-join': 'round',
-                        'line-cap': 'round',
-                    },
-                    paint: {
-                        'line-color': '#3882f6',
-                        'line-width': 3,
-                    },
-                });
-            } else {
-                console.error('Invalid structure of directionsData. Missing routes or geometry.');
-            }
+                },
+            });
+    
+            // Add a line layer to the map using the route source
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: 'route',
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                },
+                paint: {
+                    'line-color': '#3882f6',
+                    'line-width': 3,
+                },
+            });
         } else {
-            console.error('Invalid directionsData.');
+            console.error('Invalid directionsData or missing route coordinates.');
         }
     };
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
         const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}`;
+        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
 
         try {
             const response = await fetch(apiUrl);
@@ -177,23 +172,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
         const destination = places.find(place => place.name === selectedDestination);
-
+    
         if (destination) {
             try {
                 const userLocation = await getCurrentLocation();
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
-
+    
                 const directionsData = await getDirections(userLocation, destination);
-
+    
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
-
+    
                 // Update AR elements
                 updateARDirections(directionsData);
-
+    
                 // Update 2D map with route
-                updateMapWithRoute(userLocation, destination, directionsData);
+                updateMapWithRoute(directionsData);
             } catch (error) {
                 console.error('Error in retrieving position', error);
             }
