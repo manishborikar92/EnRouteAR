@@ -20,25 +20,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: [0, 0], // Default center
                 zoom: 15,
             });
-
+    
             // Wait for the map to load
             map.on('load', () => {
                 // Get and update the user's current location
                 navigator.geolocation.watchPosition(
-                    (position) => {
+                    async (position) => {
                         const userLocation = {
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude
                         };
-
+    
+                        // Update the 2D map center
                         updateMapCenter(userLocation.latitude, userLocation.longitude);
-
+    
                         // If the current location marker exists, update its position; otherwise, create a new marker
                         if (currentLocationMarker) {
                             updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
                         } else {
                             currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
                         }
+    
+                        // Initialize Mapbox Directions control
+                        const directions = new MapboxDirections({
+                            accessToken: mapboxgl.accessToken,
+                            unit: 'metric', // Or 'imperial'
+                            language: 'en', // Adjust as needed
+                        });
+    
+                        // Add the directions control to your map
+                        map.addControl(directions, 'top-left');
                     },
                     (error) => {
                         console.error('Error in retrieving position', error);
@@ -49,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
-    };
+    };    
 
     // Function to update the marker on the map
     const updateMarker = (marker, latitude, longitude, title) => {
