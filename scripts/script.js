@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         type: 'Feature',
                         geometry: {
                             type: 'LineString',
-                            coordinates: coordinates
+                            coordinates: routeCoordinates
                         }
                     }]
                 }
