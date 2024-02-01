@@ -21,44 +21,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: 15,
             });
 
-            // Function to handle continuous route update
-            const handleContinuousRouteUpdate = async () => {
-                try {
-                    const userLocation = await getCurrentLocation();
-            
-                    // Update 2D map with user's current location
+            // Get and update the user's current location
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    const userLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    };
+
                     updateMapCenter(userLocation.latitude, userLocation.longitude);
-            
-                    // Update the route if a destination is selected
-                    const selectedDestination = destinationSelectInput.value;
-                    if (selectedDestination) {
-                        const destination = places.find(place => place.name === selectedDestination);
-                        const directionsData = await getDirections(userLocation, destination);
-            
-                        // Update AR elements
-                        updateARDirections(directionsData);
-            
-                        // Update 2D map with route
-                        updateMapWithRoute(directionsData);
-                    }
-            
+
                     // If the current location marker exists, update its position; otherwise, create a new marker
                     if (currentLocationMarker) {
                         updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
                     } else {
                         currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
                     }
-                } catch (error) {
-                    console.error('Error updating route:', error);
-                }
-            };
-
-            // Watch the user's position and continuously update the route
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    // Wrap the asynchronous logic in a Promise
-                    Promise.resolve(handleContinuousRouteUpdate(position))
-                        .catch(error => console.error('Error in continuous route update:', error));
                 },
                 (error) => {
                     console.error('Error in retrieving position', error);
