@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the 2D map with the route
-    // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
         // Ensure the map is initialized
         if (!map) {
@@ -102,43 +101,48 @@ document.addEventListener('DOMContentLoaded', function () {
         // Log directionsData to identify the structure
         console.log('Directions Data:', directionsData);
 
-        // Check if directionsData and coordinates are defined
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0 && directionsData.routes[0].geometry && directionsData.routes[0].geometry.coordinates) {
-            // Extract route coordinates from Mapbox directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+        // Check if directionsData is defined
+        if (directionsData) {
+            // Check the structure of directionsData
+            if (directionsData.routes && directionsData.routes.length > 0 && directionsData.routes[0].geometry) {
+                // Extract route coordinates from Mapbox directions data
+                const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Log route coordinates to identify any issues
-            console.log('Route Coordinates:', routeCoordinates);
+                // Log route coordinates to identify any issues
+                console.log('Route Coordinates:', routeCoordinates);
 
-            // Add a GeoJSON source with the route coordinates
-            map.addSource('route', {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: routeCoordinates,
+                // Add a GeoJSON source with the route coordinates
+                map.addSource('route', {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: routeCoordinates,
+                        },
                     },
-                },
-            });
+                });
 
-            // Add a line layer to the map using the route source
-            map.addLayer({
-                id: 'route',
-                type: 'line',
-                source: 'route',
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round',
-                },
-                paint: {
-                    'line-color': '#3882f6',
-                    'line-width': 3,
-                },
-            });
+                // Add a line layer to the map using the route source
+                map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: 'route',
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round',
+                    },
+                    paint: {
+                        'line-color': '#3882f6',
+                        'line-width': 3,
+                    },
+                });
+            } else {
+                console.error('Invalid structure of directionsData. Missing routes or geometry.');
+            }
         } else {
-            console.error('Invalid directionsData or missing route coordinates.');
+            console.error('Invalid directionsData.');
         }
     };
 
