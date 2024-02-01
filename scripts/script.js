@@ -92,61 +92,57 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
-        try {
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+        // Extract route information from Mapbox directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
     
-            // Log the route coordinates to understand the structure
-            console.log('Route Coordinates:', routeCoordinates);
+        // Create a GeoJSON feature for the route
+        const routeGeoJSON = {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: routeCoordinates,
+            },
+        };
     
-            // Create a GeoJSON object for the route
-            const geojson = {
-                'type': 'Feature',
-                'properties': {},
-                'geometry': {
-                    'type': 'LineString',
-                    'coordinates': routeCoordinates
-                }
-            };
+        // Clear existing map layers
+        map.getSource('route').setData(routeGeoJSON);
     
-            // If the route source exists, update its data; otherwise, create a new source
-            if (map.getSource('route')) {
-                map.getSource('route').setData(geojson);
-            } else {
-                map.addSource('route', {
-                    'type': 'geojson',
-                    'data': geojson
-                });
-            }
+        // Ensure that the map has a source for the route data
+        if (!map.getSource('route')) {
+            map.addSource('route', {
+                type: 'geojson',
+                data: routeGeoJSON,
+            });
     
-            // If the route layer exists, update its source; otherwise, create a new layer
-            if (map.getLayer('route')) {
-                map.setLayoutProperty('route', 'visibility', 'visible');
-            } else {
-                map.addLayer({
-                    'id': 'route',
-                    'type': 'line',
-                    'source': 'route',
-                    'layout': {
-                        'line-join': 'round',
-                        'line-cap': 'round'
-                    },
-                    'paint': {
-                        'line-color': '#888',
-                        'line-width': 8
-                    }
-                });
-            }
-    
-            // Fit the map to the route
-            const bounds = new mapboxgl.LngLatBounds();
-            routeCoordinates.forEach(coord => bounds.extend(coord));
-            map.fitBounds(bounds, { padding: 50 });
-        } catch (error) {
-            console.error('Error updating map with route:', error);
+            // Add a layer to render the route on the map
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: 'route',
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                },
+                paint: {
+                    'line-color': '#007BFF', // Adjust color as needed
+                    'line-width': 5,
+                },
+            });
+        } else {
+            // Update existing route source and layer
+            map.getSource('route').setData(routeGeoJSON);
         }
-    };
     
-
+        // Fit the map to the route bounds
+        const bounds = new mapboxgl.LngLatBounds();
+        routeCoordinates.forEach(coord => bounds.extend(coord));
+        map.fitBounds(bounds, { padding: 50 });
+    
+        // Optionally, you can add markers for the origin and destination
+        addMarker(origin.latitude, origin.longitude, 'Start');
+        addMarker(destination.latitude, destination.longitude, 'Destination');
+    };
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
@@ -204,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Handle case when the selected destination is not found
         }
     };
-
 
     // Populate the dropdown with places from places.js
     places.forEach(place => {
