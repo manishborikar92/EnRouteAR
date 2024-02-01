@@ -95,57 +95,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
-        // Extract route information from Mapbox directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-    
-        // Create a GeoJSON feature for the route
-        const routeGeoJSON = {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-                type: 'LineString',
-                coordinates: routeCoordinates,
-            },
-        };
-    
-        // Clear existing map layers
-        map.getSource('route').setData(routeGeoJSON);
-    
-        // Ensure that the map has a source for the route data
-        if (!map.getSource('route')) {
-            map.addSource('route', {
-                type: 'geojson',
-                data: routeGeoJSON,
-            });
-    
-            // Add a layer to render the route on the map
-            map.addLayer({
-                id: 'route',
-                type: 'line',
-                source: 'route',
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round',
-                },
-                paint: {
-                    'line-color': '#007BFF', // Adjust color as needed
-                    'line-width': 5,
-                },
-            });
-        } else {
-            // Update existing route source and layer
-            map.getSource('route').setData(routeGeoJSON);
-        }
-    
-        // Fit the map to the route bounds
-        const bounds = new mapboxgl.LngLatBounds();
-        routeCoordinates.forEach(coord => bounds.extend(coord));
-        map.fitBounds(bounds, { padding: 50 });
-    
-        // Optionally, you can add markers for the origin and destination
-        addMarker(origin.latitude, origin.longitude, 'Start');
-        addMarker(destination.latitude, destination.longitude, 'Destination');
-    };
+        // Create a Mapbox Directions object
+        const directions = new MapboxDirections({
+          accessToken: mapboxgl.accessToken,
+          unit: 'metric', // Or 'imperial'
+          language: 'en', // Adjust as needed
+          origin: origin,
+          destination: destination,
+          routes: directionsData,
+        });
+      
+        // Add route line to the map
+        map.addLayer({
+          id: 'route-line',
+          type: 'line',
+          source: directions,
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#3887be',
+            'line-width': 5
+          }
+        });
+      };
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
