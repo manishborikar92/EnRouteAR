@@ -109,9 +109,12 @@ document.addEventListener('DOMContentLoaded', function () {
             // Log route coordinates to identify any issues
             console.log('Route Coordinates:', routeCoordinates);
     
-            // Check if the 'route' source already exists, remove it if it does
-            if (map.getSource('route')) {
+            try {
+                // Attempt to remove the 'route' source and layer
                 map.removeSource('route');
+                map.removeLayer('route');
+            } catch (error) {
+                console.warn('Error removing existing route:', error);
             }
     
             // Add a GeoJSON source with the route coordinates
@@ -126,11 +129,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                 },
             });
-    
-            // Check if the 'route' layer already exists, remove it if it does
-            if (map.getLayer('route')) {
-                map.removeLayer('route');
-            }
     
             // Add a line layer to the map using the route source
             map.addLayer({
