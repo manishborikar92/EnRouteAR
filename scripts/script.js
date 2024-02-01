@@ -98,10 +98,16 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Log directionsData to identify the structure
+        console.log('Directions Data:', directionsData);
+
         // Check if directionsData and coordinates are defined
         if (directionsData && directionsData.routes && directionsData.routes.length > 0 && directionsData.routes[0].geometry && directionsData.routes[0].geometry.coordinates) {
             // Extract route coordinates from Mapbox directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+            // Log route coordinates to identify any issues
+            console.log('Route Coordinates:', routeCoordinates);
 
             // Add a GeoJSON source with the route coordinates
             map.addSource('route', {
@@ -132,21 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
-        }
-    };       
-
-    // Function to get directions from the Mapbox API
-    const getDirections = async (origin, destination) => {
-        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=polyline6`;
-
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching directions:', error);
-            throw error;
         }
     };
 
