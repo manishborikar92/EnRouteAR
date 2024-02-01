@@ -21,41 +21,48 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: 15,
             });
 
-            // Get and update the user's current location
+            // Function to handle continuous route update
+            const handleContinuousRouteUpdate = async (position) => {
+                const userLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+
+                // Update 2D map with user's current location
+                updateMapCenter(userLocation.latitude, userLocation.longitude);
+
+                // Update the route if a destination is selected
+                const selectedDestination = destinationSelectInput.value;
+                if (selectedDestination) {
+                    const destination = places.find(place => place.name === selectedDestination);
+
+                    try {
+                        const directionsData = await getDirections(userLocation, destination);
+
+                        // Update AR elements
+                        updateARDirections(directionsData);
+
+                        // Update 2D map with route
+                        updateMapWithRoute(userLocation, destination, directionsData);
+                    } catch (error) {
+                        console.error('Error updating route:', error);
+                    }
+                }
+
+                // If the current location marker exists, update its position; otherwise, create a new marker
+                if (currentLocationMarker) {
+                    updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
+                } else {
+                    currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+                }
+            };
+
+            // Watch the user's position and continuously update the route
             navigator.geolocation.watchPosition(
-                async (position) => {
-                    const userLocation = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    };
-    
-                    // Update 2D map with user's current location
-                    updateMapCenter(userLocation.latitude, userLocation.longitude);
-    
-                    // Update the route if a destination is selected
-                    const selectedDestination = destinationSelectInput.value;
-                    if (selectedDestination) {
-                        const destination = places.find(place => place.name === selectedDestination);
-    
-                        try {
-                            const directionsData = await getDirections(userLocation, destination);
-    
-                            // Update AR elements
-                            updateARDirections(directionsData);
-    
-                            // Update 2D map with route
-                            updateMapWithRoute(userLocation, destination, directionsData);
-                        } catch (error) {
-                            console.error('Error updating route:', error);
-                        }
-                    }
-    
-                    // If the current location marker exists, update its position; otherwise, create a new marker
-                    if (currentLocationMarker) {
-                        updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
-                    } else {
-                        currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
-                    }
+                (position) => {
+                    // Wrap the asynchronous logic in a Promise
+                    Promise.resolve(handleContinuousRouteUpdate(position))
+                        .catch(error => console.error('Error in continuous route update:', error));
                 },
                 (error) => {
                     console.error('Error in retrieving position', error);
