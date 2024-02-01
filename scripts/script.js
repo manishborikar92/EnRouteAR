@@ -22,38 +22,34 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Function to handle continuous route update
-            const handleContinuousRouteUpdate = async (position) => {
-                const userLocation = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-
-                // Update 2D map with user's current location
-                updateMapCenter(userLocation.latitude, userLocation.longitude);
-
-                // Update the route if a destination is selected
-                const selectedDestination = destinationSelectInput.value;
-                if (selectedDestination) {
-                    const destination = places.find(place => place.name === selectedDestination);
-
-                    try {
+            const handleContinuousRouteUpdate = async () => {
+                try {
+                    const userLocation = await getCurrentLocation();
+            
+                    // Update 2D map with user's current location
+                    updateMapCenter(userLocation.latitude, userLocation.longitude);
+            
+                    // Update the route if a destination is selected
+                    const selectedDestination = destinationSelectInput.value;
+                    if (selectedDestination) {
+                        const destination = places.find(place => place.name === selectedDestination);
                         const directionsData = await getDirections(userLocation, destination);
-
+            
                         // Update AR elements
                         updateARDirections(directionsData);
-
+            
                         // Update 2D map with route
-                        updateMapWithRoute(userLocation, destination, directionsData);
-                    } catch (error) {
-                        console.error('Error updating route:', error);
+                        updateMapWithRoute(directionsData);
                     }
-                }
-
-                // If the current location marker exists, update its position; otherwise, create a new marker
-                if (currentLocationMarker) {
-                    updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
-                } else {
-                    currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+            
+                    // If the current location marker exists, update its position; otherwise, create a new marker
+                    if (currentLocationMarker) {
+                        updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
+                    } else {
+                        currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+                    }
+                } catch (error) {
+                    console.error('Error updating route:', error);
                 }
             };
 
