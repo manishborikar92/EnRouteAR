@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the 2D map with the route
+    // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
         // Ensure the map is initialized
         if (!map) {
@@ -138,6 +139,21 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
+        }
+    };
+
+    // Function to get directions from the Mapbox API
+    const getDirections = async (origin, destination) => {
+        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
+        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching directions:', error);
+            throw error;
         }
     };
 
