@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
         };
     
-        // If a source with id 'route' exists, remove it from the map
+        // Check if a source with id 'route' exists, and remove it from the map
         if (map.getSource('route')) {
             map.removeSource('route');
         }
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Bounds:', bounds);
     
         map.fitBounds(bounds, { padding: 50 });
-    };    
+    };        
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
