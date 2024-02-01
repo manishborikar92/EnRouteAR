@@ -28,18 +28,22 @@ document.addEventListener('DOMContentLoaded', function () {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
                     };
-
+        
                     updateMapCenter(userLocation.latitude, userLocation.longitude);
-
+        
                     // If the current location marker exists, update its position; otherwise, create a new marker
                     if (currentLocationMarker) {
                         updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
                     } else {
                         currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
                     }
-
-                    // Update the displayed route based on the user's current location
-                    await updateRoute(userLocation);
+        
+                    // Get the selected destination from the dropdown
+                    const selectedDestination = destinationSelectInput.value;
+                    const destination = places.find(place => place.name === selectedDestination);
+        
+                    // Update the displayed route based on the user's current location and selected destination
+                    await updateRoute(userLocation, destination);
                 },
                 (error) => {
                     console.error('Error retrieving geolocation:', error);
@@ -94,14 +98,14 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the displayed route based on user's current location
-    const updateRoute = async (userLocation) => {
+    const updateRoute = async (userLocation, destination) => {
         try {
             // Fetch updated route information from Mapbox Directions API
             const directionsData = await getDirections(userLocation, destination);
-
+    
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
+    
             // Update the displayed route on the map using the new coordinates
             renderRoute(routeCoordinates);
         } catch (error) {
