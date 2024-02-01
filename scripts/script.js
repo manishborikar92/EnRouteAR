@@ -109,45 +109,45 @@ document.addEventListener('DOMContentLoaded', function () {
             // Log route coordinates to identify any issues
             console.log('Route Coordinates:', routeCoordinates);
     
+            const sourceId = 'route';
+    
             // Check if the 'route' source already exists
-            if (map.getSource('route')) {
-                // If it exists, update the source with new coordinates
-                map.getSource('route').setData({
+            if (map.getSource(sourceId)) {
+                try {
+                    // If it exists, remove the existing source and layer
+                    map.removeLayer(sourceId);
+                    map.removeSource(sourceId);
+                } catch (error) {
+                    console.error('Error removing existing route:', error);
+                }
+            }
+    
+            // Add a new source and layer
+            map.addSource(sourceId, {
+                type: 'geojson',
+                data: {
                     type: 'Feature',
                     properties: {},
                     geometry: {
                         type: 'LineString',
                         coordinates: routeCoordinates,
                     },
-                });
-            } else {
-                // If it doesn't exist, add a new source and layer
-                map.addSource('route', {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        properties: {},
-                        geometry: {
-                            type: 'LineString',
-                            coordinates: routeCoordinates,
-                        },
-                    },
-                });
+                },
+            });
     
-                map.addLayer({
-                    id: 'route',
-                    type: 'line',
-                    source: 'route',
-                    layout: {
-                        'line-join': 'round',
-                        'line-cap': 'round',
-                    },
-                    paint: {
-                        'line-color': '#3882f6',
-                        'line-width': 3,
-                    },
-                });
-            }
+            map.addLayer({
+                id: sourceId,
+                type: 'line',
+                source: sourceId,
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                },
+                paint: {
+                    'line-color': '#3882f6',
+                    'line-width': 3,
+                },
+            });
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
         }
