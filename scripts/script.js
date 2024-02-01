@@ -97,10 +97,13 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Map not initialized. Unable to update route.');
             return;
         }
-
+    
+        // Log the existing layers and sources before making changes
+        console.log('Before adding/removing route:', map.getStyle());
+    
         // Extract route coordinates from Mapbox directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
+    
         // Create a GeoJSON object representing the route
         const routeGeoJSON = {
             type: 'Feature',
@@ -110,37 +113,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 coordinates: routeCoordinates,
             },
         };
-
+    
         // If a source with id 'route' exists, remove it from the map
         if (map.getSource('route')) {
             map.removeSource('route');
-        } else {
-            // Otherwise, add a new source and layer for the route
-            map.addSource('route', {
-                type: 'geojson',
-                data: routeGeoJSON,
-            });
-
-            map.addLayer({
-                id: 'route',
-                type: 'line',
-                source: 'route',
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round',
-                },
-                paint: {
-                    'line-color': '#2196F3', // Adjust the color of the route
-                    'line-width': 5, // Adjust the width of the route
-                },
-            });
         }
-
+    
+        // Add a new source and layer for the route
+        map.addSource('route', {
+            type: 'geojson',
+            data: routeGeoJSON,
+        });
+    
+        map.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round',
+            },
+            paint: {
+                'line-color': '#2196F3', // Adjust the color of the route
+                'line-width': 5, // Adjust the width of the route
+            },
+        });
+    
+        // Log the layers and sources after making changes
+        console.log('After adding/removing route:', map.getStyle());
+    
         // Fit the map to the route bounds
         const bounds = new mapboxgl.LngLatBounds();
         routeCoordinates.forEach(coord => bounds.extend(coord));
+        
+        // Log the bounds for verification
+        console.log('Bounds:', bounds);
+    
         map.fitBounds(bounds, { padding: 50 });
-    };
+    };    
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
