@@ -92,6 +92,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+            if (!routeCoordinates || routeCoordinates.length === 0) {
+                console.error('No route coordinates found in directionsData:', directionsData);
+                return;
+            }
+
             console.log('Route Coordinates:', routeCoordinates);
 
             // Create a GeoJSON object for the route
@@ -141,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error updating map with route:', error);
         }
     };
-
     
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
