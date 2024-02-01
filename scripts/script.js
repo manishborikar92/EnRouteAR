@@ -21,28 +21,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: 15,
             });
 
-            // Get and update the user's current location
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    const userLocation = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    };
+            // Wait for the map to load
+            map.on('load', () => {
+                // Get and update the user's current location
+                navigator.geolocation.watchPosition(
+                    (position) => {
+                        const userLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        };
 
-                    updateMapCenter(userLocation.latitude, userLocation.longitude);
+                        updateMapCenter(userLocation.latitude, userLocation.longitude);
 
-                    // If the current location marker exists, update its position; otherwise, create a new marker
-                    if (currentLocationMarker) {
-                        updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
-                    } else {
-                        currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
-                    }
-                },
-                (error) => {
-                    console.error('Error in retrieving position', error);
-                },
-                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-            );
+                        // If the current location marker exists, update its position; otherwise, create a new marker
+                        if (currentLocationMarker) {
+                            updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
+                        } else {
+                            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+                        }
+                    },
+                    (error) => {
+                        console.error('Error in retrieving position', error);
+                    },
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+                );
+            });
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
