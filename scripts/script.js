@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Get and update the user's current location
             navigator.geolocation.watchPosition(
-                (position) => {
+                async (position) => {
                     const userLocation = {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
