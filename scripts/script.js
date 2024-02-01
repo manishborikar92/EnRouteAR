@@ -20,47 +20,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: [0, 0], // Default center
                 zoom: 15,
             });
-    
-            // Wait for the map to load
-            map.on('load', () => {
-                // Get and update the user's current location
-                navigator.geolocation.watchPosition(
-                    async (position) => {
-                        const userLocation = {
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude
-                        };
-    
-                        // Update the 2D map center
-                        updateMapCenter(userLocation.latitude, userLocation.longitude);
-    
-                        // If the current location marker exists, update its position; otherwise, create a new marker
-                        if (currentLocationMarker) {
-                            updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
-                        } else {
-                            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
-                        }
-    
-                        // Initialize Mapbox Directions control
-                        const directions = new MapboxDirections({
-                            accessToken: mapboxgl.accessToken,
-                            unit: 'metric', // Or 'imperial'
-                            language: 'en', // Adjust as needed
-                        });
-    
-                        // Add the directions control to your map
-                        map.addControl(directions, 'top-left');
-                    },
-                    (error) => {
-                        console.error('Error in retrieving position', error);
-                    },
-                    { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-                );
-            });
+
+            // Get and update the user's current location
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    const userLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    };
+
+                    updateMapCenter(userLocation.latitude, userLocation.longitude);
+
+                    // If the current location marker exists, update its position; otherwise, create a new marker
+                    if (currentLocationMarker) {
+                        updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
+                    } else {
+                        currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+                    }
+                },
+                (error) => {
+                    console.error('Error in retrieving position', error);
+                },
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+            );
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
-    };    
+    };
 
     // Function to update the marker on the map
     const updateMarker = (marker, latitude, longitude, title) => {
@@ -106,31 +92,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
-        // Create a Mapbox Directions object
-        const directions = new MapboxDirections({
-          accessToken: mapboxgl.accessToken,
-          unit: 'metric', // Or 'imperial'
-          language: 'en', // Adjust as needed
-          origin: origin,
-          destination: destination,
-          routes: directionsData,
-        });
-      
-        // Add route line to the map
-        map.addLayer({
-          id: 'route-line',
-          type: 'line',
-          source: directions,
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          paint: {
-            'line-color': '#3887be',
-            'line-width': 5
-          }
-        });
-      };
+        // Ensure the map is initialized
+        if (!map) {
+            console.error('Map not initialized. Unable to update route.');
+            return;
+        }
+
+        // Extract route coordinates from Mapbox directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+        // Create a GeoJSON object representing the route
+        const routeGeoJSON = {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: routeCoordinates,
+            },
+        };
+
+        // If a source with id 'route' exists, remove it from the map
+        if (map.getSource('route')) {
+            map.removeSource('route');
+        } else {
+            // Otherwise, add a new source and layer for the route
+            map.addSource('route', {
+                type: 'geojson',
+                data: routeGeoJSON,
+            });
+
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: 'route',
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                },
+                paint: {
+                    'line-color': '#2196F3', // Adjust the color of the route
+                    'line-width': 5, // Adjust the width of the route
+                },
+            });
+        }
+
+        // Fit the map to the route bounds
+        const bounds = new mapboxgl.LngLatBounds();
+        routeCoordinates.forEach(coord => bounds.extend(coord));
+        map.fitBounds(bounds, { padding: 50 });
+    };
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
