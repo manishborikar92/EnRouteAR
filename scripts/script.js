@@ -98,36 +98,41 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Extract route coordinates from Mapbox directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+        // Check if directionsData and coordinates are defined
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0 && directionsData.routes[0].geometry && directionsData.routes[0].geometry.coordinates) {
+            // Extract route coordinates from Mapbox directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-        // Add a GeoJSON source with the route coordinates
-        map.addSource('route', {
-            type: 'geojson',
-            data: {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'LineString',
-                    coordinates: routeCoordinates,
+            // Add a GeoJSON source with the route coordinates
+            map.addSource('route', {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: routeCoordinates,
+                    },
                 },
-            },
-        });
+            });
 
-        // Add a line layer to the map using the route source
-        map.addLayer({
-            id: 'route',
-            type: 'line',
-            source: 'route',
-            layout: {
-                'line-join': 'round',
-                'line-cap': 'round',
-            },
-            paint: {
-                'line-color': '#3882f6',
-                'line-width': 3,
-            },
-        });
+            // Add a line layer to the map using the route source
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: 'route',
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                },
+                paint: {
+                    'line-color': '#3882f6',
+                    'line-width': 3,
+                },
+            });
+        } else {
+            console.error('Invalid directionsData or missing route coordinates.');
+        }
     };       
 
     // Function to get directions from the Mapbox API
