@@ -83,22 +83,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const updateMapWithRoute = (origin, destination, directionsData) => {
         try {
             console.log('Directions Data:', directionsData);
-
+    
             // Check if routes array is present
             const routes = directionsData.routes;
             if (!routes || routes.length === 0) {
                 console.error('No routes found in directionsData:', directionsData);
                 return;
             }
-
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+            const routeGeometry = directionsData.routes[0].geometry;
+            if (!routeGeometry) {
+                console.error('No route geometry found in directionsData:', directionsData);
+                return;
+            }
+    
+            const routeCoordinates = routeGeometry.coordinates;
             if (!routeCoordinates || routeCoordinates.length === 0) {
                 console.error('No route coordinates found in directionsData:', directionsData);
                 return;
             }
-
+    
             console.log('Route Coordinates:', routeCoordinates);
-
+    
             // Create a GeoJSON object for the route
             const geojson = {
                 'type': 'Feature',
@@ -108,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'coordinates': routeCoordinates
                 }
             };
-
+    
             // If the route source exists, update its data; otherwise, create a new source
             if (map.getSource('route')) {
                 map.getSource('route').setData(geojson);
@@ -118,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'data': geojson
                 });
             }
-
+    
             // If the route layer exists, update its source; otherwise, create a new layer
             if (map.getLayer('route')) {
                 map.setLayoutProperty('route', 'visibility', 'visible');
@@ -137,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             }
-
+    
             // Fit the map to the route
             const bounds = new mapboxgl.LngLatBounds();
             routeCoordinates.forEach(coord => bounds.extend(coord));
