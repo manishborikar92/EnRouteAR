@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapContainer = document.getElementById('map');
     let map;
     // To keep track of the marker at the current location
-    let currentLocationMarker; 
+    let currentLocationMarker;
     // Define a global variable to keep track of the current destination marker
     let destinationMarker;
 
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Get and update the user's current location
             navigator.geolocation.watchPosition(
-                (position) => {
+                async (position) => {
                     const userLocation = {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
@@ -37,9 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
                     }
+
+                    // Update the displayed route based on the user's current location
+                    await updateRoute(userLocation);
                 },
                 (error) => {
-                    console.error('Error in retrieving position', error);
+                    console.error('Error retrieving geolocation:', error);
                 },
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
             );
@@ -90,67 +93,75 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add logic to update AR elements based on Mapbox directions
     };
 
-    // Function to update the 2D map with the route
-    const updateMapWithRoute = (directionsData) => {
+    // Function to update the displayed route based on user's current location
+    const updateRoute = async (userLocation) => {
+        try {
+            // Fetch updated route information from Mapbox Directions API
+            const directionsData = await getDirections(userLocation, destination);
+
+            // Extract route coordinates from directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+            // Update the displayed route on the map using the new coordinates
+            renderRoute(routeCoordinates);
+        } catch (error) {
+            console.error('Error updating route:', error);
+        }
+    };
+
+    // Function to render the route on the map
+    const renderRoute = (routeCoordinates) => {
+        // Update the polyline or graphical representation of the route on the map
+        updateMapWithRoute(routeCoordinates);
+    };
+
+    // Function to update 2D map with the route
+    const updateMapWithRoute = (routeCoordinates) => {
         // Ensure the map is initialized
         if (!map) {
             console.error('Map not initialized. Unable to update route.');
             return;
         }
-    
-        // Log directionsData to identify the structure
-        console.log('Directions Data:', directionsData);
-    
-        // Check if directionsData is defined and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from Mapbox directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-    
-            // Log route coordinates to identify any issues
-            console.log('Route Coordinates:', routeCoordinates);
-    
-            const sourceId = 'route';
-    
-            // Check if the 'route' source already exists
-            if (map.getSource(sourceId)) {
-                try {
-                    // If it exists, remove the existing source and layer
-                    map.removeLayer(sourceId);
-                    map.removeSource(sourceId);
-                } catch (error) {
-                    console.error('Error removing existing route:', error);
-                }
+
+        const sourceId = 'route';
+
+        // Check if the 'route' source already exists
+        if (map.getSource(sourceId)) {
+            try {
+                // If it exists, remove the existing source and layer
+                map.removeLayer(sourceId);
+                map.removeSource(sourceId);
+            } catch (error) {
+                console.error('Error removing existing route:', error);
             }
-    
-            // Add a new source and layer
-            map.addSource(sourceId, {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: routeCoordinates,
-                    },
-                },
-            });
-    
-            map.addLayer({
-                id: sourceId,
-                type: 'line',
-                source: sourceId,
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round',
-                },
-                paint: {
-                    'line-color': '#3882f6',
-                    'line-width': 3,
-                },
-            });
-        } else {
-            console.error('Invalid directionsData or missing route coordinates.');
         }
+
+        // Add a new source and layer
+        map.addSource(sourceId, {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: routeCoordinates,
+                },
+            },
+        });
+
+        map.addLayer({
+            id: sourceId,
+            type: 'line',
+            source: sourceId,
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round',
+            },
+            paint: {
+                'line-color': '#3882f6',
+                'line-width': 3,
+            },
+        });
     };
 
     // Function to get directions from the Mapbox API
@@ -174,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (destinationMarker) {
             destinationMarker.remove();
         }
-    
+
         // Add a new marker at the destination with a popup
         destinationMarker = addMarker(latitude, longitude, title);
         return destinationMarker;
@@ -184,21 +195,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
         const destination = places.find(place => place.name === selectedDestination);
-    
+
         if (destination) {
             try {
                 const userLocation = await getCurrentLocation();
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
-    
+
                 const directionsData = await getDirections(userLocation, destination);
-    
+
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
-    
+
                 // Update AR elements
                 updateARDirections(directionsData);
-    
+
                 // Update 2D map with route
                 updateMapWithRoute(directionsData);
             } catch (error) {
@@ -220,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     destinationSelectButton.addEventListener('click', selectDestination);
 
-    // End of the 'DOMContentLoaded' event listener
-    initMapAndLocation(); // Call the function to initialize map and location
+    // Call the function to initialize map, location, and monitor geolocation
+    initMapAndLocation();
+
 });
