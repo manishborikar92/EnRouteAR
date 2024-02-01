@@ -97,37 +97,38 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Map not initialized. Unable to update route.');
             return;
         }
-    
-        // Log the existing layers and sources before making changes
-        console.log('Before adding/removing route:', map.getStyle());
-    
+
         // Extract route coordinates from Mapbox directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-    
-        const lineLayer = new mapboxgl.LineLayer({
-            id: 'route-line',
-            type: 'line',
-            source: {
-                type: 'geojson',
-                data: {
-                    type: 'FeatureCollection',
-                    features: [{
-                        type: 'Feature',
-                        geometry: {
-                            type: 'LineString',
-                            coordinates: routeCoordinates
-                        }
-                    }]
-                }
+
+        // Add a GeoJSON source with the route coordinates
+        map.addSource('route', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: routeCoordinates,
+                },
             },
-            layout: {
-                'line-color': '#3882f6',
-                'line-width': 3
-            }
         });
-        
-        map.addLayer(lineLayer);
-    };        
+
+        // Add a line layer to the map using the route source
+        map.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round',
+            },
+            paint: {
+                'line-color': '#3882f6',
+                'line-width': 3,
+            },
+        });
+    };       
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
