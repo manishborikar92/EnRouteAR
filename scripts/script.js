@@ -31,6 +31,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     updateMapCenter(userLocation.latitude, userLocation.longitude);
 
+                    // Update the route if a destination is selected
+                    const selectedDestination = destinationSelectInput.value;
+                    if (selectedDestination) {
+                        const destination = places.find(place => place.name === selectedDestination);
+
+                        try {
+                            const directionsData = await getDirections(userLocation, destination);
+
+                            // Update AR elements
+                            updateARDirections(directionsData);
+
+                            // Update 2D map with route
+                            updateMapWithRoute(userLocation, destination, directionsData);
+                        } catch (error) {
+                            console.error('Error updating route:', error);
+                        }
+                    }
+
                     // If the current location marker exists, update its position; otherwise, create a new marker
                     if (currentLocationMarker) {
                         updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
