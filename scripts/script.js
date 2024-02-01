@@ -4,7 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
     let map;
-    let currentLocationMarker; // To keep track of the marker at the current location
+    // To keep track of the marker at the current location
+    let currentLocationMarker; 
+    // Define a global variable to keep track of the current destination marker
+    let destinationMarker;
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
@@ -162,8 +165,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to add a marker for a location on the map
     const addDestinationMarker = (latitude, longitude, title) => {
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
+        }
+    
         // Add a new marker at the destination with a popup
-        return addMarker(latitude, longitude, title);
+        destinationMarker = addMarker(latitude, longitude, title);
+        return destinationMarker;
     };
 
     // Function to handle destination selection and initiate directions
@@ -177,10 +186,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
 
+                const directionsData = await getDirections(userLocation, destination);
+                
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
-                const directionsData = await getDirections(userLocation, destination);
                 // Update AR elements
                 updateARDirections(directionsData);
 
