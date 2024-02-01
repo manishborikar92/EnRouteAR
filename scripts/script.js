@@ -1,4 +1,3 @@
-Check this
 document.addEventListener('DOMContentLoaded', function () {
     // Get HTML elements
     const destinationSelectInput = document.getElementById('select-destination');
@@ -188,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
 
                 const directionsData = await getDirections(userLocation, destination);
-                
+
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
