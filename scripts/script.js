@@ -1,3 +1,4 @@
+Check this
 document.addEventListener('DOMContentLoaded', function () {
     // Get HTML elements
     const destinationSelectInput = document.getElementById('select-destination');
@@ -79,26 +80,25 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // Function to update the 2D map center
+    const updateMapCenter = (latitude, longitude) => {
+        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
+    };
+
+    // Function to update AR elements based on Mapbox directions
+    const updateARDirections = (directionsData) => {
+        console.log('Directions:', directionsData);
+        // Add logic to update AR elements based on Mapbox directions
+    };
+
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination, directionsData) => {
         try {
-            console.log('Directions Data:', directionsData);
-
-            // Check if routes array is present
-            const routes = directionsData.routes;
-            if (!routes || routes.length === 0) {
-                console.error('No routes found in directionsData:', directionsData);
-                return;
-            }
-
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-            if (!routeCoordinates || routeCoordinates.length === 0) {
-                console.error('No route coordinates found in directionsData:', directionsData);
-                return;
-            }
-
+    
+            // Log the route coordinates to understand the structure
             console.log('Route Coordinates:', routeCoordinates);
-
+    
             // Create a GeoJSON object for the route
             const geojson = {
                 'type': 'Feature',
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'coordinates': routeCoordinates
                 }
             };
-
+    
             // If the route source exists, update its data; otherwise, create a new source
             if (map.getSource('route')) {
                 map.getSource('route').setData(geojson);
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'data': geojson
                 });
             }
-
+    
             // If the route layer exists, update its source; otherwise, create a new layer
             if (map.getLayer('route')) {
                 map.setLayoutProperty('route', 'visibility', 'visible');
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             }
-
+    
             // Fit the map to the route
             const bounds = new mapboxgl.LngLatBounds();
             routeCoordinates.forEach(coord => bounds.extend(coord));
@@ -147,6 +147,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
     
+
+
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
         const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
@@ -186,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
 
                 const directionsData = await getDirections(userLocation, destination);
-
+                
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
