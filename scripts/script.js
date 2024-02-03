@@ -9,59 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Define a global variable to keep track of the current destination marker
     let destinationMarker;
 
-    // Function to check and request location permission
-    const checkAndRequestLocationPermission = async () => {
-        try {
-            if ('permissions' in navigator) {
-                const locationPermission = await navigator.permissions.query({ name: 'geolocation' });
-
-                if (locationPermission.state !== 'granted') {
-                    const permissionResult = await navigator.permissions.request({ name: 'geolocation' });
-
-                    if (permissionResult.state !== 'granted') {
-                        // Location permission denied, show an error message
-                        console.error('Location permission denied');
-                        alert('To use this application, please enable location services and refresh the page.');
-                        return false;
-                    }
-                }
-            } else if ('geolocation' in navigator) {
-                // If 'permissions' is not supported, use the legacy method
-                const permissionResult = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(
-                        () => resolve({ state: 'granted' }),
-                        () => resolve({ state: 'denied' })
-                    );
-                });
-
-                if (permissionResult.state !== 'granted') {
-                    // Location permission denied, show an error message
-                    console.error('Location permission denied');
-                    alert('To use this application, please enable location services and refresh the page.');
-                    return false;
-                }
-            } else {
-                console.error('Geolocation is not supported in this browser');
-                return false;
-            }
-
-            return true;
-        } catch (error) {
-            console.error('Error checking or requesting location permission:', error);
-            return false;
-        }
-    };
-
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
         try {
-            // Check and request location permission
-            const hasLocationPermission = await checkAndRequestLocationPermission();
-
-            if (!hasLocationPermission) {
-                return;
-            }
-
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
