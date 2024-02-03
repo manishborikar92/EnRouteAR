@@ -12,6 +12,35 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
         try {
+            // Check if location permission is granted
+            const locationPermission = await navigator.permissions.query({ name: 'geolocation' });
+
+            if (locationPermission.state === 'granted') {
+                // Location permission is already granted, proceed to initialize the map and get the location
+                initializeMapAndLocation();
+            } else if (locationPermission.state === 'prompt') {
+                // Request location permission
+                const permissionResult = await navigator.permissions.request({ name: 'geolocation' });
+
+                if (permissionResult.state === 'granted') {
+                    // Location permission granted, proceed to initialize the map and get the location
+                    initializeMapAndLocation();
+                } else {
+                    // Location permission denied, show an error message or handle accordingly
+                    console.error('Location permission denied');
+                }
+            } else {
+                // Location permission is denied, show an error message or handle accordingly
+                console.error('Location permission denied');
+            }
+        } catch (error) {
+            console.error('Error checking or requesting location permission:', error);
+        }
+    };
+    
+    // Function to initialize the map and get the user's current location
+    const initializeMapAndLocation = async () => {
+        try {
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
