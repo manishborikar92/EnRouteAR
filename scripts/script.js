@@ -12,10 +12,27 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to check and request location permission
     const checkAndRequestLocationPermission = async () => {
         try {
-            const locationPermission = await navigator.permissions.query({ name: 'geolocation' });
+            if ('permissions' in navigator) {
+                const locationPermission = await navigator.permissions.query({ name: 'geolocation' });
 
-            if (locationPermission.state !== 'granted') {
-                const permissionResult = await navigator.permissions.request({ name: 'geolocation' });
+                if (locationPermission.state !== 'granted') {
+                    const permissionResult = await navigator.permissions.request({ name: 'geolocation' });
+
+                    if (permissionResult.state !== 'granted') {
+                        // Location permission denied, show an error message
+                        console.error('Location permission denied');
+                        alert('To use this application, please enable location services and refresh the page.');
+                        return false;
+                    }
+                }
+            } else if ('geolocation' in navigator) {
+                // If 'permissions' is not supported, use the legacy method
+                const permissionResult = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(
+                        () => resolve({ state: 'granted' }),
+                        () => resolve({ state: 'denied' })
+                    );
+                });
 
                 if (permissionResult.state !== 'granted') {
                     // Location permission denied, show an error message
@@ -23,7 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert('To use this application, please enable location services and refresh the page.');
                     return false;
                 }
+            } else {
+                console.error('Geolocation is not supported in this browser');
+                return false;
             }
+
             return true;
         } catch (error) {
             console.error('Error checking or requesting location permission:', error);
