@@ -23,12 +23,6 @@
         // Set the base URL for AR.js
         //THREEx.ArToolkitContext.baseURL = 'scripts/';
     </script>
-
-    <a-assets>
-        <!-- Replace with the actual path to your arrow 3D model -->
-        <a-asset-item id="arrow-obj" src="models/Arrow.obj"></a-asset-item>
-        <a-asset-item id="arrow-mtl" src="models/Arrow.mtl"></a-asset-item>
-    </a-assets>
     
     <link rel="stylesheet" href="styles/index.css">
 </head>
@@ -43,6 +37,11 @@
         </div>
         <a-scene cursor="rayOrigin: mouse; fuse: true; fuseTimeout: 0;" raycaster="objects: [gps-entity-place];" vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: false;">
             <a-camera gps-camera="minDistance: 10; videoTexture: true;" rotation-reader></a-camera>
+            <a-assets>
+                <!-- Replace with the actual path to your arrow 3D model -->
+                <a-asset-item id="arrow-obj" src="models/Arrow.obj"></a-asset-item>
+                <a-asset-item id="arrow-mtl" src="models/Arrow.mtl"></a-asset-item>
+            </a-assets>
         </a-scene>
 
         <!-- Container for the 2D map -->
