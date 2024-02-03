@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Its just reference model remove it after work done
                         const scaleReferenceModel = document.createElement('a-entity');
                         scaleReferenceModel.setAttribute('gps-entity-place', { latitude: userLocation.latitude, longitude: userLocation.longitude });
-                        scaleReferenceModel.setAttribute('obj-model', { obj: '../models/Arrow.obj', mtl: 'models/Arrow.mtl' });
+                        scaleReferenceModel.setAttribute('obj-model', { obj: '../models/current_location.obj', mtl: '../models/current_location.mtl' });
                         scaleReferenceModel.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
                         document.querySelector('a-scene').appendChild(scaleReferenceModel);
                     }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
             routeCoordinates.forEach((coordinate, index) => {
                 const entity = document.createElement('a-entity');
                 entity.setAttribute('gps-entity-place', { latitude: coordinate[1], longitude: coordinate[0] });
-                entity.setAttribute('obj-model', { obj: `#${arrowModelPath}`, mtl: `#${arrowMtlPath}` });
+                entity.setAttribute('obj-model', { obj: `../models/Arrow.obj`, mtl: `../models/Arrow.mtl` });
                 entity.setAttribute('class', 'route-entity');
     
                 // Additional attributes or animations can be added as needed
