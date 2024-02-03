@@ -12,6 +12,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
         try {
+            // Check and request location permission
+            const locationPermission = await navigator.permissions.query({ name: 'geolocation' });
+
+            if (locationPermission.state !== 'granted') {
+                const permissionResult = await navigator.permissions.request({ name: 'geolocation' });
+
+                if (permissionResult.state !== 'granted') {
+                    console.error('Location permission denied');
+                    return;
+                }
+            }
+
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
@@ -39,12 +51,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 },
                 (error) => {
-                    console.error('Error in retrieving position', error);
+                    if (error.code === error.PERMISSION_DENIED) {
+                        // Location permission denied, show an error message
+                        console.error('Location permission denied');
+                    } else {
+                        // Other location-related errors, handle accordingly
+                        console.error('Error in retrieving position', error);
+                    }
                 },
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
             );
         } catch (error) {
-            console.error('Error initializing map and getting initial location:', error);
+            console.error('Error checking or requesting location permission:', error);
         }
     };
 
