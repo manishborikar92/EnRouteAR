@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const scaleReferenceModel = document.createElement('a-entity');
                         scaleReferenceModel.setAttribute('gps-entity-place', { latitude: userLocation.latitude, longitude: userLocation.longitude });
                         scaleReferenceModel.setAttribute('obj-model', { obj: '../models/current_location.obj', mtl: '../models/current_location.mtl' });
-                        scaleReferenceModel.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
+                        scaleReferenceModel.setAttribute('scale', '1 1 1'); // Adjust the scale as needed
                         document.querySelector('a-scene').appendChild(scaleReferenceModel);
                     }
                 },
