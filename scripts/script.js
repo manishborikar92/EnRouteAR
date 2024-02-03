@@ -9,19 +9,36 @@ document.addEventListener('DOMContentLoaded', function () {
     // Define a global variable to keep track of the current destination marker
     let destinationMarker;
 
-    // Function to initialize the map and get the user's current location
-    const initMapAndLocation = async () => {
+    // Function to check and request location permission
+    const checkAndRequestLocationPermission = async () => {
         try {
-            // Check and request location permission
             const locationPermission = await navigator.permissions.query({ name: 'geolocation' });
 
             if (locationPermission.state !== 'granted') {
                 const permissionResult = await navigator.permissions.request({ name: 'geolocation' });
 
                 if (permissionResult.state !== 'granted') {
+                    // Location permission denied, show an error message
                     console.error('Location permission denied');
-                    return;
+                    alert('To use this application, please enable location services and refresh the page.');
+                    return false;
                 }
+            }
+            return true;
+        } catch (error) {
+            console.error('Error checking or requesting location permission:', error);
+            return false;
+        }
+    };
+
+    // Function to initialize the map and get the user's current location
+    const initMapAndLocation = async () => {
+        try {
+            // Check and request location permission
+            const hasLocationPermission = await checkAndRequestLocationPermission();
+
+            if (!hasLocationPermission) {
+                return;
             }
 
             // Initialize the map with Mapbox
@@ -51,18 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 },
                 (error) => {
-                    if (error.code === error.PERMISSION_DENIED) {
-                        // Location permission denied, show an error message
-                        console.error('Location permission denied');
-                    } else {
-                        // Other location-related errors, handle accordingly
-                        console.error('Error in retrieving position', error);
-                    }
+                    console.error('Error in retrieving position', error);
                 },
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
             );
         } catch (error) {
-            console.error('Error checking or requesting location permission:', error);
+            console.error('Error initializing map and getting initial location:', error);
         }
     };
 
