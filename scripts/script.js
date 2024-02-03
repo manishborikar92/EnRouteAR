@@ -36,6 +36,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
                     } else {
                         currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
+
+                        // Add a 3D model at the current location for scale reference
+                        // Its just reference model remove it after work done
+                        const scaleReferenceModel = document.createElement('a-entity');
+                        scaleReferenceModel.setAttribute('gps-entity-place', { latitude: userLocation.latitude, longitude: userLocation.longitude });
+                        scaleReferenceModel.setAttribute('obj-model', { obj: '../models/Arrow.obj', mtl: 'models/Arrow.mtl' });
+                        scaleReferenceModel.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
+                        document.querySelector('a-scene').appendChild(scaleReferenceModel);
                     }
                 },
                 (error) => {
