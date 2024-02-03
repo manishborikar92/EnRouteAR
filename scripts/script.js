@@ -87,7 +87,30 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
         console.log('Directions:', directionsData);
+    
+        // Clear previous route entities
+        const existingEntities = document.querySelectorAll('.route-entity');
+        existingEntities.forEach(entity => entity.parentNode.removeChild(entity));
+    
         // Add logic to update AR elements based on Mapbox directions
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+            // Create A-Frame entities for each route coordinate
+            routeCoordinates.forEach((coordinate, index) => {
+                const entity = document.createElement('a-entity');
+                entity.setAttribute('gps-entity-place', { latitude: coordinate[1], longitude: coordinate[0] });
+                entity.setAttribute('obj-model', { obj: `#${arrowModelPath}`, mtl: `#${arrowMtlPath}` });
+                entity.setAttribute('class', 'route-entity');
+    
+                // Additional attributes or animations can be added as needed
+    
+                // Append the entity to the scene
+                document.querySelector('a-scene').appendChild(entity);
+            });
+        } else {
+            console.error('Invalid directionsData or missing route coordinates.');
+        }
     };
 
     // Function to update the 2D map with the route
@@ -180,6 +203,27 @@ document.addEventListener('DOMContentLoaded', function () {
         return destinationMarker;
     };
 
+    // Function to add a 3D model at the destination based on the destination name
+    const add3DModelAtDestination = (latitude, longitude, destinationName) => {
+        const scene = document.querySelector('a-scene');
+
+        // Create an A-Frame entity for the 3D model
+        const modelEntity = document.createElement('a-entity');
+        modelEntity.setAttribute('gps-entity-place', { latitude, longitude });
+
+        // Use the destination name to construct the file paths for OBJ and MTL
+        const objPath = `../models/${destinationName}.obj`;
+        const mtlPath = `../models/${destinationName}.mtl`;
+
+        // Set the OBJ model component
+        modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
+
+        // Additional attributes or animations can be added as needed
+
+        // Append the entity to the scene
+        scene.appendChild(modelEntity);
+    };
+
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
@@ -198,6 +242,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // Update AR elements
                 updateARDirections(directionsData);
+
+                // Add 3D model at the selected destination
+                add3DModelAtDestination(destination.latitude, destination.longitude, selectedDestination);
     
                 // Update 2D map with route
                 updateMapWithRoute(directionsData);
