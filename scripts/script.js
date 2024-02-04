@@ -58,14 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the marker on the map
-    const updateMarker = (marker, latitude, longitude, title, altitude = 0) => {
+    const updateMarker = (marker, latitude, longitude, title, altitude = -1) => {
         marker.setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .setLngLat([longitude, latitude, altitude]); // Adjust the altitude
     };
 
     // Function to add a marker on the map
-    const addMarker = (latitude, longitude, title, altitude = 0) => {
+    const addMarker = (latitude, longitude, title, altitude = -1) => {
         return new mapboxgl.Marker()
             .setLngLat([longitude, latitude, altitude]) // Adjust the altitude
             .setPopup(new mapboxgl.Popup().setHTML(title))
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData, altitude = 0) => {
+    const updateARDirections = (directionsData, altitude = -1) => {
         console.log('Directions:', directionsData);
     
         // Clear previous route entities
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add a 3D model at the destination based on the destination name
-    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = 0) => {
+    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = -1) => {
         const scene = document.querySelector('a-scene');
     
         // Create an A-Frame entity for the 3D model
