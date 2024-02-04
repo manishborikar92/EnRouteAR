@@ -58,15 +58,16 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the marker on the map
-    const updateMarker = (marker, latitude, longitude, title) => {
+    const updateMarker = (marker, latitude, longitude, title, altitude = 0) => {
         marker.setLngLat([longitude, latitude])
-            .setPopup(new mapboxgl.Popup().setHTML(title));
+            .setPopup(new mapboxgl.Popup().setHTML(title))
+            .setLngLat([longitude, latitude, altitude]); // Adjust the altitude
     };
 
     // Function to add a marker on the map
-    const addMarker = (latitude, longitude, title) => {
+    const addMarker = (latitude, longitude, title, altitude = 0) => {
         return new mapboxgl.Marker()
-            .setLngLat([longitude, latitude])
+            .setLngLat([longitude, latitude, altitude]) // Adjust the altitude
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .addTo(map);
     };
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
+    const updateARDirections = (directionsData, altitude = 0) => {
         console.log('Directions:', directionsData);
     
         // Clear previous route entities
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create A-Frame entities for each route coordinate
             routeCoordinates.forEach((coordinate, index) => {
                 const entity = document.createElement('a-entity');
-                entity.setAttribute('gps-entity-place', { latitude: coordinate[1], longitude: coordinate[0] });
+                entity.setAttribute('gps-entity-place', { latitude: coordinate[1], longitude: coordinate[0], altitude }); // Adjust the altitude
                 entity.setAttribute('obj-model', { obj: `../models/Arrow.obj`, mtl: `../models/Arrow.mtl` });
                 entity.setAttribute('class', 'route-entity');
     
@@ -213,22 +214,22 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add a 3D model at the destination based on the destination name
-    const add3DModelAtDestination = (latitude, longitude, destinationName) => {
+    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = 0) => {
         const scene = document.querySelector('a-scene');
-
+    
         // Create an A-Frame entity for the 3D model
         const modelEntity = document.createElement('a-entity');
-        modelEntity.setAttribute('gps-entity-place', { latitude, longitude });
-
+        modelEntity.setAttribute('gps-entity-place', { latitude, longitude, altitude }); // Adjust the altitude
+    
         // Use the destination name to construct the file paths for OBJ and MTL
         const objPath = `../models/${destinationName}.obj`;
         const mtlPath = `../models/${destinationName}.mtl`;
-
+    
         // Set the OBJ model component
         modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
-
+    
         // Additional attributes or animations can be added as needed
-
+    
         // Append the entity to the scene
         scene.appendChild(modelEntity);
     };
@@ -248,12 +249,12 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
-    
-                // Update AR elements
-                updateARDirections(directionsData);
-
+                
                 // Add 3D model at the selected destination
                 add3DModelAtDestination(destination.latitude, destination.longitude, destination.name);
+
+                // Update AR elements
+                updateARDirections(directionsData);
     
                 // Update 2D map with route
                 updateMapWithRoute(directionsData);
