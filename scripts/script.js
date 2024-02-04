@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
         console.log('Directions:', directionsData);
+
+        const scene = document.querySelector('a-scene');
       
         // Extract coordinates from Mapbox directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
