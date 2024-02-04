@@ -58,11 +58,12 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the marker on the map
-    const updateMarker = (marker, latitude, longitude, title, altitude = -1) => {
+    const updateMarker = (marker, latitude, longitude, title, altitude = 0.1) => {
         marker.setLngLat([longitude, latitude])
-            .setPopup(new mapboxgl.Popup().setHTML(title))
-            // Adjust the altitude separately
-        marker.getElement().setAttribute('position', { x: longitude, y: latitude, z: altitude });
+            .setPopup(new mapboxgl.Popup().setHTML(title));
+        
+        // Adjust the altitude separately
+        marker.getElement().setAttribute('position', { x: longitude, y: altitude, z: latitude });
     };
 
     // Function to add a marker on the map
@@ -73,8 +74,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .addTo(map);
         
         // Adjust the altitude separately
-        marker.getElement().setAttribute('position', { x: longitude, y: latitude, z: altitude });
-    
+        marker.getElement().setAttribute('position', { x: longitude, y: altitude, z: latitude });
+
         return marker;
     };
 
@@ -116,9 +117,10 @@ document.addEventListener('DOMContentLoaded', function () {
             routeCoordinates.forEach((coordinate, index) => {
                 const entity = document.createElement('a-entity');
                 entity.setAttribute('gps-entity-place', { latitude: coordinate[1], longitude: coordinate[0] });
-                entity.setAttribute('position', { x: coordinate[0], y: coordinate[1], z: altitude }); // Adjust the altitude
+                entity.setAttribute('position', { x: coordinate[0], y: altitude, z: coordinate[1] }); // Adjust the altitude
                 entity.setAttribute('obj-model', { obj: `../models/Arrow.obj`, mtl: `../models/Arrow.mtl` });
                 entity.setAttribute('class', 'route-entity');
+                entity.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
     
                 // Additional attributes or animations can be added as needed
     
@@ -227,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create an A-Frame entity for the 3D model
         const modelEntity = document.createElement('a-entity');
         modelEntity.setAttribute('gps-entity-place', { latitude, longitude });
-        modelEntity.setAttribute('position', { x: longitude, y: latitude, z: altitude }); // Adjust the altitude
+        modelEntity.setAttribute('position', { x: longitude, y: altitude, z: latitude }); // Adjust the altitude
     
         // Use the destination name to construct the file paths for OBJ and MTL
         const objPath = `../models/${destinationName}.obj`;
@@ -235,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Set the OBJ model component
         modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
+        modelEntity.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
     
         // Additional attributes or animations can be added as needed
     
