@@ -36,15 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
                     } else {
                         currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
-
-                        // Add a 3D model at the current location for scale reference
-                        // Its just reference model remove it after work done
-                        const scaleReferenceModel = document.createElement('a-entity');
-                        scaleReferenceModel.setAttribute('gps-entity-place', { latitude: userLocation.latitude, longitude: userLocation.longitude });
-                        scaleReferenceModel.setAttribute('obj-model', { obj: '../models/current_location.obj', mtl: '../models/current_location.mtl' });
-                        scaleReferenceModel.setAttribute('scale', '0.4 0.4 0.4'); // Adjust the scale as needed
-                        scaleReferenceModel.setAttribute('position', '0 -10 3'); // Adjust the vertical position here
-                        document.querySelector('a-scene').appendChild(scaleReferenceModel);
                     }
                 },
                 (error) => {
@@ -58,25 +49,17 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update the marker on the map
-    const updateMarker = (marker, latitude, longitude, title, altitude = 0.1) => {
+    const updateMarker = (marker, latitude, longitude, title) => {
         marker.setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title));
-        
-        // Adjust the altitude separately
-        marker.getElement().setAttribute('position', { x: longitude, y: altitude, z: latitude });
     };
 
     // Function to add a marker on the map
-    const addMarker = (latitude, longitude, title, altitude = 0.1) => {
-        const marker = new mapboxgl.Marker()
+    const addMarker = (latitude, longitude, title) => {
+        return new mapboxgl.Marker()
             .setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .addTo(map);
-        
-        // Adjust the altitude separately
-        marker.getElement().setAttribute('position', { x: longitude, y: altitude, z: latitude });
-
-        return marker;
     };
 
     // Function to get the user's current location
@@ -102,35 +85,24 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData, altitude = 0.1) => {
+    const updateARDirections = (directionsData) => {
         console.log('Directions:', directionsData);
-    
-        // Clear previous route entities
-        const existingEntities = document.querySelectorAll('.route-entity');
-        existingEntities.forEach(entity => entity.parentNode.removeChild(entity));
-    
-        // Add logic to update AR elements based on Mapbox directions
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-    
-            // Create A-Frame entities for each route coordinate
-            routeCoordinates.forEach((coordinate, index) => {
-                const entity = document.createElement('a-entity');
-                entity.setAttribute('gps-entity-place', { latitude: coordinate[1], longitude: coordinate[0] });
-                entity.setAttribute('position', { x: coordinate[0], y: altitude, z: coordinate[1] }); // Adjust the altitude
-                entity.setAttribute('obj-model', { obj: `../models/Arrow.obj`, mtl: `../models/Arrow.mtl` });
-                entity.setAttribute('class', 'route-entity');
-                entity.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
-    
-                // Additional attributes or animations can be added as needed
-    
-                // Append the entity to the scene
-                document.querySelector('a-scene').appendChild(entity);
-            });
-        } else {
-            console.error('Invalid directionsData or missing route coordinates.');
-        }
-    };
+      
+        // Extract coordinates from Mapbox directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+      
+        // Add GPS Arrows for each waypoint
+        routeCoordinates.forEach(coord => {
+          const arrow = document.createElement('a-entity');
+          arrow.setAttribute('gps-arrow', { latitude: coord[1], longitude: coord[0], color: '#ff0000' });
+          scene.appendChild(arrow);
+        });
+      
+        // Add GPS Path
+        const path = document.createElement('a-entity');
+        path.setAttribute('gps-path', { coordinates: routeCoordinates, color: '#00ff00' });
+        scene.appendChild(path);
+      };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
@@ -223,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add a 3D model at the destination based on the destination name
-    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = 0.5) => {
+    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = 0) => {
         const scene = document.querySelector('a-scene');
     
         // Create an A-Frame entity for the 3D model
