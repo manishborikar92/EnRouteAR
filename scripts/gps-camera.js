@@ -19,13 +19,6 @@ AFRAME.registerComponent('gps-camera', {
 
                 // Set camera's position based on user's location
                 camera.setAttribute('gps-entity-place', { latitude, longitude });
-
-                // Create a 3D marker at the user's location (optional)
-                const marker = document.createElement('a-box');
-                marker.setAttribute('gps-entity-place', { latitude, longitude });
-                marker.setAttribute('material', 'color: #00ff00');
-                marker.setAttribute('scale', '5 5 5');
-                scene.appendChild(marker);
             },
             (err) => console.error('Error in retrieving position', err),
             {
