@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         scaleReferenceModel.setAttribute('gps-entity-place', { latitude: userLocation.latitude, longitude: userLocation.longitude });
                         scaleReferenceModel.setAttribute('obj-model', { obj: '../models/current_location.obj', mtl: '../models/current_location.mtl' });
                         scaleReferenceModel.setAttribute('scale', '0.5 0.5 0.5'); // Adjust the scale as needed
-                        scaleReferenceModel.setAttribute('position', '100 200 10'); // Adjust the vertical position here
+                        scaleReferenceModel.setAttribute('position', '0 -1 0'); // Adjust the vertical position here
                         document.querySelector('a-scene').appendChild(scaleReferenceModel);
                     }
                 },
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateARDirections(directionsData);
 
                 // Add 3D model at the selected destination
-                add3DModelAtDestination(destination.latitude, destination.longitude, selectedDestination);
+                add3DModelAtDestination(destination.latitude, destination.longitude, destination.name);
     
                 // Update 2D map with route
                 updateMapWithRoute(directionsData);
