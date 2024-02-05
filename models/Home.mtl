@@ -1,18 +1,15 @@
-newmtl Emerald Dream
-Kd 0.000 0.169 1.000
-d 1.000
-newmtl Emerald Dream 1
-Kd 0.000 0.169 1.000
-d 1.000
-newmtl Emerald Dream 2
-Kd 0.000 0.169 1.000
-d 1.000
-newmtl Emerald Dream 3
-Kd 0.000 0.169 1.000
-d 1.000
-newmtl Lucky Day
+newmtl Lagoon Glow
 Kd 1.000 0.000 0.000
 d 1.000
-newmtl Bermuda 1
-Kd 0.000 0.000 0.000
+newmtl Infusion
+Kd 0.000 0.392 1.000
+d 1.000
+newmtl Infusion 1
+Kd 0.000 0.392 1.000
+d 1.000
+newmtl Infusion 2
+Kd 0.000 0.392 1.000
+d 1.000
+newmtl Infusion 3
+Kd 0.000 0.392 1.000
 d 1.000

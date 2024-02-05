@@ -4,10 +4,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
     let map;
-    // To keep track of the marker at the current location
-    let currentLocationMarker; 
-    // Define a global variable to keep track of the current destination marker
-    let destinationMarker;
+    let compass;
+    let currentLocationMarker; // To keep track of the marker at the current location
+    let destinationMarker; // Define a global variable to keep track of the current destination marker
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
@@ -19,7 +18,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: [0, 0], // Default center
                 zoom: 15,
+                bearing: 0, // Initial bearing
+                pitch: 0, // Initial pitch
             });
+
+            // Enable map controls (zoom, pan, rotate)
+            map.addControl(new mapboxgl.NavigationControl());
+
+            // Create a compass element
+            compass = document.createElement('div');
+            compass.className = 'compass';
+            compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
+
+            // Add compass to the compass container
+            const compassContainer = document.getElementById('compass-container');
+            compassContainer.appendChild(compass);
+
+            // Watch for changes in the device's orientation
+            window.addEventListener('deviceorientation', handleOrientation);
 
             // Get and update the user's current location
             navigator.geolocation.watchPosition(
@@ -43,6 +59,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
             );
+
+            // Watch for changes in the device's orientation
+            window.addEventListener('deviceorientation', handleOrientation);
+
+            // Disable map rotation with right-click or two-finger rotation gesture
+            map.dragRotate.disable();
+            map.touchZoomRotate.disableRotation(); // Disable rotation with two-finger touch
+
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
@@ -61,6 +85,15 @@ document.addEventListener('DOMContentLoaded', function () {
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .addTo(map);
     };
+        
+        // Function to handle changes in device orientation
+        const handleOrientation = (event) => {
+            const compassRotation = 360 - event.alpha; // Rotation in degrees
+            compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+            
+            // Set the bearing of the Mapbox map to achieve rotation
+            map.setBearing(compassRotation);
+        };
 
     // Function to get the user's current location
     const getCurrentLocation = () => {
@@ -86,25 +119,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        console.log('Directions:', directionsData);
-
-        const scene = document.querySelector('a-scene');
+        // Add an AR route that shows a blue conveyor belt on the route.
+    };
       
-        // Extract coordinates from Mapbox directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-      
-        // Add GPS Arrows for each waypoint
-        routeCoordinates.forEach(coord => {
-          const arrow = document.createElement('a-entity');
-          arrow.setAttribute('gps-arrow', { latitude: coord[1], longitude: coord[0], color: '#ff0000' });
-          scene.appendChild(arrow);
-        });
-      
-        // Add GPS Path
-        const path = document.createElement('a-entity');
-        path.setAttribute('gps-path', { coordinates: routeCoordinates, color: '#00ff00' });
-        scene.appendChild(path);
-      };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
@@ -196,27 +213,32 @@ document.addEventListener('DOMContentLoaded', function () {
         return destinationMarker;
     };
 
-    // Function to add a 3D model at the destination based on the destination name
-    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = 0) => {
-        const scene = document.querySelector('a-scene');
+    // Function to add AR label for the selected destination
+    const addDestinationARLabel = (latitude, longitude, name) => {
+        // Remove existing text entities
+        const existingLabels = document.querySelectorAll('#ar-destination-label a-text');
+        
+        if (existingLabels.length > 0) {
+            console.log('Removing existing text entities:', existingLabels.length);
+            existingLabels.forEach(label => label.remove());
+        } else {
+            console.log('No existing text entities to remove.');
+        }
     
-        // Create an A-Frame entity for the 3D model
-        const modelEntity = document.createElement('a-entity');
-        modelEntity.setAttribute('gps-entity-place', { latitude, longitude });
-        modelEntity.setAttribute('position', { x: longitude, y: altitude, z: latitude }); // Adjust the altitude
-    
-        // Use the destination name to construct the file paths for OBJ and MTL
-        const objPath = `../models/${destinationName}.obj`;
-        const mtlPath = `../models/${destinationName}.mtl`;
-    
-        // Set the OBJ model component
-        modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
-        modelEntity.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
-    
-        // Additional attributes or animations can be added as needed
-    
-        // Append the entity to the scene
-        scene.appendChild(modelEntity);
+        console.log('Adding AR label for:', name, 'at', latitude, longitude);
+        
+        // Create a new A-Frame entity (a-text) for the destination label
+        const arLabel = document.createElement('a-text');
+
+        // Set attributes for the label
+        arLabel.setAttribute('value', name);
+        arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+        arLabel.setAttribute('color', '#0100ff'); // Set the text color
+        arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
+
+        // Append the label to the A-Frame scene
+        document.querySelector('#ar-destination-label').appendChild(arLabel);
     };
 
     // Function to handle destination selection and initiate directions
@@ -234,9 +256,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
-                
-                // Add 3D model at the selected destination
-                add3DModelAtDestination(destination.latitude, destination.longitude, destination.name);
+
+                // Add AR label for the selected destination
+                addDestinationARLabel(destination.latitude, destination.longitude, destination.name);
 
                 // Update AR elements
                 updateARDirections(directionsData);

@@ -14,4 +14,5 @@ const places = [
     { name: 'Triveni Boys Hostel', latitude: 21.38836, longitude: 79.30370 },
     { name: 'Work Shop', latitude: 21.38486, longitude: 79.30620 },
     { name: 'Home', latitude: 21.39185, longitude: 79.30756 },
+    { name: 'Room', latitude: 21.3920038, longitude: 79.3076695 },
 ];
