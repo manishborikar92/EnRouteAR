@@ -21,7 +21,7 @@ const app = {
     initMap: async () => {
         try {
             // Initialize the map with Mapbox
-            mapboxgl.accessToken = 'your-mapbox-token';
+            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             app.map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v11',
