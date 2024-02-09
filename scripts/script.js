@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', function () {
         arLabel.setAttribute('value', name);
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arLabel.setAttribute('color', '#0100ff'); // Set the text color
-        arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
+        arLabel.setAttribute('color', '#3882f6'); // Set the text color
+        arLabel.setAttribute('scale', '4 4 4'); // Adjust scale as needed
 
         // Append the label to the A-Frame scene
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
