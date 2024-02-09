@@ -1,258 +1,290 @@
-// Wrap your code in a single object to minimize global variables
-const app = {
-    // Map-related variables
-    map: null,
-    compass: null,
-    mapBearing: 0,
-
-    // Location markers and user details
-    currentLocationMarker: null,
-    destinationMarker: null,
-    userLocation: { latitude: 0, longitude: 0 },
-    destination: null,
-
-    // Flags for map interaction control
-    isUserInteraction: false,
-    isMapCentered: true,
-    isBearing: false,
-    compassRotation: 0,
+document.addEventListener('DOMContentLoaded', function () {
+    // Get HTML elements
+    const destinationSelectInput = document.getElementById('select-destination');
+    const destinationSelectButton = document.getElementById('get-direction-button');
+    const mapContainer = document.getElementById('map');
+    let map;
+    let compass;  
+    let mapBearing = 0; // Global variable to store the map's bearing
+    let currentLocationMarker; // To keep track of the marker at the current location
+    let destinationMarker; // Define a global variable to keep track of the current destination marker
+    let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
+    let destination;
+    // Flags to control various aspects of map interaction
+    let isUserInteraction = false; // Flag to control user interaction with the map
+    let isMapCentered = true; // Flag to track if the map is currently centered on the user's location
+    let isBearing = false; // Flag to track if map bearing is applied
+    let compassRotation; // Variable to store device orientation
 
     // Function to initialize the map and get the user's current location
-    initMap: async () => {
+    const initMap = async () => {
         try {
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-            app.map = new mapboxgl.Map({
-                container: 'map',
+            map = new mapboxgl.Map({
+                container: mapContainer,
                 style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0],
+                center: [0, 0], // Default center
                 zoom: 15,
-                bearing: 0,
-                pitch: 0,
+                bearing: 0, // Initial bearing
+                pitch: 0, // Initial pitch
             });
+    
+            // Enable map controls (zoom, pan, rotate)
+            map.addControl(new mapboxgl.NavigationControl());
+    
+            // Create and append compass element
+            compass = document.createElement('div');
+            compass.className = 'compass';
+            compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
 
-            app.map.addControl(new mapboxgl.NavigationControl());
-            app.createCompass();
-            window.addEventListener('deviceorientation', app.handleOrientation);
+            // Add compass to the compass container
+            const compassContainer = document.getElementById('compass-container');
+            compassContainer.appendChild(compass);
 
+            // Watch for changes in the device's orientation
+            window.addEventListener('deviceorientation', handleOrientation);
+    
         } catch (error) {
             console.error('Error initializing map:', error);
         }
-    },
+    };
 
     // Function to watch for changes in the user's location
-    watchUserLocation: () => {
+    const watchUserLocation = () => {
         navigator.geolocation.watchPosition(
-            app.handlePositionSuccess,
-            app.handlePositionError,
+            // Success callback when position is retrieved
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                userLocation = { latitude, longitude }; // Update global userLocation
+
+                // If there is no ongoing user interaction, update the map center
+                if (!isUserInteraction) {
+                    userLocation = { latitude, longitude };
+                    updateMapCenter(latitude, longitude, 15);
+                }
+
+                // Update or create the current location marker
+                currentLocationMarker
+                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
+            },
+            // Error callback when there's an issue retrieving position
+            (error) => console.error('Error in retrieving position', error),
+            // Geolocation options
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
         );
-    },
+    };
 
     // Function to handle changes in device orientation
-    handleOrientation: (event) => {
-        app.compassRotation = 360 - event.alpha;
-        app.updateCompass();
+    const handleOrientation = (event) => {
+        compassRotation = 360 - event.alpha; // Calculate rotation in degrees
+        compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
 
-        if (app.currentLocationMarker) {
-            app.currentLocationMarker.setRotation(app.compassRotation - app.mapBearing);
-            app.currentLocationMarker.setPitchAlignment('map');
+        // If the map is centered and bearing is applied or there's a destination set, apply bearing
+        if (isMapCentered && isBearing) {
+            map.setBearing(compassRotation); // Set the bearing of the Mapbox map to achieve rotation
+        }
+
+        // Update or create the current location marker
+        if (currentLocationMarker) {
+            // Update the marker's rotation based on the device's orientation and map's bearing
+            currentLocationMarker.setRotation(compassRotation - mapBearing);
+            currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         } else {
-            app.currentLocationMarker = app.addMarker(app.userLocation.latitude, app.userLocation.longitude, 'You are here!', '../models/current1.png');
-            app.currentLocationMarker.setRotation(app.compassRotation);
-            app.currentLocationMarker.setPitchAlignment('map');
+            // If the marker doesn't exist, create a new one with the updated rotation
+            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
+            currentLocationMarker.setRotation(compassRotation);
+            currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
+        }
+        // Call Repeatedly
+        setMultifunctionImage();
+    };
+
+    // Function to dynamically set the image source based on conditions
+    const setMultifunctionImage = () => {
+        const multifunctionButton = document.getElementById('multifunction-button');
+        const centeredImage = document.getElementById('centeredImage');
+
+        // Set the image source based on conditions
+        if (destination && isMapCentered && isBearing) {
+            centeredImage.src = '../models/reset-all.png';
+        } else if (isMapCentered && !isBearing) {
+            centeredImage.src = '../models/centered.png';
+        } else if (isUserInteraction) {
+            centeredImage.src = '../models/recenter.png';
+        } else if (isBearing) {
+            centeredImage.src = '../models/bearing.png';
         }
 
-        app.setMultifunctionImage();
-    },
+        // Set alt text for the image (modify as needed)
+        centeredImage.alt = 'Multifunction Icon';
+    };
 
-    // Function to create the compass element
-    createCompass: () => {
-        app.compass = document.createElement('div');
-        app.compass.className = 'compass';
-        app.compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
-        const compassContainer = document.getElementById('compass-container');
-        compassContainer.appendChild(app.compass);
-    },
-
-    // Function to update the compass rotation
-    updateCompass: () => {
-        app.compass.style.transform = `rotate(${360 - app.compassRotation}deg)`;
-
-        if (app.isMapCentered && app.isBearing) {
-            app.map.setBearing(app.compassRotation);
-        }
-    },
-
-    // Event listener for position success
-    handlePositionSuccess: (position) => {
-        const { latitude, longitude } = position.coords;
-        app.userLocation = { latitude, longitude };
-
-        if (!app.isUserInteraction) {
-            app.userLocation = { latitude, longitude };
-            app.updateMapCenter(latitude, longitude, 15);
+    // Add a click event listener for the recenter button
+    const recenterButton = document.getElementById('multifunction-button');
+    recenterButton.addEventListener('click', () => {
+        // If there's a destination, the map is centered, and bearing is on, call reset();
+        if (destination && isMapCentered && isBearing) {
+            reset(); // Reset all
         }
 
-        app.currentLocationMarker
-            ? app.updateMarker(app.currentLocationMarker, latitude, longitude, 'You are here!')
-            : (app.currentLocationMarker = app.addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
-    },
-
-    // Event listener for position error
-    handlePositionError: (error) => {
-        console.error('Error in retrieving position', error);
-    },
-
-    // Function to handle multifunction button click
-    handleMultifunctionButtonClick: () => {
-        if (app.destination && app.isMapCentered && app.isBearing) {
-            app.reset();
-        } else if (app.isMapCentered) {
-            app.isBearing = !app.isBearing;
-            app.map.setBearing(app.isBearing ? app.compassRotation : 0);
-        } else {
-            app.isUserInteraction = false;
-            app.isMapCentered = true;
+        // If map centered after clicking on multifunction button, set bearing on
+        else if (isMapCentered) {
+                // If bearing is already on, turn it off
+                if (isBearing) {
+                    isBearing = false;
+                    map.setBearing(0); // Stop the map rotation
+                } else {
+                    // If bearing is off, turn it on
+                    isBearing = true;
+                }
+            } else {
+                // If map not centered after clicking on multifunction button, set map center
+                isUserInteraction = false;
+                isMapCentered = true;
         }
 
-        app.setMultifunctionImage();
-    },
+        // Call the function to set the multifunction button image after any changes
+        setMultifunctionImage();
+    });
 
     // Function to update the 2D map center
-    updateMapCenter: (latitude, longitude, zoomLevel) => {
-        app.map.flyTo({
+    const updateMapCenter = (latitude, longitude, zoomLevel) => {
+        map.flyTo({
             center: [longitude, latitude],
             zoom: zoomLevel,
-            essential: true,
-            speed: 1.5,
+            essential: true, // This ensures that the animation is considered essential and cannot be interrupted
+            speed: 1.5, // Adjust the speed of the animation as needed
         });
-    },
+    };
 
     // Function to update the marker on the map
-    updateMarker: (marker, latitude, longitude, title) => {
+    const updateMarker = (marker, latitude, longitude, title) => {
         marker.setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title));
-    },
+    };
 
     // Function to add a marker on the map
-    addMarker: (latitude, longitude, title, markerImage) => {
+    const addMarker = (latitude, longitude, title, markerImage) => {
         const markerOptions = {};
-
+    
+        // Check if a custom marker image is provided
         if (markerImage) {
-            markerOptions.element = app.createCustomMarker(markerImage);
+            markerOptions.element = createCustomMarker(markerImage);
         } else {
-            markerOptions.color = '#FF0000';
+            // Use the default Mapbox marker with a red color
+            markerOptions.color = '#FF0000'; // Red color
         }
-
+    
         return new mapboxgl.Marker(markerOptions)
             .setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title))
-            .addTo(app.map);
-    },
-
+            .addTo(map);
+    };
+    
     // Function to create a custom marker element
-    createCustomMarker: (markerImage) => {
+    const createCustomMarker = (markerImage) => {
         const element = document.createElement('div');
         element.className = 'custom-marker';
         element.style.backgroundImage = `url(${markerImage})`;
-        element.style.width = '30px';
-        element.style.height = '30px';
+        element.style.width = '30px';  // Set the width of your custom marker
+        element.style.height = '30px'; // Set the height of your custom marker
         return element;
-    },
+    };
 
-    // Function to handle destination selection and initiate directions
-    selectDestination: async () => {
-        const selectedDestination = destinationSelectInput.value;
-        app.destination = places.find(place => place.name === selectedDestination);
+    // Function to add a marker for a location on the map
+    const addDestinationMarker = (latitude, longitude, title) => {
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
+        }
+    
+        // Add a new marker at the destination with a popup
+        destinationMarker = addMarker(latitude, longitude, title);
+        return destinationMarker;
+    };
 
-        if (app.destination) {
-            try {
-                const directionsData = await app.getDirections(app.userLocation, app.destination);
-
-                app.updateMapCenter(app.userLocation.latitude, app.userLocation.longitude, 17);
-
-                const destinationMarker = app.addMarker(app.destination.latitude, app.destination.longitude, app.destination.name);
-
-                app.addDestinationAREntity(app.destination.latitude, app.destination.longitude, app.destination.name);
-
-                app.updateARDirections(directionsData);
-                app.updateMapWithRoute(directionsData);
-
-                if (!app.isMapCentered) {
-                    app.isUserInteraction = false;
-                    app.isMapCentered = true;
-                }
-
-                if (!app.isBearing) {
-                    app.isBearing = true;
-                }
-
-            } catch (error) {
-                console.error('Error in retrieving position', error);
-            }
+    // Function to add AR label for the selected destination
+    const addDestinationAREntity = (latitude, longitude, name) => {
+        // Remove existing entities
+        const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
+        
+        if (existingLabels.length > 0) {
+            console.log('Removing existing text entities:', existingLabels.length);
+            existingLabels.forEach(label => label.remove());
         } else {
-            console.log('Destination not found:', selectedDestination);
+            console.log('No existing text entities to remove.');
         }
-    },
+    
+        console.log('Adding AR label for:', name, 'at', latitude, longitude);
+        
+        // Create a new A-Frame entity (a-text) for the destination label
+        const arLabel = document.createElement('a-text');
 
-    // Function to get directions from the Mapbox API
-    getDirections: async (origin, destination) => {
-        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
+        // Set attributes for the label
+        arLabel.setAttribute('value', name);
+        arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+        arLabel.setAttribute('color', '#0100ff'); // Set the text color
+        arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
 
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching directions:', error);
-            throw error;
-        }
-    },
+        // Append the label to the A-Frame scene
+        document.querySelector('#ar-destination-entity').appendChild(arLabel);
+    };
 
-    // Function to handle AR elements based on Mapbox directions
-    updateARDirections: (directionsData) => {
-        // Add AR route that shows a blue conveyor belt on the route.
-        // Implement as needed.
-    },
+    // Function to update AR elements based on Mapbox directions
+    const updateARDirections = (directionsData) => {
+        // Add an AR route that shows a blue conveyor belt on the route.
+    };
+      
 
     // Function to update the 2D map with the route
-    updateMapWithRoute: (directionsData) => {
-        if (!app.map) {
+    const updateMapWithRoute = (directionsData) => {
+        // Ensure the map is initialized
+        if (!map) {
             console.error('Map not initialized. Unable to update route.');
             return;
         }
-
+    
+        // Log directionsData to identify the structure
         console.log('Directions Data:', directionsData);
-
+    
+        // Check if directionsData is defined and contains route information
         if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            console.log('Route Coordinates:', directionsData.routes[0].geometry.coordinates);
-
+            // Extract route coordinates from Mapbox directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+            // Log route coordinates to identify any issues
+            console.log('Route Coordinates:', routeCoordinates);
+    
             const sourceId = 'route';
-
-            if (app.map.getSource(sourceId)) {
+    
+            // Check if the 'route' source already exists
+            if (map.getSource(sourceId)) {
                 try {
-                    app.map.removeLayer(sourceId);
-                    app.map.removeSource(sourceId);
+                    // If it exists, remove the existing source and layer
+                    map.removeLayer(sourceId);
+                    map.removeSource(sourceId);
                 } catch (error) {
                     console.error('Error removing existing route:', error);
                 }
             }
-
-            app.map.addSource(sourceId, {
+    
+            // Add a new source and layer
+            map.addSource(sourceId, {
                 type: 'geojson',
                 data: {
                     type: 'Feature',
                     properties: {},
                     geometry: {
                         type: 'LineString',
-                        coordinates: directionsData.routes[0].geometry.coordinates,
+                        coordinates: routeCoordinates,
                     },
                 },
             });
-
-            app.map.addLayer({
+    
+            map.addLayer({
                 id: sourceId,
                 type: 'line',
                 source: sourceId,
@@ -268,116 +300,135 @@ const app = {
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
         }
-    },
+    };
 
-    // Function to reset destination and clear map elements
-    reset: () => {
-        app.destination = null;
-        app.isBearing = false;
-        app.map.setBearing(0);
+    // Function to remove the route from the map
+    const reset = () => {
+        // Reset the destination
+        destination = null;
+
+        isBearing = false; // Set the bearing flag to false
+
+        // Stop the map rotation
+        map.setBearing(0);
 
         const sourceId = 'route';
 
-        if (app.map.getSource(sourceId) && app.map.getLayer(sourceId)) {
+        // Check if the 'route' source and layer exist
+        if (map.getSource(sourceId) && map.getLayer(sourceId)) {
             try {
-                app.map.removeLayer(sourceId);
-                app.map.removeSource(sourceId);
+                // Remove the existing source and layer
+                map.removeLayer(sourceId);
+                map.removeSource(sourceId);
             } catch (error) {
                 console.error('Error removing existing route:', error);
             }
         }
 
-        app.removeAREntities();
-        if (app.destinationMarker) {
-            app.destinationMarker.remove();
-        }
-    },
-
-    // Function to remove existing AR entities
-    removeAREntities: () => {
+        // Function to remove existing entities
         const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
-
+        
         if (existingLabels.length > 0) {
             console.log('Removing existing text entities:', existingLabels.length);
             existingLabels.forEach(label => label.remove());
         } else {
             console.log('No existing text entities to remove.');
         }
-    },
 
-    // Function to add AR label for the selected destination
-    addDestinationAREntity: (latitude, longitude, name) => {
-        app.removeAREntities();
-
-        console.log('Adding AR label for:', name, 'at', latitude, longitude);
-
-        const arLabel = document.createElement('a-text');
-        arLabel.setAttribute('value', name);
-        arLabel.setAttribute('look-at', '[gps-new-camera]');
-        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arLabel.setAttribute('color', '#0100ff');
-        arLabel.setAttribute('scale', '5 5 5');
-
-        document.querySelector('#ar-destination-entity').appendChild(arLabel);
-    },
-
-    // Function to update multifunction button image based on conditions
-    setMultifunctionImage: () => {
-        const multifunctionButton = document.getElementById('multifunction-button');
-        const centeredImage = document.getElementById('centeredImage');
-
-        if (app.destination && app.isMapCentered && app.isBearing) {
-            centeredImage.src = '../models/reset-all.png';
-        } else if (app.isMapCentered && !app.isBearing) {
-            centeredImage.src = '../models/centered.png';
-        } else if (app.isUserInteraction) {
-            centeredImage.src = '../models/recenter.png';
-        } else if (app.isBearing) {
-            centeredImage.src = '../models/bearing.png';
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
         }
+    };
 
-        centeredImage.alt = 'Multifunction Icon';
-    },
+    // Function to get directions from the Mapbox API
+    const getDirections = async (origin, destination) => {
+        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
+        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
 
-    // Function to populate the dropdown with places from places.js
-    populateDropdown: () => {
-        const destinationSelectInput = document.getElementById('select-destination');
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching directions:', error);
+            throw error;
+        }
+    };
 
-        places.forEach(place => {
-            const option = document.createElement('option');
-            option.value = place.name;
-            option.text = place.name;
-            destinationSelectInput.appendChild(option);
-        });
-    },
+    // Function to handle destination selection and initiate directions
+    const selectDestination = async () => {
+        const selectedDestination = destinationSelectInput.value;
+        destination = places.find(place => place.name === selectedDestination);
+    
+        if (destination) {
+            try {
+                const directionsData = await getDirections(userLocation, destination);
 
-    // Function to add event listeners
-    addEventListeners: () => {
-        destinationSelectButton.addEventListener('click', app.selectDestination);
+                // Update 2D map with user's current location
+                updateMapCenter(userLocation.latitude, userLocation.longitude, 17);
 
-        const recenterButton = document.getElementById('multifunction-button');
-        recenterButton.addEventListener('click', app.handleMultifunctionButtonClick);
-    },
+                // If the destination marker exists, update its position; otherwise, create a new marker
+                const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
-    // Function to start the application
-    start: () => {
-        app.initMap();
-        app.watchUserLocation();
-        app.populateDropdown();
-        app.addEventListeners();
-        app.setMultifunctionImage();
+                // Add AR entity for the selected destination
+                addDestinationAREntity(destination.latitude, destination.longitude, destination.name);
 
-        app.map.on('rotate', (event) => {
-            app.mapBearing = event.target.getBearing();
-        });
+                // Update AR elements
+                updateARDirections(directionsData);
+    
+                // Update 2D map with route
+                updateMapWithRoute(directionsData);
+                
+                // If map is not centered, set it to centered
+                if (!isMapCentered) {
+                    isUserInteraction = false;
+                    isMapCentered = true;
+                }
 
-        document.getElementById('map').addEventListener('touchstart', () => {
-            app.isUserInteraction = true;
-            app.isMapCentered = false;
-            app.isBearing = false;
-        });
-    },
-};
+                // If bearing is off, turn it on
+                if (!isBearing) {
+                    isBearing = true;
+                }
 
-// Event listener for DOMContentLoaded
-document.addEventListener('DOMContentLoaded', app.start);
+            } catch (error) {
+                console.error('Error in retrieving position', error);
+            }
+        } else {
+            console.log('Destination not found:', selectedDestination);
+            // Handle case when the selected destination is not found
+        }
+    };
+
+    // Populate the dropdown with places from places.js
+    places.forEach(place => {
+        const option = document.createElement('option');
+        option.value = place.name;
+        option.text = place.name;
+        destinationSelectInput.appendChild(option);
+    });
+
+    destinationSelectButton.addEventListener('click', selectDestination);
+
+    // End of the 'DOMContentLoaded' event listener
+    // Call the function to initialize map and location
+    initMap();
+    // Call the function to start watching the user's location
+    watchUserLocation();
+    // Call the function to set the initial multifunction button image
+    setMultifunctionImage();
+
+    // Watch for changes in the map's bearing
+    map.on('rotate', (event) => {
+        // Update the map's bearing variable when the map is rotated
+        mapBearing = event.target.getBearing();
+    });
+
+    // Add an event listener for map interaction (e.g., drag or zoom)
+    map.on('touchstart', () => {
+        isUserInteraction = true; // Set the user interaction flag to true
+        isMapCentered = false; // Set the map-centered flag to false
+        isBearing = false; // Set the bearing flag to false
+    });
+
+});
