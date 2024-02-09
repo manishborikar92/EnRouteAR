@@ -198,7 +198,7 @@ const app = {
 
     // Function to get directions from the Mapbox API
     getDirections: async (origin, destination) => {
-        const apiKey = 'your-mapbox-token';
+        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
         const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
 
         try {
