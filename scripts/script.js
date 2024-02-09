@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 paint: {
                     'line-color': '#3882f6',
-                    'line-width': 3,
+                    'line-width': 5,
                 },
             });
         } else {
