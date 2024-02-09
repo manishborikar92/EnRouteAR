@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
             center: [longitude, latitude],
             zoom: zoomLevel,
             essential: true, // This ensures that the animation is considered essential and cannot be interrupted
-            speed: 1.5, // Adjust the speed of the animation as needed
+            speed: 1.0, // Adjust the speed of the animation as needed
         });
     };
 
