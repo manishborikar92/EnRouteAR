@@ -341,6 +341,8 @@ const app = {
 
     // Function to populate the dropdown with places from places.js
     populateDropdown: () => {
+        const destinationSelectInput = document.getElementById('select-destination');
+
         places.forEach(place => {
             const option = document.createElement('option');
             option.value = place.name;
