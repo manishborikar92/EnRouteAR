@@ -12,37 +12,182 @@ body, html {
   height: 100vh;
 }
 
+/* Main Destination Select Container Styles */
 #destination-select-container {
-  width: 90%;
-  max-width: 400px; /* Adjust for smaller screens */
-  margin: 0 auto; /* Removed negative margin */
-  margin-top: 10px;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
   padding: 10px;
-  background-color: rgba(0, 0, 0, 0.7); /* Use rgba for transparency */
-  border-radius: 8px;
-  color: #fff;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  max-width: 90%;
 }
 
+/* Destination Select Dropdown Styles */
 #select-destination {
-  flex: 1;
-  padding: 9px;
-  border-radius: 8px;
-  margin-left: 25px;
-  margin-right: 10px;
+   flex: 3; /* Takes 3x the space compared to the button */
+  padding: 10px;
+  margin-right: 10px; /* Added space between the select and button */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none; /* to remove default styling of dropdown */
 }
 
+/* Adjustments to remove the default arrow in browsers */
+#select-destination::-ms-expand {
+  display: none;
+}
+
+/* For webkit browsers like Safari and Chrome */
+#select-destination::-webkit-appearance {
+  appearance: none;
+}
+
+/* "Get Directions" Button Styles */
 #get-direction-button {
-  width: 25%;
-  padding: 10px 5px; /* Rounded padding */
-  margin-right: 25px;
-  background-color: #0100ff;
-  color: #fff;
+  padding: 10px 8px;
+  padding-right: 21px;
+  color: white;
+  width: 35%;
+  background-color: #007bff; /* Primary color */
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap; /* Prevents break if the text is too long */
+  flex: 1; /* Less flexible than the select, will be smaller */
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Button hover effect */
+#get-direction-button:hover {
+  background-color: #0056b3;
+}
+
+#a-scene {
+  flex: 1;
+  margin: 0 auto;
+  position: fixed; /* Adjust positioning if needed */
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Lower z-index for AR scene */
+}
+
+#map-container {
+  position: fixed;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%); /* Corrected for centering */
+  width: 98%;
+  max-width: 450px;
+  height: 23vh;
+  z-index: 1; /* Higher z-index for map container */
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  border: 3px solid white;
+}
+
+.compass {
+  position: absolute;
+  bottom: 180px;
+  right: 7px;
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+  transform-origin: center center;
+}
+
+.compass img {
+  width: 100%;
+  height: 100%;
+}
+body, html {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Main Destination Select Container Styles */
+#destination-select-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  max-width: 90%;
+}
+
+/* Destination Select Dropdown Styles */
+#select-destination {
+   flex: 3; /* Takes 3x the space compared to the button */
+  padding: 10px;
+  margin-right: 10px; /* Added space between the select and button */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none; /* to remove default styling of dropdown */
+}
+
+/* Adjustments to remove the default arrow in browsers */
+#select-destination::-ms-expand {
+  display: none;
+}
+
+/* For webkit browsers like Safari and Chrome */
+#select-destination::-webkit-appearance {
+  appearance: none;
+}
+
+/* "Get Directions" Button Styles */
+#get-direction-button {
+  padding: 10px 8px;
+  padding-right: 21px;
+  color: white;
+  width: 35%;
+  background-color: #007bff; /* Primary color */
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap; /* Prevents break if the text is too long */
+  flex: 1; /* Less flexible than the select, will be smaller */
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Button hover effect */
+#get-direction-button:hover {
+  background-color: #0056b3;
 }
 
 #a-scene {
