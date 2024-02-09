@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
             center: [longitude, latitude],
             zoom: zoomLevel,
             essential: true, // This ensures that the animation is considered essential and cannot be interrupted
-            speed: 1.0, // Adjust the speed of the animation as needed
+            speed: 1.5, // Adjust the speed of the animation as needed
         });
     };
 
@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const element = document.createElement('div');
         element.className = 'custom-marker';
         element.style.backgroundImage = `url(${markerImage})`;
-        element.style.width = '30px';  // Set the width of your custom marker
-        element.style.height = '30px'; // Set the height of your custom marker
+        element.style.width = '15px';  // Set the width of your custom marker
+        element.style.height = '15px'; // Set the height of your custom marker
         return element;
     };
 
