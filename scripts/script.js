@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // If there is no ongoing user interaction, update the map center
                 if (!isUserInteraction) {
                     userLocation = { latitude, longitude };
-                    updateMapCenter(latitude, longitude, 15);
+                    updateMapCenter(latitude, longitude);
                 }
 
                 // Update or create the current location marker
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude, zoomLevel) => {
+    const updateMapCenter = (latitude, longitude, zoomLevel = 20) => {
         map.flyTo({
             center: [longitude, latitude],
             zoom: zoomLevel,
@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const element = document.createElement('div');
         element.className = 'custom-marker';
         element.style.backgroundImage = `url(${markerImage})`;
-        element.style.width = '20px';  // Set the width of your custom marker
-        element.style.height = '20px'; // Set the height of your custom marker
+        element.style.width = '25px';  // Set the width of your custom marker
+        element.style.height = '25px'; // Set the height of your custom marker
         return element;
     };
 
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 paint: {
                     'line-color': '#3882f6',
-                    'line-width': 10,
+                    'line-width': 7,
                 },
             });
         } else {
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const directionsData = await getDirections(userLocation, destination);
 
                 // Update 2D map with user's current location
-                updateMapCenter(userLocation.latitude, userLocation.longitude, 17);
+                updateMapCenter(userLocation.latitude, userLocation.longitude);
 
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
