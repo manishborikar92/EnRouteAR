@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const element = document.createElement('div');
         element.className = 'custom-marker';
         element.style.backgroundImage = `url(${markerImage})`;
-        element.style.width = '15px';  // Set the width of your custom marker
-        element.style.height = '15px'; // Set the height of your custom marker
+        element.style.width = '20px';  // Set the width of your custom marker
+        element.style.height = '20px'; // Set the height of your custom marker
         return element;
     };
 
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 paint: {
                     'line-color': '#3882f6',
-                    'line-width': 5,
+                    'line-width': 10,
                 },
             });
         } else {
