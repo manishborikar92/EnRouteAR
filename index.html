@@ -44,7 +44,7 @@
             <!-- This entity will look at the camera and be placed at the selected destination -->
             <!-- Scale and position can be adjusted based on your AR scene requirements -->
             <!-- The id 'ar-destination-label' is used for later identification/removal -->
-            <a-entity id="ar-destination-label"></a-entity>
+            <a-entity id="ar-destination-entity"></a-entity>
         </a-scene>
         
         <!-- Container for the compass -->
@@ -53,6 +53,14 @@
         <!-- Container for the 2D map -->
         <div id="map-container">
             <div id="map"></div>
+        </div>
+
+        <!-- Add a container for the custom recenter button -->
+        <div id="multifunction-container">
+            <!-- Use an image as the button -->
+            <button id="multifunction-button">
+                <img id="centeredImage" alt="multifunction Icon">
+            </button>
         </div>
     </div>
     <script src="scripts/places.js"></script>
