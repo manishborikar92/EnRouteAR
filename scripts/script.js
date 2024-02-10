@@ -133,8 +133,8 @@ document.addEventListener('DOMContentLoaded', function () {
         else if (isMapCentered) {
                 // If bearing is already on, turn it off
                 if (isBearing) {
-                    map.setBearing(compassRotation); // Stop the map rotation
                     isBearing = false;
+                    map.setBearing(0); // Stop the map rotation                
                 } else {
                     // If bearing is off, turn it on
                     isBearing = true;
