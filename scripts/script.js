@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude, zoomLevel = 20) => {
+    const updateMapCenter = (latitude, longitude, zoomLevel = 17) => {
         map.flyTo({
             center: [longitude, latitude],
             zoom: zoomLevel,
