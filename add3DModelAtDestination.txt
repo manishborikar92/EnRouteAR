@@ -1,0 +1,42 @@
+// Function to add a 3D model at the destination based on the destination name
+    const add3DModelAtDestination = (latitude, longitude, destinationName) => {
+        const scene = document.querySelector('a-scene');
+    
+        // Create an A-Frame entity for the 3D model
+        const modelEntity = document.createElement('a-entity');
+
+         // Set attributes for the label
+        modelEntity.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        modelEntity.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+        modelEntity.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+        modelEntity.setAttribute('position', '0 -20 0');
+    
+        // Use the destination name to construct the file paths for OBJ and MTL
+        const objPath = `../models/${destinationName}.obj`;
+        const mtlPath = `../models/${destinationName}.mtl`;
+    
+        // Set the OBJ model component
+        modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
+        modelEntity.setAttribute('scale', '0.6 0.6 0.6'); // Adjust the scale as needed
+    
+        // Additional attributes or animations can be added as needed
+    
+        // Append the entity to the scene
+        scene.appendChild(modelEntity);
+    };
+
+
+In selectdestination function
+               // If the destination marker exists, update its position; otherwise, create a new marker
+                const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
+                
+                // Add 3D model at the selected destination
+                add3DModelAtDestination(destination.latitude, destination.longitude, destination.name);
+
+                // Update AR elements
+                updateARDirections(directionsData);
+
+
+
+
+                

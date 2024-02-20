@@ -79,3 +79,9 @@ Now, display image according to conditions:
         }
 
 #ar-destination-entity a-text
+
+
+alert('Device location is off. Please enable location and refresh the page.');
+
+
+The location permission is already allowed for the website and if I open the website again with the device location off, this massage appears 'User denied access to GPS.' but I want this massage 'Device location is off. Please enable location and refresh the page.' instead of this massage 'User denied access to GPS.'

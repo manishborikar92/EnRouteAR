@@ -13,36 +13,41 @@ body, html {
 }
 
 #destination-select-container {
-  width: 90%;
-  max-width: 400px; /* Adjust for smaller screens */
-  margin: 0 auto; /* Removed negative margin */
-  margin-top: 10px;
+  position: absolute;
+  top: 2%;
+  left: 1%;
+  right:1%;
+  padding: 10px 10px 10px 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  align-items: center; 
   background-color: rgba(0, 0, 0, 0.7); /* Use rgba for transparency */
   border-radius: 8px;
   color: #fff;
+  z-index: 4;
 }
 
 #select-destination {
-  flex: 1;
-  padding: 9px;
+  width: calc(100% - 120px); /* Allow the container to adjust its width based on content */
+  padding-top: 8px;
+  padding-bottom: 8px;
   border-radius: 8px;
-  margin-left: 25px;
-  margin-right: 10px;
+  text-align: center;
+  z-index: 4;
 }
 
 #get-direction-button {
-  width: 25%;
-  padding: 10px 5px; /* Rounded padding */
-  margin-right: 25px;
-  background-color: #0100ff;
-  color: #fff;
+  width: 110px; /* Set the width of the first container to 30% */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #0100ff; /* Green */
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  color: white;
+  text-size-adjust: auto;
+  text-decoration: none;
+  z-index: 4;
 }
 
 #a-scene {
@@ -56,29 +61,29 @@ body, html {
 
 #map-container {
   position: fixed;
-  bottom: 2px;
+  bottom: 0;
   left: 50%;
-  transform: translateX(-50.50%); /* Corrected for centering */
-  width: 98%;
-  max-width: 450px;
+  transform: translateX(-50%); /* Corrected for centering */
+  width: 100%;
   height: 23vh;
+  border-top: 3px solid white;
   z-index: 1; /* Higher z-index for map container */
 }
 
 #map {
   width: 100%;
   height: 100%;
-  border: 3px solid white;
 }
 
 .compass {
   position: absolute;
-  bottom: 180px;
-  right: 7px;
+  bottom: 24vh;
+  right: 1%;
   width: 45px;
   height: 45px;
   cursor: pointer;
   transform-origin: center center;
+  z-index: 2; /* Higher z-index for the multifunction button */
 }
 
 .compass img {
@@ -92,9 +97,13 @@ body, html {
 }
 
 #multifunction-container {
-  position: fixed;
-  bottom: 1px; /* Adjust the position as needed */
-  right: 10px;
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
 }
 
@@ -106,6 +115,6 @@ body, html {
 }
 
 #multifunction-button img {
-  width: 45px; /* Adjust the size of the image */
-  height: 45px; /* Adjust the size of the image */
+  width: 100%;
+  height: 100%;
 }
