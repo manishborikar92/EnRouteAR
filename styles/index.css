@@ -77,8 +77,8 @@ body, html {
 
 .compass {
   position: absolute;
-  bottom: 24vh;
-  right: 1%;
+  top: 12vh;
+  right: 2%;
   width: 45px;
   height: 45px;
   cursor: pointer;
@@ -98,8 +98,8 @@ body, html {
 
 #multifunction-container {
   position: absolute;
-  bottom: 1%;
-  right: 1%;
+  bottom: 16vh;
+  right: 2%;
   width: 45px;
   height: 45px;
   cursor: pointer;
