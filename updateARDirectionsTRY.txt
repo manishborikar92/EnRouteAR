@@ -1,0 +1,60 @@
+// Function to update AR elements based on Mapbox directions
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+        // Ensure there are at least two coordinates to create a route
+        if (routeCoordinates.length >= 2) {
+            // Remove existing markers and route elements
+            removeExistingMarkersAndRoute();
+
+            // Create a marker at the start point
+            createMarkerAtCoordinate(routeCoordinates[0]);
+
+            // Loop through the route coordinates starting from the second coordinate
+            for (let i = 1; i < routeCoordinates.length; i++) {
+                // Create a marker at each subsequent coordinate
+                createMarkerAtCoordinate(routeCoordinates[i]);
+
+                // Connect the current coordinate with the previous one to create the route
+                createRouteSegment(routeCoordinates[i - 1], routeCoordinates[i]);
+            }
+        } else {
+            console.error('Invalid route: Not enough coordinates.');
+        }
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
+
+// Function to create a route segment between two coordinates
+const createRouteSegment = (startCoordinate, endCoordinate) => {
+    // Create a line element as the route segment
+    const routeSegment = document.createElement('a-entity');
+    routeSegment.setAttribute('line', {
+        start: `${startCoordinate[0]} ${startCoordinate[1]}`,
+        end: `${endCoordinate[0]} ${endCoordinate[1]}`,
+        color: '#3882f6',
+        opacity: 0.8
+    });
+    routeSegment.setAttribute('gps-new-entity-place', {
+        latitude: (startCoordinate[1] + endCoordinate[1]) / 2,
+        longitude: (startCoordinate[0] + endCoordinate[0]) / 2
+    });
+
+    // Append the route segment to the AR scene
+    document.querySelector('a-scene').appendChild(routeSegment);
+};
+
+// Function to remove existing markers and route elements
+const removeExistingMarkersAndRoute = () => {
+    // Remove existing markers
+    const existingMarkers = document.querySelectorAll('.route-marker');
+    existingMarkers.forEach(marker => marker.remove());
+
+    // Remove existing route segments
+    const existingRouteSegments = document.querySelectorAll('[line]');
+    existingRouteSegments.forEach(segment => segment.remove());
+};

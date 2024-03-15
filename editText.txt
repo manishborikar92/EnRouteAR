@@ -84,4 +84,70 @@ Now, display image according to conditions:
 alert('Device location is off. Please enable location and refresh the page.');
 
 
-The location permission is already allowed for the website and if I open the website again with the device location off, this massage appears 'User denied access to GPS.' but I want this massage 'Device location is off. Please enable location and refresh the page.' instead of this massage 'User denied access to GPS.'
+
+
+
+
+// Function to update AR elements based on Mapbox directions
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+        // Create an array to store marker elements
+        const markers = [];
+
+        // Loop through the route coordinates to create AR elements
+        routeCoordinates.forEach((coordinate) => {
+            // Create AR elements representing each point along the route
+            const marker = createMarkerAtCoordinate(coordinate);
+            markers.push(marker);
+        });
+
+        // Create lines connecting the markers
+        createLinesBetweenMarkers(markers);
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
+
+// Function to create a marker at a specified coordinate
+const createMarkerAtCoordinate = (coordinate) => {
+    // Create a box element as the marker
+    const marker = document.createElement('a-box');
+    marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+    marker.setAttribute('width', '1'); // Adjust marker width as needed
+    marker.setAttribute('height', '1'); // Adjust marker height as needed
+    marker.setAttribute('depth', '1'); // Adjust marker depth as needed
+    marker.setAttribute('color', '#3882f6'); // Set the text color
+    marker.setAttribute('opacity', '0.8'); // Set marker opacity
+    marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+    marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
+    
+    // Append the marker to the AR scene
+    document.querySelector('a-scene').appendChild(marker);
+
+    return marker; // Return the marker element
+};
+
+// Function to create lines connecting the markers
+const createLinesBetweenMarkers = (markers) => {
+    // Iterate through the markers to create lines
+    for (let i = 1; i < markers.length; i++) {
+        const startPoint = markers[i - 1].getAttribute('gps-new-entity-place');
+        const endPoint = markers[i].getAttribute('gps-new-entity-place');
+
+        // Create a line element
+        const line = document.createElement('a-entity');
+        line.setAttribute('line', {
+            start: startPoint,
+            end: endPoint,
+            color: '#3882f6', // Set line color
+            opacity: 0.8, // Set line opacity
+        });
+
+        // Append the line to the AR scene
+        document.querySelector('a-scene').appendChild(line);
+    }
+};

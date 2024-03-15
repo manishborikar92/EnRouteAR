@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
                 container: mapContainer,
-                style: 'mapbox://styles/mapbox/satellite-streets-v12',
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
                 center: [78, 20], // Default center
                 zoom: 0,
                 bearing: 0, // Initial bearing
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Enable map controls (zoom, pan, rotate)
-            map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+            map.addControl(new mapboxgl.NavigationControl());
 
             // Create and append compass element
             compass = document.createElement('div');
@@ -52,44 +52,44 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to watch for changes in the user's location
-const watchUserLocation = () => {
-    navigator.geolocation.watchPosition(
-        // Success callback when position is retrieved
-        (position) => {
-            const { latitude, longitude } = position.coords;
-            userLocation = { latitude, longitude }; // Update global userLocation
+    const watchUserLocation = () => {
+        navigator.geolocation.watchPosition(
+            // Success callback when position is retrieved
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                userLocation = { latitude, longitude }; // Update global userLocation
 
-            // If there is no ongoing user interaction, update the map center
-            if (!isUserInteraction) {
-                userLocation = { latitude, longitude };
-                updateMapCenter(latitude, longitude);
-            }
+                // If there is no ongoing user interaction, update the map center
+                if (!isUserInteraction) {
+                    userLocation = { latitude, longitude };
+                    updateMapCenter(latitude, longitude);
+                }
 
-            // Update or create the current location marker
-            currentLocationMarker
-                ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
-        },
-        // Error callback when there's an issue retrieving position
-        (error) => {
-            if (error.code === 1) {
-                // Device location is off. Please enable location and refresh the page.
-                alert('Device location is off. Please enable location and refresh the page.');
-            } else if (error.code === 2) {
-                // Position information is unavailable
-                alert('Position information is unavailable. Please try again.');
-            } else if (error.code === 3) {
-                // The request to get user location timed out
-                alert('Request to get user location timed out. Please try again.');
-            } else {
-                // For other errors, log the error to the console
-                console.error('Error in retrieving position:', error.message);
-            }
-        },
-        // Geolocation options
-        { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-    );
-};
+                // Update or create the current location marker
+                currentLocationMarker
+                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+            },
+            // Error callback when there's an issue retrieving position
+            (error) => {
+                if (error.code === 1) {
+                    // Device location is off. Please enable location and refresh the page.
+                    alert('Device location is off. Please enable location and refresh the page.');
+                } else if (error.code === 2) {
+                    // Position information is unavailable
+                    alert('Position information is unavailable. Please try again.');
+                } else if (error.code === 3) {
+                    // The request to get user location timed out
+                    alert('Request to get user location timed out. Please try again.');
+                } else {
+                    // For other errors, log the error to the console
+                    console.error('Error in retrieving position:', error.message);
+                }
+            },
+            // Geolocation options
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+        );
+    };
 
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
@@ -241,128 +241,102 @@ const watchUserLocation = () => {
         arLabel.setAttribute('value', name);
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arLabel.setAttribute('color', '#3882f6'); // Set the text color
-        arLabel.setAttribute('scale', '2 2 2'); // Adjust scale as needed
+        arLabel.setAttribute('color', 'red'); // Set the text color
+        arLabel.setAttribute('scale', '3 3 3'); // Adjust scale as needed
 
         // Append the label to the A-Frame scene
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
-// Function to update AR elements based on Mapbox directions
-// Function to calculate distance between two coordinates using Haversine formula
-const calculateDistance = (coord1, coord2) => {
-    const earthRadius = 6371e3; // Earth's radius in meters
-    const lat1 = coord1[1] * Math.PI / 180; // Latitude of coord1 in radians
-    const lat2 = coord2[1] * Math.PI / 180; // Latitude of coord2 in radians
-    const deltaLat = (coord2[1] - coord1[1]) * Math.PI / 180; // Difference in latitudes
-    const deltaLon = (coord2[0] - coord1[0]) * Math.PI / 180; // Difference in longitudes
+    // Function to update AR elements based on Mapbox directions
+    const updateARDirections = (directionsData) => {
+        // Check if directions data is valid and contains route information
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            // Extract route coordinates from directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-    // Haversine formula for calculating distance
-    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-              Math.cos(lat1) * Math.cos(lat2) *
-              Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            // Generate intermediary points along the route
+            const intermediaryPoints = generateIntermediaryPoints(routeCoordinates);
 
-    return earthRadius * c; // Distance in meters
-};
+            // Loop through the intermediary points to create AR elements
+            intermediaryPoints.forEach((coordinate) => {
+                // Create AR elements representing each point along the route
+                createMarkerAtCoordinate(coordinate);
+            });
+        } else {
+            console.error('Invalid directions data or missing route coordinates.');
+        }
+    };
 
-// Function to calculate initial bearing between two coordinates
-const calculateInitialBearing = (coord1, coord2) => {
-    const lat1 = coord1[1] * Math.PI / 180; // Latitude of coord1 in radians
-    const lat2 = coord2[1] * Math.PI / 180; // Latitude of coord2 in radians
-    const deltaLon = (coord2[0] - coord1[0]) * Math.PI / 180; // Difference in longitudes
+    // Function to generate intermediary points along the route
+    const generateIntermediaryPoints = (routeCoordinates) => {
+        const intermediaryPoints = [];
+        const numIntermediaryPoints = 10; // Number of intermediary points to generate
 
-    const y = Math.sin(deltaLon) * Math.cos(lat2);
-    const x = Math.cos(lat1) * Math.sin(lat2) -
-              Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+        for (let i = 0; i < routeCoordinates.length - 1; i++) {
+            const currentCoord = routeCoordinates[i];
+            const nextCoord = routeCoordinates[i + 1];
 
-    let initialBearing = Math.atan2(y, x) * 180 / Math.PI; // Bearing in degrees
-    initialBearing = (initialBearing + 360) % 360; // Normalize to range [0, 360]
+            // Calculate the distance between current and next coordinates
+            const distance = calculateDistance(currentCoord, nextCoord);
 
-    return initialBearing;
-};
+            // Calculate the step size for generating intermediary points
+            const stepSize = distance / (numIntermediaryPoints + 1);
 
-// Function to determine turning direction based on change in bearing
-const getTurnDirection = (previousBearing, currentBearing) => {
-    const threshold = 30; // Threshold angle for determining turn direction
+            // Generate intermediary points along the current segment
+            for (let j = 1; j <= numIntermediaryPoints; j++) {
+                const ratio = j / (numIntermediaryPoints + 1);
+                const lat = currentCoord[1] + (nextCoord[1] - currentCoord[1]) * ratio;
+                const lon = currentCoord[0] + (nextCoord[0] - currentCoord[0]) * ratio;
+                intermediaryPoints.push([lon, lat]);
+            }
+        }
 
-    if (previousBearing === null) return 'continue'; // No previous bearing (initial segment)
-    
-    const angleDiff = (currentBearing - previousBearing + 360) % 360; // Angle difference
-    if (angleDiff < threshold) return 'continue'; // Straight ahead
-    if (angleDiff < 180) return 'right'; // Right turn
-    return 'left'; // Left turn
-};
+        // Add the final destination coordinate
+        intermediaryPoints.push(routeCoordinates[routeCoordinates.length - 1]);
 
-// Function to add AR entities for route segment with turn direction
-const addRouteSegmentAR = (startCoord, endCoord, distance, turnDirection) => {
-    // Calculate the midpoint between startCoord and endCoord for positioning the AR entity
-    const midpoint = [
-        (startCoord[0] + endCoord[0]) / 2,
-        (startCoord[1] + endCoord[1]) / 2
-    ];
+        return intermediaryPoints;
+    };
 
-    // Create an A-Frame entity for the route segment
-    const arEntity = document.createElement('a-entity');
-    arEntity.setAttribute('geometry', {
-        primitive: 'box',
-        depth: 0.5, // Adjust the depth of the box as needed
-        width: distance, // Set the width of the box based on the distance between coordinates
-        height: 0.1 // Adjust the height of the box as needed
-    });
-    arEntity.setAttribute('material', {
-        color: 'blue' // Set the color of the route segment
-    });
-    arEntity.setAttribute('gps-new-entity-place', `latitude: ${midpoint[1]}; longitude: ${midpoint[0]}`);
-    arEntity.setAttribute('rotation', `0 ${180 - calculateInitialBearing(startCoord, endCoord)} 0`); // Rotate the entity to align with the bearing
-    document.querySelector('a-scene').appendChild(arEntity);
-};
+    // Function to calculate the distance between two coordinates (in meters) using the Haversine formula
+    const calculateDistance = (startPoint, endPoint) => {
+        const earthRadius = 6371000; // Radius of the Earth in meters
+        const [startLng, startLat] = startPoint;
+        const [endLng, endLat] = endPoint;
 
-// Function to display total route length in a user-friendly format
-const displayRouteLength = (totalDistance) => {
-    const distanceInKm = totalDistance / 1000; // Convert distance to kilometers
-    const distanceString = distanceInKm < 1 ? `${totalDistance} m` : `${distanceInKm.toFixed(2)} km`;
-    // Update UI with the total distance information
-    console.log('Total Route Length:', distanceString);
-};
+        // Convert coordinates from degrees to radians
+        const startLatRad = startLat * Math.PI / 180;
+        const endLatRad = endLat * Math.PI / 180;
+        const latDiffRad = (endLat - startLat) * Math.PI / 180;
+        const lngDiffRad = (endLng - startLng) * Math.PI / 180;
 
-// Function to update AR elements based on Mapbox directions
-const updateARDirections = (directionsData) => {
-    if (!directionsData || !directionsData.routes || directionsData.routes.length === 0) {
-        console.error('No valid route data provided.');
-        return;
-    }
+        // Haversine formula to calculate distance
+        const a = Math.sin(latDiffRad / 2) * Math.sin(latDiffRad / 2) +
+                Math.cos(startLatRad) * Math.cos(endLatRad) *
+                Math.sin(lngDiffRad / 2) * Math.sin(lngDiffRad / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = earthRadius * c;
 
-    const route = directionsData.routes[0];
-    const routeCoordinates = route.geometry.coordinates;
-    let totalRouteDistance = 0;
-    let previousBearing = null;
+        return distance; // Distance in meters
+    };
 
-    // Iterate through route coordinates to calculate distance and bearing
-    for (let i = 0; i < routeCoordinates.length - 1; i++) {
-        const currentCoord = routeCoordinates[i];
-        const nextCoord = routeCoordinates[i + 1];
-
-        // Calculate distance between current and next coordinates
-        const distance = calculateDistance(currentCoord, nextCoord);
-        totalRouteDistance += distance;
-
-        // Calculate initial bearing from current coordinate to next coordinate
-        const bearing = calculateInitialBearing(currentCoord, nextCoord);
-
-        // Determine turning instructions based on change in bearing
-        const turnDirection = getTurnDirection(previousBearing, bearing);
-        // Add AR entities for route segment with turnDirection information
-        addRouteSegmentAR(currentCoord, nextCoord, distance, turnDirection);
-
-        // Store current bearing for next iteration
-        previousBearing = bearing;
-    }
-
-    // Display totalRouteDistance in a user-friendly format
-    displayRouteLength(totalRouteDistance);
-};
+    // Function to create a marker at a specified coordinate
+    const createMarkerAtCoordinate = (coordinate) => {
+        // Create a box element as the marker
+        const marker = document.createElement('a-box');
+        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
+        marker.setAttribute('height', '0.2'); // Adjust marker height as needed
+        marker.setAttribute('depth', '2'); // Adjust marker depth as needed
+        marker.setAttribute('color', '#3882f6'); // Set the marker color
+        marker.setAttribute('opacity', '0.8'); // Set marker opacity
+        marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+        marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
         
+        // Append the marker to the AR scene
+        document.querySelector('a-scene').appendChild(marker);
+    };
+
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
         // Ensure the map is initialized
@@ -431,22 +405,15 @@ const updateARDirections = (directionsData) => {
         // Reset the destination
         destination = null;
 
-        isBearing = false; // Set the bearing flag to false
+        // Set the bearing flag to false
+        isBearing = false; 
 
         // Stop the map rotation
         map.setBearing(0);
 
-        const sourceId = 'route';
-
-        // Check if the 'route' source and layer exist
-        if (map.getSource(sourceId) && map.getLayer(sourceId)) {
-            try {
-                // Remove the existing source and layer
-                map.removeLayer(sourceId);
-                map.removeSource(sourceId);
-            } catch (error) {
-                console.error('Error removing existing route:', error);
-            }
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
         }
 
         // Function to remove existing entities
@@ -459,9 +426,21 @@ const updateARDirections = (directionsData) => {
             console.log('No existing text entities to remove.');
         }
 
-        // Remove the previous destination marker if it exists
-        if (destinationMarker) {
-            destinationMarker.remove();
+        // Remove all markers representing the route
+        const routeMarkers = document.querySelectorAll('a-box');
+        routeMarkers.forEach(marker => marker.remove());
+
+        // Check if the 'route' source and layer exist
+        const sourceId = 'route';
+
+        if (map.getSource(sourceId) && map.getLayer(sourceId)) {
+            try {
+                // Remove the existing source and layer
+                map.removeLayer(sourceId);
+                map.removeSource(sourceId);
+            } catch (error) {
+                console.error('Error removing existing route:', error);
+            }
         }
     };
 
