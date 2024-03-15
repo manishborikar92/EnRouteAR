@@ -284,14 +284,15 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
+    const generateIntermediaryPoints = (startPoint, endPoint, numberOfPoints) => {
         const intermediaryPoints = [];
-        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
+        const [startLng, startLat] = startPoint;
+        const [endLng, endLat] = endPoint;
 
-        for (let i = 1; i < segments; i++) {
-            const fraction = i / segments;
-            const intermediateLng = startPoint[0] + (endPoint[0] - startPoint[0]) * fraction;
-            const intermediateLat = startPoint[1] + (endPoint[1] - startPoint[1]) * fraction;
+        for (let i = 1; i <= numberOfPoints; i++) {
+            const fraction = i / (numberOfPoints + 1);
+            const intermediateLng = startLng + (endLng - startLng) * fraction;
+            const intermediateLat = startLat + (endLat - startLat) * fraction;
             intermediaryPoints.push([intermediateLng, intermediateLat]);
         }
 
@@ -347,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('color', 'blue'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
-        marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+        marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
         marker.setAttribute('position', '0 -15 0'); // Adjust position relative to camera
         
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
