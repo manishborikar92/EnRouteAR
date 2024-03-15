@@ -248,44 +248,113 @@ const watchUserLocation = () => {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
-    const updateARDirections = (directionsData) => {
-        // Check if AR.js is available
-        if (!AFRAME.ARjs) {
-            console.error('AR.js not available. Unable to render AR route.');
-            return;
-        }
-    
+// Function to update AR elements based on Mapbox directions
+const updateARDirections = (directionsData) => {
+    // Check if directionsData contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
         // Extract route coordinates from Mapbox directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+        // Calculate the total distance of the route
+        const totalDistance = calculateTotalDistance(routeCoordinates);
+
+        // Add AR route with accurate length and turning
+        addARRoute(routeCoordinates);
+
+        // Perform basic animation (if possible) using A-Frame or AR.js
+        performBasicAnimation(routeCoordinates);
+    } else {
+        console.error('Invalid directionsData or missing route coordinates.');
+    }
+};
+
+// Function to calculate total distance of the route
+const calculateTotalDistance = (routeCoordinates) => {
+    let totalDistance = 0;
+
+    for (let i = 0; i < routeCoordinates.length - 1; i++) {
+        const [lng1, lat1] = routeCoordinates[i];
+        const [lng2, lat2] = routeCoordinates[i + 1];
+
+        // Calculate distance between two coordinates using Haversine formula
+        const distance = haversineDistance(lat1, lng1, lat2, lng2);
+
+        // Add distance to total distance
+        totalDistance += distance;
+    }
+
+    return totalDistance;
+};
+
+// Function to calculate distance between two coordinates using Haversine formula
+const haversineDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+
+    return distance;
+};
+
+// Function to convert degrees to radians
+const toRad = (value) => {
+    return value * Math.PI / 180;
+};
+
+// Function to add AR route with accurate length and turning
+const addARRoute = (routeCoordinates) => {
+    // Add AR elements (such as lines, markers) to represent the route in AR
+    // You can use A-Frame or AR.js components to create and position these elements
+    // Here's a simplified example using A-Frame:
+    for (let i = 0; i < routeCoordinates.length - 1; i++) {
+        const [lng1, lat1] = routeCoordinates[i];
+        const [lng2, lat2] = routeCoordinates[i + 1];
+
+        // Create a line entity between two consecutive coordinates
+        const line = document.createElement('a-entity');
+        line.setAttribute('line', {
+            start: `${lng1} ${lat1}`,
+            end: `${lng2} ${lat2}`,
+            color: 'blue' // Customize color as needed
+        });
+
+        // Add the line entity to the A-Frame scene
+        document.querySelector('a-scene').appendChild(line);
+    }
+};
+
+// Function to perform basic animation along the route
+const performBasicAnimation = (routeCoordinates) => {
+    // Implement basic animation using A-Frame or AR.js
+    // For example, you can animate a 3D model or marker along the route
+    // Here's a simplified example using A-Frame:
+    const marker = document.createElement('a-entity');
+    marker.setAttribute('geometry', {
+        primitive: 'sphere',
+        radius: 0.5
+    });
+    marker.setAttribute('material', 'color: red');
     
-        // Create AR.js entity for the route
-        const routeEntity = document.createElement('a-entity');
-    
-        // Loop through the route coordinates to create a path in AR
-        for (let i = 0; i < routeCoordinates.length; i++) {
-            const waypoint = routeCoordinates[i];
-    
-            // Create a point along the route
-            const pointEntity = document.createElement('a-entity');
-            pointEntity.setAttribute('gps-new-entity-place', {
-                latitude: waypoint[1],
-                longitude: waypoint[0]
-            });
-    
-            // Set the appearance of the point (e.g., sphere, cone, etc.)
-            pointEntity.setAttribute('geometry', {
-                primitive: 'sphere',
-                radius: 0.5 // Adjust the radius as needed
-            });
-            pointEntity.setAttribute('material', { color: 'blue' }); // Set color
-    
-            // Append the point to the route entity
-            routeEntity.appendChild(pointEntity);
-        }
-    
-        // Append the route entity to the AR scene
-        document.querySelector('a-scene').appendChild(routeEntity);
-    };
+    // Animate the marker along the route
+    for (let i = 0; i < routeCoordinates.length; i++) {
+        const [lng, lat] = routeCoordinates[i];
+        marker.setAttribute('position', `${lng} ${lat} 0`); // Set position based on route coordinates
+        marker.setAttribute('animation', {
+            property: 'position',
+            dur: 1000, // Duration of animation in milliseconds
+            easing: 'linear',
+            to: `${lng} ${lat + 0.1} 0` // Animate to slightly above the route position
+        });
+
+        // Add the marker entity to the A-Frame scene
+        document.querySelector('a-scene').appendChild(marker);
+    }
+};
     
       
     // Function to update the 2D map with the route
