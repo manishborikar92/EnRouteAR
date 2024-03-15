@@ -249,37 +249,110 @@ const watchUserLocation = () => {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        // Assuming you have an A-Frame scene with an AR camera and AR markers set up
-    
-        // Check if there are route instructions
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            const routeInstructions = directionsData.routes[0].legs[0].steps;
-    
-            // Clear previous AR route elements
-            const arRouteEntity = document.querySelector('#ar-route-entity');
-            if (arRouteEntity) {
-                arRouteEntity.parentNode.removeChild(arRouteEntity);
-            }
-    
-            // Create a new A-Frame entity for the AR route
-            const arRoute = document.createElement('a-entity');
-            arRoute.setAttribute('id', 'ar-route-entity');
-    
-            // Loop through route instructions and create AR markers
-            routeInstructions.forEach((step, index) => {
-                const arMarker = document.createElement('a-entity');
-                arMarker.setAttribute('geometry', 'primitive: cylinder; height: 0.1; radius: 0.05');
-                arMarker.setAttribute('material', 'color: blue');
-                arMarker.setAttribute('position', `${step.maneuver.location[1]} 0 ${step.maneuver.location[0]}`);
-                arRoute.appendChild(arMarker);
-            });
-    
-            // Add the AR route entity to the A-Frame scene
-            const arScene = document.querySelector('a-scene');
-            arScene.appendChild(arRoute);
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = generateIntermediaryPoints(directionsData.routes[0].geometry.coordinates);
+
+        // Loop through the route coordinates to create AR elements
+        for (let i = 0; i < routeCoordinates.length - 1; i++) {
+            const currentCoordinate = routeCoordinates[i];
+            const nextCoordinate = routeCoordinates[i + 1];
+
+            // Calculate the distance between current and next coordinates
+            const distance = calculateDistance(currentCoordinate, nextCoordinate);
+
+            // Calculate the rotation angle between current and next coordinates
+            const rotation = calculateRotation(currentCoordinate, nextCoordinate);
+
+            // Create a marker at the current coordinate
+            createMarkerAtCoordinate(currentCoordinate, distance, rotation);
         }
-    };
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
+
+// Function to generate intermediary points along the route
+const generateIntermediaryPoints = (routeCoordinates) => {
+    const intermediaryPoints = [];
+    const numIntermediaryPoints = 10; // Number of intermediary points to generate
+
+    // Iterate over the route coordinates and add intermediary points
+    for (let i = 0; i < routeCoordinates.length - 1; i++) {
+        const currentCoord = routeCoordinates[i];
+        const nextCoord = routeCoordinates[i + 1];
+
+        // Calculate the intermediary points between current and next coordinates
+        for (let j = 0; j < numIntermediaryPoints; j++) {
+            const ratio = (j + 1) / (numIntermediaryPoints + 1);
+            const lat = currentCoord[1] + (nextCoord[1] - currentCoord[1]) * ratio;
+            const lon = currentCoord[0] + (nextCoord[0] - currentCoord[0]) * ratio;
+            intermediaryPoints.push([lon, lat]);
+        }
+    }
+
+    // Add the final destination coordinate
+    intermediaryPoints.push(routeCoordinates[routeCoordinates.length - 1]);
+
+    return intermediaryPoints;
+};
+
+// Function to calculate the distance between two coordinates (in meters) using the Haversine formula
+const calculateDistance = (startPoint, endPoint) => {
+    const earthRadius = 6371000; // Radius of the Earth in meters
+    const [startLng, startLat] = startPoint;
+    const [endLng, endLat] = endPoint;
+
+    // Convert coordinates from degrees to radians
+    const startLatRad = startLat * Math.PI / 180;
+    const endLatRad = endLat * Math.PI / 180;
+    const latDiffRad = (endLat - startLat) * Math.PI / 180;
+    const lngDiffRad = (endLng - startLng) * Math.PI / 180;
+
+    // Haversine formula to calculate distance
+    const a = Math.sin(latDiffRad / 2) * Math.sin(latDiffRad / 2) +
+            Math.cos(startLatRad) * Math.cos(endLatRad) *
+            Math.sin(lngDiffRad / 2) * Math.sin(lngDiffRad / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadius * c;
+
+    return distance; // Distance in meters
+};
+
+// Function to calculate the rotation angle between two points (in degrees)
+const calculateRotation = (startPoint, endPoint) => {
+    // Calculate the difference in longitude and latitude
+    const deltaLongitude = endPoint[0] - startPoint[0];
+    const deltaLatitude = endPoint[1] - startPoint[1];
+
+    // Calculate the angle (in radians) using the arctangent function
+    const angleRad = Math.atan2(deltaLongitude, deltaLatitude);
+
+    // Convert the angle from radians to degrees
+    const angleDeg = (angleRad * 180) / Math.PI;
+
+    // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
+    return angleDeg + 30;
+};
+
+// Function to create a marker at a specified coordinate
+const createMarkerAtCoordinate = (coordinate, distance, rotation) => {
+    // Create a box element as the marker
+    const marker = document.createElement('a-box');
+    marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+    marker.setAttribute('width', '1.5'); // Adjust marker width as needed
+    marker.setAttribute('height', '0.2'); // Adjust marker height as needed
+    marker.setAttribute('depth', distance.toFixed(2)); // Adjust marker depth based on distance
+    marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
+    marker.setAttribute('color', '#3882f6'); // Set the marker color
+    marker.setAttribute('opacity', '0.8'); // Set marker opacity
+    marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+    marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
+    
+    document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
+};
       
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
