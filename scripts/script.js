@@ -284,15 +284,14 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, numberOfPoints) => {
+    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
         const intermediaryPoints = [];
-        const [startLng, startLat] = startPoint;
-        const [endLng, endLat] = endPoint;
+        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
 
-        for (let i = 1; i <= numberOfPoints; i++) {
-            const fraction = i / (numberOfPoints + 1);
-            const intermediateLng = startLng + (endLng - startLng) * fraction;
-            const intermediateLat = startLat + (endLat - startLat) * fraction;
+        for (let i = 1; i < segments; i++) {
+            const fraction = i / segments;
+            const intermediateLng = startPoint[0] + (endPoint[0] - startPoint[0]) * fraction;
+            const intermediateLat = startPoint[1] + (endPoint[1] - startPoint[1]) * fraction;
             intermediaryPoints.push([intermediateLng, intermediateLat]);
         }
 
@@ -319,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const distance = earthRadius * c;
 
         return distance; // Distance in meters
-    };
+    }
 
     // Function to calculate the rotation angle between two points (in degrees)
     const calculateRotation = (startPoint, endPoint) => {
