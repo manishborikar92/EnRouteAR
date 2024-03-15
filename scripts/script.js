@@ -283,16 +283,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
+    // Function to generate intermediary points along the route
+    const generateIntermediaryPoints = (routeCoordinates, numberOfPoints) => {
         const intermediaryPoints = [];
-        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
+        const totalSegments = routeCoordinates.length - 1;
+        const segmentLength = totalSegments / (numberOfPoints - 1);
 
-        for (let i = 1; i < segments; i++) {
-            const fraction = i / segments;
-            const intermediateLng = startPoint[0] + (endPoint[0] - startPoint[0]) * fraction;
-            const intermediateLat = startPoint[1] + (endPoint[1] - startPoint[1]) * fraction;
-            intermediaryPoints.push([intermediateLng, intermediateLat]);
+        for (let i = 0; i < numberOfPoints; i++) {
+            const segmentIndex = Math.floor(i * segmentLength);
+            const segmentFraction = i * segmentLength - segmentIndex;
+            const startPoint = routeCoordinates[segmentIndex];
+            const endPoint = routeCoordinates[Math.min(segmentIndex + 1, totalSegments)];
+            const interpolatedPoint = [
+                startPoint[0] + segmentFraction * (endPoint[0] - startPoint[0]),
+                startPoint[1] + segmentFraction * (endPoint[1] - startPoint[1])
+            ];
+            intermediaryPoints.push(interpolatedPoint);
         }
 
         return intermediaryPoints;
