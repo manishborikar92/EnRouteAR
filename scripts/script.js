@@ -267,7 +267,7 @@ const watchUserLocation = () => {
     
             // Create a point along the route
             const pointEntity = document.createElement('a-entity');
-            pointEntity.setAttribute('gps-entity-place', {
+            pointEntity.setAttribute('gps-new-entity-place', {
                 latitude: waypoint[1],
                 longitude: waypoint[0]
             });
