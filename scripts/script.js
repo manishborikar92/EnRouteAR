@@ -249,114 +249,120 @@ const watchUserLocation = () => {
     };
 
 // Function to update AR elements based on Mapbox directions
-const updateARDirections = (directionsData) => {
-    // Check if directionsData contains route information
-    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-        // Extract route coordinates from Mapbox directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-        // Calculate the total distance of the route
-        const totalDistance = calculateTotalDistance(routeCoordinates);
-
-        // Add AR route with accurate length and turning
-        addARRoute(routeCoordinates);
-
-        // Perform basic animation (if possible) using A-Frame or AR.js
-        performBasicAnimation(routeCoordinates);
-    } else {
-        console.error('Invalid directionsData or missing route coordinates.');
-    }
-};
-
-// Function to calculate total distance of the route
-const calculateTotalDistance = (routeCoordinates) => {
-    let totalDistance = 0;
-
-    for (let i = 0; i < routeCoordinates.length - 1; i++) {
-        const [lng1, lat1] = routeCoordinates[i];
-        const [lng2, lat2] = routeCoordinates[i + 1];
-
-        // Calculate distance between two coordinates using Haversine formula
-        const distance = haversineDistance(lat1, lng1, lat2, lng2);
-
-        // Add distance to total distance
-        totalDistance += distance;
-    }
-
-    return totalDistance;
-};
-
 // Function to calculate distance between two coordinates using Haversine formula
-const haversineDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in km
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+const calculateDistance = (coord1, coord2) => {
+    const earthRadius = 6371e3; // Earth's radius in meters
+    const lat1 = coord1[1] * Math.PI / 180; // Latitude of coord1 in radians
+    const lat2 = coord2[1] * Math.PI / 180; // Latitude of coord2 in radians
+    const deltaLat = (coord2[1] - coord1[1]) * Math.PI / 180; // Difference in latitudes
+    const deltaLon = (coord2[0] - coord1[0]) * Math.PI / 180; // Difference in longitudes
+
+    // Haversine formula for calculating distance
+    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+              Math.cos(lat1) * Math.cos(lat2) *
+              Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in km
 
-    return distance;
+    return earthRadius * c; // Distance in meters
 };
 
-// Function to convert degrees to radians
-const toRad = (value) => {
-    return value * Math.PI / 180;
+// Function to calculate initial bearing between two coordinates
+const calculateInitialBearing = (coord1, coord2) => {
+    const lat1 = coord1[1] * Math.PI / 180; // Latitude of coord1 in radians
+    const lat2 = coord2[1] * Math.PI / 180; // Latitude of coord2 in radians
+    const deltaLon = (coord2[0] - coord1[0]) * Math.PI / 180; // Difference in longitudes
+
+    const y = Math.sin(deltaLon) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) -
+              Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+
+    let initialBearing = Math.atan2(y, x) * 180 / Math.PI; // Bearing in degrees
+    initialBearing = (initialBearing + 360) % 360; // Normalize to range [0, 360]
+
+    return initialBearing;
 };
 
-// Function to add AR route with accurate length and turning
-const addARRoute = (routeCoordinates) => {
-    // Add AR elements (such as lines, markers) to represent the route in AR
-    // You can use A-Frame or AR.js components to create and position these elements
-    // Here's a simplified example using A-Frame:
-    for (let i = 0; i < routeCoordinates.length - 1; i++) {
-        const [lng1, lat1] = routeCoordinates[i];
-        const [lng2, lat2] = routeCoordinates[i + 1];
+// Function to determine turning direction based on change in bearing
+const getTurnDirection = (previousBearing, currentBearing) => {
+    const threshold = 30; // Threshold angle for determining turn direction
 
-        // Create a line entity between two consecutive coordinates
-        const line = document.createElement('a-entity');
-        line.setAttribute('line', {
-            start: `${lng1} ${lat1}`,
-            end: `${lng2} ${lat2}`,
-            color: 'blue' // Customize color as needed
-        });
-
-        // Add the line entity to the A-Frame scene
-        document.querySelector('a-scene').appendChild(line);
-    }
+    if (previousBearing === null) return 'continue'; // No previous bearing (initial segment)
+    
+    const angleDiff = (currentBearing - previousBearing + 360) % 360; // Angle difference
+    if (angleDiff < threshold) return 'continue'; // Straight ahead
+    if (angleDiff < 180) return 'right'; // Right turn
+    return 'left'; // Left turn
 };
 
-// Function to perform basic animation along the route
-const performBasicAnimation = (routeCoordinates) => {
-    // Implement basic animation using A-Frame or AR.js
-    // For example, you can animate a 3D model or marker along the route
-    // Here's a simplified example using A-Frame:
-    const marker = document.createElement('a-entity');
-    marker.setAttribute('geometry', {
-        primitive: 'sphere',
-        radius: 0.5
+// Function to add AR entities for route segment with turn direction
+const addRouteSegmentAR = (startCoord, endCoord, distance, turnDirection) => {
+    // Calculate the midpoint between startCoord and endCoord for positioning the AR entity
+    const midpoint = [
+        (startCoord[0] + endCoord[0]) / 2,
+        (startCoord[1] + endCoord[1]) / 2
+    ];
+
+    // Create an A-Frame entity for the route segment
+    const arEntity = document.createElement('a-entity');
+    arEntity.setAttribute('geometry', {
+        primitive: 'box',
+        depth: 0.5, // Adjust the depth of the box as needed
+        width: distance, // Set the width of the box based on the distance between coordinates
+        height: 0.1 // Adjust the height of the box as needed
     });
-    marker.setAttribute('material', 'color: red');
-    
-    // Animate the marker along the route
-    for (let i = 0; i < routeCoordinates.length; i++) {
-        const [lng, lat] = routeCoordinates[i];
-        marker.setAttribute('position', `${lng} ${lat} 0`); // Set position based on route coordinates
-        marker.setAttribute('animation', {
-            property: 'position',
-            dur: 1000, // Duration of animation in milliseconds
-            easing: 'linear',
-            to: `${lng} ${lat + 0.1} 0` // Animate to slightly above the route position
-        });
-
-        // Add the marker entity to the A-Frame scene
-        document.querySelector('a-scene').appendChild(marker);
-    }
+    arEntity.setAttribute('material', {
+        color: 'blue' // Set the color of the route segment
+    });
+    arEntity.setAttribute('position', `${midpoint[0]} 0 ${midpoint[1]}`); // Position the entity at the midpoint
+    arEntity.setAttribute('rotation', `0 ${180 - calculateInitialBearing(startCoord, endCoord)} 0`); // Rotate the entity to align with the bearing
+    document.querySelector('a-scene').appendChild(arEntity);
 };
-    
-      
+
+// Function to display total route length in a user-friendly format
+const displayRouteLength = (totalDistance) => {
+    const distanceInKm = totalDistance / 1000; // Convert distance to kilometers
+    const distanceString = distanceInKm < 1 ? `${totalDistance} m` : `${distanceInKm.toFixed(2)} km`;
+    // Update UI with the total distance information
+    console.log('Total Route Length:', distanceString);
+};
+
+// Function to update AR elements based on Mapbox directions
+const updateARDirections = (directionsData) => {
+    if (!directionsData || !directionsData.routes || directionsData.routes.length === 0) {
+        console.error('No valid route data provided.');
+        return;
+    }
+
+    const route = directionsData.routes[0];
+    const routeCoordinates = route.geometry.coordinates;
+    let totalRouteDistance = 0;
+    let previousBearing = null;
+
+    // Iterate through route coordinates to calculate distance and bearing
+    for (let i = 0; i < routeCoordinates.length - 1; i++) {
+        const currentCoord = routeCoordinates[i];
+        const nextCoord = routeCoordinates[i + 1];
+
+        // Calculate distance between current and next coordinates
+        const distance = calculateDistance(currentCoord, nextCoord);
+        totalRouteDistance += distance;
+
+        // Calculate initial bearing from current coordinate to next coordinate
+        const bearing = calculateInitialBearing(currentCoord, nextCoord);
+
+        // Determine turning instructions based on change in bearing
+        const turnDirection = getTurnDirection(previousBearing, bearing);
+        // Add AR entities for route segment with turnDirection information
+        addRouteSegmentAR(currentCoord, nextCoord, distance, turnDirection);
+
+        // Store current bearing for next iteration
+        previousBearing = bearing;
+    }
+
+    // Display totalRouteDistance in a user-friendly format
+    displayRouteLength(totalRouteDistance);
+};
+        
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
         // Ensure the map is initialized
