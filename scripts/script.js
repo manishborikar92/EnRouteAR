@@ -313,7 +313,7 @@ const addRouteSegmentAR = (startCoord, endCoord, distance, turnDirection) => {
     arEntity.setAttribute('material', {
         color: 'blue' // Set the color of the route segment
     });
-    arEntity.setAttribute('position', `${midpoint[0]} 0 ${midpoint[1]}`); // Position the entity at the midpoint
+    arEntity.setAttribute('gps-new-entity-place', `latitude: ${midpoint[1]}; longitude: ${midpoint[0]}`);
     arEntity.setAttribute('rotation', `0 ${180 - calculateInitialBearing(startCoord, endCoord)} 0`); // Rotate the entity to align with the bearing
     document.querySelector('a-scene').appendChild(arEntity);
 };
