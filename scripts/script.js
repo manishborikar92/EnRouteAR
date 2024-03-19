@@ -249,9 +249,9 @@ document.addEventListener('DOMContentLoaded', function () {
     };*/
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
+     const updateARDirections = (directionsData) => {
         // Check if directions data is valid and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        /*if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
@@ -283,11 +283,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } else {
             console.error('Invalid directions data or missing route coordinates.');
-        }
+        }*/
     };
 
     // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
+    /*const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
         const intermediaryPoints = [];
         const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
 
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
         glbMarker.setAttribute('position', '0 -1 0'); // Adjust position as needed
         
         document.querySelector('a-scene').appendChild(glbMarker); // Append the GLB marker to the AR scene
-    };
+    };*/
 
 
     // Function to update the 2D map with the route
