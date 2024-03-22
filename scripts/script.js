@@ -254,9 +254,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-            
+
             // Remove all markers representing the route
-            const routeMarkers = document.querySelectorAll('a-cylinder');
+            const routeMarkers = document.querySelectorAll('a-cylinder, a-marker');
             routeMarkers.forEach(marker => marker.remove());
 
             // Loop through the route coordinates to create AR elements
@@ -325,24 +325,24 @@ document.addEventListener('DOMContentLoaded', function () {
         const marker = document.createElement('a-cylinder');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         marker.setAttribute('radius', '0.5'); // Adjust marker radius as needed
-        marker.setAttribute('height', '0.2'); // Adjust marker height as needed
+        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '1'); // Set marker opacity
         // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
-        //marker.setAttribute('position', '0 3 0'); // Adjust position relative to camera
+        marker.setAttribute('position', '0 -4 0'); // Adjust position relative to camera
 
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
 
     // Function to create a GLB marker at the specified coordinate
     const createGLBMarkerAtCoordinate = (coordinate) => {
-        // Create an <a-entity> element for the GLB marker
-        const glbMarker = document.createElement('a-entity');
+        // Create an <a-marker> element for the GLB marker
+        const glbMarker = document.createElement('a-marker');
         // glbMarker.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         glbMarker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         glbMarker.setAttribute('gltf-model', '../models/map_pointer_3d_icon.glb'); // Set the path to your GLB model file
         glbMarker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
-        glbMarker.setAttribute('position', '0 1 0'); // Adjust position as needed
+        glbMarker.setAttribute('position', '0 -3 0'); // Adjust position as needed
         
         document.querySelector('a-scene').appendChild(glbMarker); // Append the GLB marker to the AR scene
     };
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Remove all markers representing the route
-        const routeMarkers = document.querySelectorAll('a-cylinder, a-entity');
+        const routeMarkers = document.querySelectorAll('a-cylinder, a-marker');
         routeMarkers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
