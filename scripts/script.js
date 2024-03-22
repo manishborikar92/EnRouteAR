@@ -438,8 +438,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Remove all existing route markers
-        const existingMarkers = document.querySelectorAll('[gps-new-entity-place]');
-        existingMarkers.forEach(marker => marker.remove());
+        const Markers = document.querySelectorAll('a-cylinder');
+        Markers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
         const sourceId = 'route';
