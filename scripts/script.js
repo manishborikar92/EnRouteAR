@@ -254,10 +254,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
+            
             // Remove all markers representing the route
-             const routeMarkers = document.querySelectorAll('a-cylinder');
-             routeMarkers.forEach(marker => marker.remove());
+            const routeMarkers = document.querySelectorAll('a-cylinder, a-entity');
+            routeMarkers.forEach(marker => marker.remove());
 
             // Loop through the route coordinates to create AR elements
             for (let i = 0; i < routeCoordinates.length - 1; i++) {
