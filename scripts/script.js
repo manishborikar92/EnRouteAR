@@ -255,10 +255,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Remove all markers representing the route
-            const routeMarkers = document.querySelectorAll('a-cylinder, a-marker');
-            routeMarkers.forEach(marker => marker.remove());
-
             // Loop through the route coordinates to create AR elements
             for (let i = 0; i < routeCoordinates.length - 1; i++) {
                 const currentCoordinate = routeCoordinates[i];
@@ -321,6 +317,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to create a marker at a specified coordinate
     const createMarkerAtCoordinate = (coordinate) => {
+
+        // Remove all markers representing the route
+        const routeMarkers = document.querySelectorAll('a-cylinder');
+        routeMarkers.forEach(marker => marker.remove());
+
         // Create a cylinder element as the marker
         const marker = document.createElement('a-cylinder');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
@@ -336,8 +337,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to create a GLB marker at the specified coordinate
     const createGLBMarkerAtCoordinate = (coordinate) => {
-        // Create an <a-marker> element for the GLB marker
-        const glbMarker = document.createElement('a-marker');
+
+        // Remove all markers representing the route
+        const routeMarkers = document.querySelectorAll('a-entity');
+        routeMarkers.forEach(marker => marker.remove());
+
+        // Create an <a-entity> element for the GLB marker
+        const glbMarker = document.createElement('a-entity');
         // glbMarker.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         glbMarker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         glbMarker.setAttribute('gltf-model', '../models/map_pointer_3d_icon.glb'); // Set the path to your GLB model file
@@ -438,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Remove all markers representing the route
-        const routeMarkers = document.querySelectorAll('a-cylinder, a-marker');
+        const routeMarkers = document.querySelectorAll('a-cylinder, a-entity');
         routeMarkers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
