@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '1'); // Set marker opacity
         // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -3 0'); // Adjust position relative to camera
+        // marker.setAttribute('position', '0 -3 0'); // Adjust position relative to camera
 
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
