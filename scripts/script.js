@@ -256,8 +256,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
             // Remove all markers representing the route
-             const routeMarkers = document.querySelectorAll('a-cylinder');
-             routeMarkers.forEach(marker => marker.remove());
+            const routeMarkers = document.querySelectorAll('a-cylinder, a-entity');
+            routeMarkers.forEach(marker => marker.remove());
 
             // Loop through the route coordinates to create AR elements
             for (let i = 0; i < routeCoordinates.length - 1; i++) {
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const marker = document.createElement('a-cylinder');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         marker.setAttribute('radius', '0.5'); // Adjust marker radius as needed
-        marker.setAttribute('height', '0.2'); // Adjust marker height as needed
+        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '1'); // Set marker opacity
         // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Remove all markers representing the route
-        const routeMarkers = document.querySelectorAll('a-cylinder');
+        const routeMarkers = document.querySelectorAll('a-cylinder, a-entity');
         routeMarkers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
