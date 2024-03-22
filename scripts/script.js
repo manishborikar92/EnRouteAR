@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
             
             // Remove all markers representing the route
-            const routeMarkers = document.querySelectorAll('a-cylinder, a-entity');
+            const routeMarkers = document.querySelectorAll('a-cylinder');
             routeMarkers.forEach(marker => marker.remove());
 
             // Loop through the route coordinates to create AR elements
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Remove all markers representing the route
-        const routeMarkers = document.querySelectorAll('a-cylinder');
+        const routeMarkers = document.querySelectorAll('a-cylinder, a-entity');
         routeMarkers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
