@@ -427,15 +427,6 @@ document.addEventListener('DOMContentLoaded', function () {
             destinationMarker.remove();
         }
 
-        
-        
-        if (existingLabels.length > 0) {
-            console.log('Removing existing text entities:', existingLabels.length);
-            existingLabels.forEach(label => label.remove());
-        } else {
-            console.log('No existing text entities to remove.');
-        }
-
         // Remove all existing route markers
         const existingMarkers = document.querySelectorAll('[gps-new-entity-place]');
         existingMarkers.forEach(marker => marker.remove());
