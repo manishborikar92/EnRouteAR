@@ -255,9 +255,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Remove all markers representing the route
-             const routeMarkers = document.querySelectorAll('a-cylinder');
-             routeMarkers.forEach(marker => marker.remove());
+            // Remove all existing route markers
+            const existingMarkers = document.querySelectorAll('[gps-new-entity-place]');
+            existingMarkers.forEach(marker => marker.remove());
 
             // Loop through the route coordinates to create AR elements
             for (let i = 0; i < routeCoordinates.length - 1; i++) {
@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Function to remove existing entities
-        const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
+        // const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
         
         if (existingLabels.length > 0) {
             console.log('Removing existing text entities:', existingLabels.length);
@@ -437,9 +437,9 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('No existing text entities to remove.');
         }
 
-        // Remove all markers representing the route
-        const routeMarkers = document.querySelectorAll('a-cylinder');
-        routeMarkers.forEach(marker => marker.remove());
+        // Remove all existing route markers
+        const existingMarkers = document.querySelectorAll('[gps-new-entity-place]');
+        existingMarkers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
         const sourceId = 'route';
