@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Function to remove existing entities
-        // const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
+        const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
         
         if (existingLabels.length > 0) {
             console.log('Removing existing text entities:', existingLabels.length);
