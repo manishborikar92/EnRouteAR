@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const marker = document.createElement('a-cylinder');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         marker.setAttribute('radius', '0.5'); // Adjust marker radius as needed
-        marker.setAttribute('height', '0.2'); // Adjust marker height as needed
+        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '1'); // Set marker opacity
         // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
