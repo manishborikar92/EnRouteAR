@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
         glbMarker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         glbMarker.setAttribute('gltf-model', '../models/map_pointer_3d_icon.glb'); // Set the path to your GLB model file
         glbMarker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
-        // glbMarker.setAttribute('position', '0 0 0'); // Adjust position as needed
+        glbMarker.setAttribute('position', '0 1 0'); // Adjust position as needed
         
         document.querySelector('a-scene').appendChild(glbMarker); // Append the GLB marker to the AR scene
     };
