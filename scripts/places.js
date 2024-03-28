@@ -13,6 +13,6 @@ const places = [
     { name: 'Mechanical Department', latitude:  21.38493, longitude: 79.30606 },
     { name: 'Triveni Boys Hostel', latitude: 21.38836, longitude: 79.30370 },
     { name: 'Work Shop', latitude: 21.38486, longitude: 79.30620 },
-    { name: 'Home', latitude: 21.39185, longitude: 79.30756 },
-    { name: 'Room', latitude: 21.391761, longitude: 79.306849 },
+    // { name: 'Home', latitude: 21.39185, longitude: 79.30756 },
+    // { name: 'Room', latitude: 21.391761, longitude: 79.306849 },
 ];
