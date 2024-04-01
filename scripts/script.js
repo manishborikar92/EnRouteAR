@@ -344,23 +344,6 @@ document.addEventListener('DOMContentLoaded', function () {
         glbMarker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
         glbMarker.setAttribute('position', '0 1 0'); // Adjust position as needed
         
-        // Add continuous rotation animation
-    let rotationAngle = 0;
-
-    const rotateGLBMarker = () => {
-        // Update the rotation angle
-        rotationAngle += 0.5; // Adjust the rotation speed as needed
-
-        // Set the new rotation angle
-        glbMarker.setAttribute('rotation', `0 ${rotationAngle} 0`);
-
-        // Request the next animation frame
-        requestAnimationFrame(rotateGLBMarker);
-    };
-
-    // Start the rotation animation
-    rotateGLBMarker();
-    
         document.querySelector('a-scene').appendChild(glbMarker); // Append the GLB marker to the AR scene
     };
 
