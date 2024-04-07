@@ -203,8 +203,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const element = document.createElement('div');
         element.className = 'custom-marker';
         element.style.backgroundImage = `url(${markerImage})`;
-        element.style.width = '35px';  // Set the width of your custom marker
-        element.style.height = '35px'; // Set the height of your custom marker
+        element.style.width = '30px';  // Set the width of your custom marker
+        element.style.height = '30px'; // Set the height of your custom marker
         return element;
     };
 
