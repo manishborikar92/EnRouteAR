@@ -79,8 +79,16 @@ body, html {
   position: absolute;
   bottom: 27vh;
   right: 1%;
+  /* Specify the size of the compass image */
   width: 45px;
   height: 45px;
+  /* Set the background image and position it in the center */
+  background-image: url('../models/compass.png');
+  background-size: cover; /* Adjust image size to fit container */
+  background-position: center;
+  /* Optional: Add some styling for the container */
+  border: 1px solid #000; /* Example border */
+  border-radius: 50%; /* Make it a circle */
   cursor: pointer;
   transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
