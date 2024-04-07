@@ -89,7 +89,6 @@ body, html {
   /* Optional: Add some styling for the container */
   border: 2px solid #facf0e; /* Example border */
   border-radius: 50%; /* Make it a circle */
-  cursor: pointer;
   transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
 }
