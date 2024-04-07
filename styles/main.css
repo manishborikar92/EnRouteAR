@@ -37,7 +37,7 @@ p {
     margin: 20px auto;
     padding: 10px;
     text-align: center;
-    background-color: #007bff;
+    background-color: #0d94f5;
     color: #fff;
     text-decoration: none;
     border-radius: 5px;
@@ -45,7 +45,7 @@ p {
 }
 
 .button:hover {
-    background-color: #002540;
+    background-color: #0b3f65;
 }
 
 footer {
