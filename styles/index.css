@@ -28,7 +28,7 @@ h2 {
 p {
     margin: 20px;
     max-width: 600px;
-    text-align: justify;
+    text-align: left;
 }
 
 .button {
