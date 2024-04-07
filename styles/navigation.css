@@ -87,7 +87,7 @@ body, html {
   background-size: cover; /* Adjust image size to fit container */
   background-position: center;
   /* Optional: Add some styling for the container */
-  border: 1px solid #000; /* Example border */
+  border: 2px solid #facf0e; /* Example border */
   border-radius: 50%; /* Make it a circle */
   cursor: pointer;
   transform-origin: center center;
