@@ -40,7 +40,7 @@ Project Structure:
 
 -  styles: 
   - This directory holds CSS files used to style the web application.
-    -  index.css:  Stylesheet for enhancing the visual presentation of the web application.
+    -  navigation.css:  Stylesheet for enhancing the visual presentation of the web application.
 
 Development Process:
 
@@ -72,7 +72,7 @@ Conclusion:
 EnRouteAR provides users with an interactive and engaging way to navigate their surroundings using augmented reality. The combination of A-Frame, AR.js, and Mapbox enables a seamless experience, offering both 2D and 3D perspectives for effective navigation. The project's well-organized structure and documentation facilitate collaboration and further development.
 
 Step 2
-I will provide you code for `index.html`, `index.css`, `places.js`, `script.js`. I cannot provide `aframe-ar.js`, `aframe-v1.5.0.min.js`, `ar-threex-location-only.js` because they are lengthy and downloaded from GitHub.
+I will provide you code for `index.html`, `navigation.css`, `places.js`, `script.js`. I cannot provide `aframe-ar.js`, `aframe-v1.5.0.min.js`, `ar-threex-location-only.js` because they are lengthy and downloaded from GitHub.
 
 Step 3
 Ask me that all codes one by one.
