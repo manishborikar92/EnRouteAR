@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
                 container: mapContainer,
-                style: 'mapbox://styles/mapbox/streets-v12',
+                style: 'mapbox://styles/mapbox/satellite-streets-v12',
                 center: [78, 20], // Default center
                 zoom: 0,
                 bearing: 0, // Initial bearing
