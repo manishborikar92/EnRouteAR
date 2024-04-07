@@ -20,6 +20,15 @@ header img {
     height: auto;
 }
 
+.logo {
+    width: 100%; /* adjust according to your logo size */
+    height: 65px; /* adjust according to your logo size */
+    background-image: url('../logos/logo-transparent-svg.svg');
+    background-size: contain; /* adjust according to your preference */
+    background-repeat: no-repeat;
+    background-position: center; /* center the image */
+}
+
 h2 {
     margin: 20px;
     color: #facf0e;
@@ -27,7 +36,6 @@ h2 {
 
 p {
     margin: 20px;
-    max-width: 600px;
     text-align: left;
 }
 
