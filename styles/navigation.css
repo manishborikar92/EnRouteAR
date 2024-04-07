@@ -21,7 +21,7 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center; 
-  background-color: #041a2aed;
+  background-color: #041a2ae0;
   border-radius: 8px;
   color: #fff;
   z-index: 4;
@@ -38,12 +38,12 @@ body, html {
 
 #get-direction-button {
   width: 110px; /* Set the width of the first container to 30% */
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 9px;
+  padding-bottom: 9px;
   border-radius: 8px;
   text-align: center;
   background-color: #0072ff; 
-  border: none;
+  border: 2px solid #002e68;
   color: white;
   text-size-adjust: auto;
   text-decoration: none;
@@ -66,7 +66,7 @@ body, html {
   transform: translateX(-50%); /* Corrected for centering */
   width: 100%;
   height: 23vh;
-  border-top: 3px solid #073454;
+  border-top: 3px solid white;
   z-index: 1; /* Higher z-index for map container */
 }
 
