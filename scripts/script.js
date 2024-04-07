@@ -38,7 +38,22 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create and append compass element
             compass = document.createElement('div');
             compass.className = 'compass';
-            compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
+
+            // Create and append style element to set CSS properties
+            var compassStyles = document.createElement('style');
+            compassStyles.textContent = `
+            .compass {
+                background-image: url('../models/compass.png');
+                /* Add any additional CSS properties here */
+            }
+            `;
+
+            // Append compass element and style element to the document
+            document.head.appendChild(compassStyles);
+            
+            // Append compass element to the document body or any other container
+            document.body.appendChild(compass); // Example: appending to the document body
+
 
             // Add compass to the compass container
             const compassContainer = document.getElementById('compass-container');
