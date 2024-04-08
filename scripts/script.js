@@ -126,12 +126,16 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set the image source based on conditions
         if (destination && isMapCentered && isBearing) {
             multifunctionButton.classList.add('reset-all');
+            multifunctionButton.classList.remove('centered', 'recenter', 'bearing'); // Remove existing classes
         } else if (isMapCentered && !isBearing) {
             multifunctionButton.classList.add('centered');
+            multifunctionButton.classList.remove('reset-all', 'recenter', 'bearing'); // Remove existing classes
         } else if (isUserInteraction) {
             multifunctionButton.classList.add('recenter');
+            multifunctionButton.classList.remove('reset-all', 'centered', 'bearing'); // Remove existing classes
         } else if (isBearing) {
             multifunctionButton.classList.add('bearing');
+            multifunctionButton.classList.remove('reset-all', 'centered', 'recenter'); // Remove existing classes
         }
     
         // Set alt text for the button (modify as needed)
