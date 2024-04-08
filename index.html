@@ -69,7 +69,7 @@
             event.preventDefault(); // Prevent default form submission
 
             const formData = new FormData(this); // Create FormData object from form
-            const response = await fetch("/api/form-handler", {
+            const response = await fetch("api/form-handler", {
                 method: "POST",
                 body: formData
             });
