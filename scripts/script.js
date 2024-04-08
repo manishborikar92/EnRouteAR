@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const initMap = async () => {
         try {
             // Initialize the map with Mapbox
-            mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
+            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
                 container: mapContainer,
                 style: 'mapbox://styles/mapbox/satellite-streets-v12',
@@ -449,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
-        const apiKey = process.env.MAPBOX_ACCESS_TOKEN;
+        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
         const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
 
         try {
