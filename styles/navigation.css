@@ -109,7 +109,6 @@ body, html {
   right: 1%;
   width: 45px;
   height: 45px;
-  cursor: pointer;
   transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
 }
@@ -118,15 +117,8 @@ body, html {
   background: none;
   border: none;
   padding: 0;
-  cursor: pointer;
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center;
-  /* Ensure the image is positioned properly within the button */
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Define classes for different image sources */
