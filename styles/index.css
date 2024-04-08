@@ -3,15 +3,15 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: #041a2a;
-    color: #a9d9ff;
+    color: #ffffff;
 }
 
 header {
+    padding:10px;
     color: #fff;
     font-family: Arial, sans-serif;
-    margin: 1%;
-    padding: 1%;
-    background-color: #041a2a;
+    margin: 0;
+    background-color: #011421;
     color: #ffffff;   
 }
 
@@ -22,21 +22,24 @@ header img {
 
 .logo {
     width: 100%; /* adjust according to your logo size */
-    height: 65px; /* adjust according to your logo size */
+    height: 75px; /* adjust according to your logo size */
     background-image: url('../logos/logo-transparent-svg.svg');
     background-size: contain; /* adjust according to your preference */
     background-repeat: no-repeat;
     background-position: center; /* center the image */
 }
 
-h2 {
+section {
     margin: 20px;
+    text-align: left;
+}
+
+h2 {
     color: #facf0e;
 }
 
 p {
-    margin: 20px;
-    text-align: left;
+    color: #a9d9ff;
 }
 
 .button {
@@ -48,7 +51,7 @@ p {
     background-color: #0d94f5;
     color: #fff;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: background-color 0.3s ease;
 }
 
@@ -56,9 +59,57 @@ p {
     background-color: #0b3f65;
 }
 
+/* Form Styling */
+form {
+    background-color: #172b43; /* Darker blue background for the form */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+label {
+    display: block; /* Make labels appear on separate lines */
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #e0e0e0; /* Lighter text color for labels */
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 12px 20px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 150px; /* Set a height for the message textarea */
+}
+
+input[type=submit] {
+  width: 20%;
+  background-color: #0d94f5;
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+input[type=submit]:hover {
+  background-color: #0b3f65;
+}
+  
 footer {
     background-color: #011421;
     color: #fff;
     padding: 20px;
     text-align: center;
+}
+
+footer p{
+    color: #fff;
 }
