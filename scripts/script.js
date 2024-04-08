@@ -120,6 +120,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const setMultifunctionImage = () => {
         const multifunctionButton = document.getElementById('multifunction-button');
     
+        // Remove existing classes
+        multifunctionButton.classList.remove('reset-all', 'centered', 'recenter', 'bearing');
+    
         // Set the image source based on conditions
         if (destination && isMapCentered && isBearing) {
             multifunctionButton.classList.add('reset-all');
@@ -130,9 +133,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (isBearing) {
             multifunctionButton.classList.add('bearing');
         }
-
-        // Remove existing classes
-        multifunctionButton.classList.remove('reset-all', 'centered', 'recenter', 'bearing');
     
         // Set alt text for the button (modify as needed)
         multifunctionButton.title = 'Multifunction Icon';
