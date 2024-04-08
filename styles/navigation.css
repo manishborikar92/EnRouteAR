@@ -123,20 +123,29 @@ body, html {
   height: 100%;
   background-size: cover;
   background-position: center;
+  /* Ensure the image is positioned properly within the button */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.multifunction-button.reset-all {
-  background-image: url('../models/reset-all.png');
+/* Define classes for different image sources */
+.multifunction-button.reset-all img {
+  /* Specify the path to the image */
+  content: url('../models/reset-all.png');
 }
 
-.multifunction-button.centered {
-  background-image: url('../models/centered.png');
+.multifunction-button.centered img {
+  /* Specify the path to the image */
+  content: url('../models/centered.png');
 }
 
-.multifunction-button.recenter {
-  background-image: url('../models/recenter.png');
+.multifunction-button.recenter img {
+  /* Specify the path to the image */
+  content: url('../models/recenter.png');
 }
 
-.multifunction-button.bearing {
-  background-image: url('../models/bearing.png');
+.multifunction-button.bearing img {
+  /* Specify the path to the image */
+  content: url('../models/bearing.png');
 }
