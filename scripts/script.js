@@ -120,9 +120,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const setMultifunctionImage = () => {
         const multifunctionButton = document.getElementById('multifunction-button');
     
-        // Remove existing classes
-        multifunctionButton.classList.remove('reset-all', 'centered', 'recenter', 'bearing');
-    
         // Set the image source based on conditions
         if (destination && isMapCentered && isBearing) {
             multifunctionButton.classList.add('reset-all');
