@@ -87,7 +87,7 @@ body, html {
   background-size: cover; /* Adjust image size to fit container */
   background-position: center;
   /* Optional: Add some styling for the container */
-  border: 2px solid #facf0e; /* Example border */
+  border: 1px solid #041a2a; /* Example border */
   border-radius: 50%; /* Make it a circle */
   transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
@@ -111,7 +111,7 @@ body, html {
   width: 45px;
   height: 45px;
   /* Optional: Add some styling for the container */
-  border: 2px solid #facf0e; /* Example border */
+  border: 1px solid #041a2a; /* Example border */
   border-radius: 50%; /* Make it a circle */
   transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
