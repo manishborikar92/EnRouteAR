@@ -44,14 +44,14 @@
         <section>
             <h2>Contact Us</h2>
             <p>Fill out the form below to get in touch with our team. We're here to help with any questions or inquiries you may have.</p>
-            <form id="contact-form" action="form-handler.php" method="get">  
-                <label for="name">Name:</label>
+            <form id="contact-form">
+                <label for="name">Name</label>
                 <input type="text" id="name" name="name" required placeholder="e.g. Alice Smith"><br><br>
             
-                <label for="email">Email:</label>
+                <label for="email">Email</label>
                 <input type="email" id="email" name="email" required><br><br>
             
-                <label for="message">Message:</label>
+                <label for="message">Message</label>
                 <textarea id="message" name="message" rows="5" required></textarea><br><br>
             
                 <input type="submit" value="Send">
@@ -62,5 +62,21 @@
     <footer>
         <p>&copy; 2024 EnRouteAR. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Handle form submission
+        document.getElementById("contact-form").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(this); // Create FormData object from form
+            const response = await fetch("/api/form-handler", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json(); // Parse JSON response
+            alert(data.message); // Display response message
+        });
+    </script>
 </body>
 </html>
