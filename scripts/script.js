@@ -119,22 +119,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to dynamically set the image source based on conditions
     const setMultifunctionImage = () => {
         const multifunctionButton = document.getElementById('multifunction-button');
-        const centeredImage = document.getElementById('centeredImage');
-
+    
+        // Remove existing classes
+        multifunctionButton.classList.remove('reset-all', 'centered', 'recenter', 'bearing');
+    
         // Set the image source based on conditions
         if (destination && isMapCentered && isBearing) {
-            centeredImage.src = '../models/reset-all.png';
+            multifunctionButton.classList.add('reset-all');
         } else if (isMapCentered && !isBearing) {
-            centeredImage.src = '../models/centered.png';
+            multifunctionButton.classList.add('centered');
         } else if (isUserInteraction) {
-            centeredImage.src = '../models/recenter.png';
+            multifunctionButton.classList.add('recenter');
         } else if (isBearing) {
-            centeredImage.src = '../models/bearing.png';
+            multifunctionButton.classList.add('bearing');
         }
-
-        // Set alt text for the image (modify as needed)
-        centeredImage.alt = 'Multifunction Icon';
-    };
+    
+        // Set alt text for the button (modify as needed)
+        multifunctionButton.title = 'Multifunction Icon';
+    };    
 
     // Add a click event listener for the recenter button
     const recenterButton = document.getElementById('multifunction-button');
