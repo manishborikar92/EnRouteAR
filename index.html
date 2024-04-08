@@ -44,7 +44,7 @@
         <section>
             <h2>Contact Us</h2>
             <p>Fill out the form below to get in touch with our team. We're here to help with any questions or inquiries you may have.</p>
-            <form id="contact-form" action="" method="post">  
+            <form id="contact-form" action="form-handler.php" method="get">  
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required placeholder="e.g. Alice Smith"><br><br>
             
@@ -62,27 +62,5 @@
     <footer>
         <p>&copy; 2024 EnRouteAR. All rights reserved.</p>
     </footer>
-
-    <script>
-        // Submit form using AJAX
-        document.getElementById("contact-form").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent default form submission
-            var formData = new FormData(this); // Create form data object
-
-            // Send form data to PHP script using AJAX
-            fetch("form-handler.php", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.text()) // Parse response as text
-            .then(data => {
-                // Display response message to user
-                alert(data);
-            })
-            .catch(error => {
-                console.error("Error:", error); // Log any errors to the console
-            });
-        });
-    </script>
 </body>
 </html>

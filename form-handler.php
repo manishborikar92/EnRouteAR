@@ -1,23 +1,25 @@
 <?php
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get form data
-    $name = $_POST["name"];
-    $email = $_POST["email"];
-    $message = $_POST["message"];
+// Specify the recipient email address
+$recipient_email = "your_email@example.com";
+
+// Check if form data is submitted via GET method
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    // Get form data from query parameters
+    $name = $_GET["name"];
+    $email = $_GET["email"];
+    $message = $_GET["message"];
 
     // Validate form data (you can add more validation as needed)
     if (empty($name) || empty($email) || empty($message)) {
         // Handle empty fields
         echo "Please fill in all fields.";
     } else {
-        // Send email (replace this with your actual email handling code)
-        $to = "theodinproject0622@gmail.com";
+        // Send email
         $subject = "Message from EnRouteAR Contact Form";
         $body = "Name: $name\nEmail: $email\n\n$message";
 
-        // Use PHP's mail() function to send email
-        if (mail($to, $subject, $body)) {
+        // Send email using PHP's mail() function
+        if (mail($recipient_email, $subject, $body)) {
             // Email sent successfully
             echo "Your message has been sent successfully. We will get back to you shortly.";
         } else {
@@ -26,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 } else {
-    // If form is not submitted, redirect back to the form page (you can customize the URL)
-    header("Location: index.html");
+    // If form data is not submitted via GET method, display an error message
+    echo "Form submission method not allowed.";
 }
 ?>
