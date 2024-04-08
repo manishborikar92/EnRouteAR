@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Please fill in all fields.";
     } else {
         // Send email (replace this with your actual email handling code)
-        $to = "your_email@example.com";
+        $to = "theodinproject0622@gmail.com";
         $subject = "Message from EnRouteAR Contact Form";
         $body = "Name: $name\nEmail: $email\n\n$message";
 
