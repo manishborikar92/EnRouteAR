@@ -103,22 +103,37 @@ body, html {
   border-radius: 50%;
 }
 
+/* Style the multifunction button container */
 #multifunction-container {
   position: absolute;
   bottom: 1%;
   right: 1%;
   width: 45px;
   height: 45px;
+  /* Optional: Add some styling for the container */
+  border: 2px solid #facf0e; /* Example border */
+  border-radius: 50%; /* Make it a circle */
   transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
 }
 
-.multifunction-button {
+/* Style the multifunction button */
+#multifunction-button {
   background: none;
   border: none;
   padding: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style the image within the button */
+#multifunction-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Maintain aspect ratio */
 }
 
 /* Define classes for different image sources */
