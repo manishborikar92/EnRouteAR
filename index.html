@@ -44,7 +44,7 @@
         <section>
             <h2>Contact Us</h2>
             <p>Fill out the form below to get in touch with our team. We're here to help with any questions or inquiries you may have.</p>
-            <form id="contact-form">
+            <form action="/api/contact" method="post">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required placeholder="e.g. Alice Smith"><br><br>
             
@@ -63,29 +63,5 @@
         <p>&copy; 2024 EnRouteAR. All rights reserved.</p>
     </footer>
 
-    <script>
-        // Handle form submission
-        document.getElementById("contact-form").addEventListener("submit", async function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const formData = new FormData(this); // Create FormData object from form
-            try {
-                const response = await fetch("/api/form-handler", {
-                    method: "POST",
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to submit form.");
-                }
-
-                const data = await response.json(); // Parse JSON response
-                alert(data.message); // Display response message
-            } catch (error) {
-                console.error("Form submission error:", error.message);
-                alert("An error occurred while submitting the form. Please try again later.");
-            }
-        });
-    </script>
 </body>
 </html>
