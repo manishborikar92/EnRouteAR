@@ -31,14 +31,15 @@ header img {
 
 section {
     margin: 20px;
-    text-align: left;
 }
 
 h2 {
+    text-align: left;
     color: #facf0e;
 }
 
 p {
+    text-align: justify;
     color: #a9d9ff;
 }
 
@@ -70,7 +71,7 @@ label {
     display: block; /* Make labels appear on separate lines */
     margin-bottom: 5px;
     font-weight: bold;
-    color: #e0e0e0; /* Lighter text color for labels */
+    color: #c4e6ff; /* Lighter text color for labels */
 }
 
 input[type="text"],
@@ -82,6 +83,8 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
+    color: #ccc;
+    background-color: #0b3f65;
 }
 
 textarea {
@@ -89,10 +92,10 @@ textarea {
 }
 
 input[type=submit] {
-  width: 50%;
+  width: 200px;
   background-color: #0d94f5;
   color: white;
-  padding: 14px 20px;
+  padding: 10px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -106,10 +109,10 @@ input[type=submit]:hover {
 footer {
     background-color: #011421;
     color: #fff;
-    padding: 20px;
-    text-align: center;
+    padding: 20px;  
 }
 
 footer p{
-    color: #fff;
+    text-align: center;
+    color: #fff4a3;
 }
