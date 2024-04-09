@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
-    let mapboxAccessToken;
     let map;
     let compass;
     let mapBearing = 0; // Global variable to store the map's bearing
@@ -21,25 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize the map and get the user's current location
     const initMap = async () => {
         try {
-            fetch('../api/getMapboxAccessToken')
-            .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch Mapbox access token');
-            }
-            return response.json();
-            })
-            .then(data => {
-            // Once you receive the data, use it as needed
-            mapboxAccessToken = data.mapboxAccessToken;
-            console.log('Mapbox Access Token:', mapboxAccessToken);
-            // Initialize your map with the access token...
-            })
-            .catch(error => {
-            console.error('Error fetching Mapbox access token:', error);
-            });
-
             // Initialize the map with Mapbox
-            mapboxgl.accessToken = mapboxAccessToken;
+            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
                 container: mapContainer,
                 style: 'mapbox://styles/mapbox/satellite-streets-v12',
@@ -467,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
-        const apiKey = mapboxAccessToken;
+        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
         const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
 
         try {
