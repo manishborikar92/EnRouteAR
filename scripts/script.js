@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize the map and get the user's current location
     const initMap = async () => {
         try {
-            fetch('/api/getMapboxAccessToken')
+            fetch('../api/getMapboxAccessToken')
             .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch Mapbox access token');
