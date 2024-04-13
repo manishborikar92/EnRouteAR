@@ -21,7 +21,7 @@
             <h2>EnRouteAR - Augmented Reality Navigation</h2>
             <p>EnRouteAR is an innovative augmented reality (AR) navigation system that combines real-world navigation with immersive AR experiences. It enables users to navigate through physical spaces by overlaying digital information, 3D models, and directional cues onto the real environment through their mobile devices.</p>
             <p>EnRouteAR utilizes A-Frame, AR.js, and Mapbox technologies to create a seamless AR navigation experience. Users can select destinations, receive turn-by-turn directions, and view 3D markers and route arrows in their real-world surroundings. The project provides an engaging and intuitive way to explore and navigate both familiar and unfamiliar environments.</p>
-            <a class="button" href="navigation.html">Navigate</a>
+            <a class="button" id="turnOnLocationBtn" href="navigation.html">Navigate</a>
         </section>
 
         <section>
@@ -64,7 +64,7 @@
     </footer>
 
     <script>
-        document.getElementsByClassName('button').addEventListener('click', function(event) {
+        document.getElementById('turnOnLocationBtn').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default behavior of anchor tag (i.e., navigating immediately)
             
             if ('geolocation' in navigator) {
