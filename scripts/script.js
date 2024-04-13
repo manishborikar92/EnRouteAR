@@ -53,42 +53,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to watch for changes in the user's location
     const watchUserLocation = () => {
-        navigator.geolocation.watchPosition(
-            // Success callback when position is retrieved
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                userLocation = { latitude, longitude }; // Update global userLocation
-
-                // If there is no ongoing user interaction, update the map center
-                if (!isUserInteraction) {
-                    userLocation = { latitude, longitude };
-                    updateMapCenter(latitude, longitude);
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    console.log('Latitude: ' + position.coords.latitude + '\nLongitude: ' + position.coords.longitude);
+                    // You can do something with the latitude and longitude values here
+                },
+                (error) => {
+                    console.error('Error getting location: ' + error.message);
                 }
+            );
 
-                // Update or create the current location marker
-                currentLocationMarker
-                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
-            },
-            // Error callback when there's an issue retrieving position
-            (error) => {
-                if (error.code === 1) {
-                    // Device location is off. Please enable location and refresh the page.
-                    alert('Device location is off. Please enable location and refresh the page.');
-                } else if (error.code === 2) {
-                    // Position information is unavailable
-                    alert('Position information is unavailable. Please try again.');
-                } else if (error.code === 3) {
-                    // The request to get user location timed out
-                    alert('Request to get user location timed out. Please try again.');
-                } else {
-                    // For other errors, log the error to the console
-                    console.error('Error in retrieving position:', error.message);
-                }
-            },
-            // Geolocation options
-            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-        );
+            navigator.geolocation.watchPosition(
+                // Success callback when position is retrieved
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    userLocation = { latitude, longitude }; // Update global userLocation
+    
+                    // If there is no ongoing user interaction, update the map center
+                    if (!isUserInteraction) {
+                        userLocation = { latitude, longitude };
+                        updateMapCenter(latitude, longitude);
+                    }
+    
+                    // Update or create the current location marker
+                    currentLocationMarker
+                        ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+                },
+                // Error callback when there's an issue retrieving position
+                (error) => {
+                    if (error.code === 1) {
+                        // Device location is off. Please enable location and refresh the page.
+                        alert('Device location is off. Please enable location and refresh the page.');
+                    } else if (error.code === 2) {
+                        // Position information is unavailable
+                        alert('Position information is unavailable. Please try again.');
+                    } else if (error.code === 3) {
+                        // The request to get user location timed out
+                        alert('Request to get user location timed out. Please try again.');
+                    } else {
+                        // For other errors, log the error to the console
+                        console.error('Error in retrieving position:', error.message);
+                    }
+                },
+                // Geolocation options
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
     };
 
     // Function to handle changes in device orientation
