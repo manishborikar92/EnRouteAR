@@ -67,15 +67,10 @@
         document.getElementById('turnOnLocationBtn').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default behavior of anchor tag (navigating immediately)
             
-            if ('geolocation' in navigator) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    window.location.href = event.target.href; 
-                });
-            } else {
-                console.error('Geolocation is not supported by this browser.');
-            }   
+            navigator.geolocation.getCurrentPosition(function(position) {
+                window.location.href = event.target.href; 
+            }); 
         });
     </script>
-    
 </body>
 </html>
