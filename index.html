@@ -69,14 +69,11 @@
             
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                    console.log('Latitude: ' + position.coords.latitude + '\nLongitude: ' + position.coords.longitude);
+                    window.location.href = event.target.href; 
                 });
             } else {
                 console.error('Geolocation is not supported by this browser.');
-            }
-    
-            // Redirect immediately
-            window.location.href = event.target.href;
+            }   
         });
     </script>
     
