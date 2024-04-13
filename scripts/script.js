@@ -516,13 +516,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     destinationSelectButton.addEventListener('click', selectDestination);
 
+    const getUserLocation = () => {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Call the function to start watching the user's location
+                watchUserLocation();
+            });
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+    };
+
     // End of the 'DOMContentLoaded' event listener
     // Call the function to initialize map and location
     initMap();
-    // Call the function to start watching the user's location
-    watchUserLocation();
     // Call the function to set the initial multifunction button image
     setMultifunctionImage();
+    getUserLocation();
 
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
