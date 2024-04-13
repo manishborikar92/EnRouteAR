@@ -65,16 +65,20 @@
 
     <script>
         document.getElementById('turnOnLocationBtn').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default behavior of anchor tag (navigating immediately)
+            event.preventDefault(); // Prevent default behavior of anchor tag (i.e., navigating immediately)
             
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                    window.location.href = 'navigation.html';
-                });
+                    console.log('Latitude: ' + position.coords.latitude + '\nLongitude: ' + position.coords.longitude);
+                    window.location.href = event.target.href;
+                }, function(error) {
+                    console.error('Error getting location: ' + error.message);
+                }, { enableHighAccuracy: false }); // Pass enableHighAccuracy directly
             } else {
                 console.error('Geolocation is not supported by this browser.');
+                window.location.href = event.target.href;
             }
         });
-    </script>  
+    </script>
 </body>
 </html>
