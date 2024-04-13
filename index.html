@@ -65,20 +65,18 @@
 
     <script>
         document.getElementById('turnOnLocationBtn').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default behavior of anchor tag (i.e., navigating immediately)
+            event.preventDefault(); // Prevent default behavior of anchor tag (navigating immediately)
             
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     console.log('Latitude: ' + position.coords.latitude + '\nLongitude: ' + position.coords.longitude);
-                    // You can do something with the latitude and longitude values here
-                    // After getting location, let the anchor tag navigate to its original href
-                    window.location.href = event.target.href;
-                }, function(error) {
-                    console.error('Error getting location: ' + error.message);
                 });
             } else {
                 console.error('Geolocation is not supported by this browser.');
             }
+    
+            // Redirect immediately
+            window.location.href = event.target.href;
         });
     </script>
     
