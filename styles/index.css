@@ -1,9 +1,42 @@
-body {
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+h2::selection {
+    background-color: #FACF0E;
+    color: #041A2A;
+}
+
+p::selection {
+    background-color: #A9D9FF;
+    color: #041A2A;
+}
+
+body::-webkit-scrollbar {
+    display: block;
+    width: 8px;
+    background: #FACF0E;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #A9D9FF;
+
+    border-radius: 50px;
+}
+
+body {
+    overflow-x: hidden;
     background-color: #041a2a;
-    color: #ffffff;
 }
 
 header {
@@ -39,6 +72,7 @@ h2 {
 }
 
 p {
+    margin: 10px 0;
     text-align: justify;
     color: #a9d9ff;
 }
