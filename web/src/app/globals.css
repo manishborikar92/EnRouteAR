@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   EnRouteAR — Design System
+   Tailwind CSS v4 theme configuration (CSS-first approach)
+   ============================================================================ */
+
+@theme inline {
+  /* Color Palette — matching the original EnRouteAR design */
+  --color-navy: #041a2a;
+  --color-navy-dark: #011421;
+  --color-navy-mid: #0b3f65;
+  --color-navy-card: #172b43;
+
+  --color-gold: #facf0e;
+  --color-blue: #0d94f5;
+  --color-blue-dark: #003576;
+  --color-blue-route: #3882f6;
+
+  --color-sky: #a9d9ff;
+  --color-sky-light: #c4e6ff;
+  --color-cream: #fff4a3;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Animations */
+  --animate-fade-in: fade-in 0.6s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+}
+
+/* Custom Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================================
+   Global Styles
+   ============================================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: #041a2a;
+  color: #ffffff;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Custom scrollbar */
+body::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+  background: #facf0e;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #a9d9ff;
+  border-radius: 50px;
+}
+
+/* Text selection colors */
+h1::selection,
+h2::selection,
+h3::selection {
+  background-color: #facf0e;
+  color: #041a2a;
+}
+
+p::selection,
+span::selection,
+li::selection {
+  background-color: #a9d9ff;
+  color: #041a2a;
+}
+
+/* ============================================================================
+   Smooth section transitions
+   ============================================================================ */
+
+section {
+  animation: var(--animate-slide-up);
+  animation-fill-mode: both;
+}
+
+section:nth-child(1) { animation-delay: 0.1s; }
+section:nth-child(2) { animation-delay: 0.2s; }
+section:nth-child(3) { animation-delay: 0.3s; }
+section:nth-child(4) { animation-delay: 0.4s; }
+
+/* ============================================================================
+   Mapbox GL overrides (for the navigation page map)
+   ============================================================================ */
+
+.mapboxgl-popup-content {
+  background-color: #172b43;
+  color: #a9d9ff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: #172b43;
+}
+
+.mapboxgl-popup-close-button {
+  color: #a9d9ff;
+  font-size: 16px;
+}
