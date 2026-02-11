@@ -232,7 +232,7 @@ Layout (RootLayout)
 # .env.local
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoicHJhbmtpdGEi...
 NEXT_PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/mgegpkeb
-NEXT_PUBLIC_APP_URL=https://virtualvanguard.vercel.app
+NEXT_PUBLIC_APP_URL=https://enroutear.vercel.app
 ```
 
 ---

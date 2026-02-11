@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'EnRouteAR Team' }],
   creator: 'EnRouteAR',
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? 'https://virtualvanguard.vercel.app'
+    process.env.NEXT_PUBLIC_APP_URL ?? 'https://enroutear.vercel.app'
   ),
   openGraph: {
     type: 'website',

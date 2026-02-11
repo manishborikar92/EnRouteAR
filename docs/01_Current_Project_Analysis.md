@@ -14,7 +14,7 @@
 | Type            | Static website (no build step)          |
 | Language        | HTML5, CSS3, Vanilla JavaScript         |
 | Hosting         | Vercel (static)                         |
-| Live URL        | https://virtualvanguard.vercel.app/     |
+| Live URL        | https://enroutear.vercel.app/     |
 | License         | MIT                                     |
 
 ---
