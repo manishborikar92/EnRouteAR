@@ -520,34 +520,34 @@ web/
 │   │
 │   ├── components/
 │   │   ├── ui/                    # Primitive components
-│   │   │   ├── button.js
-│   │   │   ├── input.js
-│   │   │   ├── badge.js
-│   │   │   ├── card.js
-│   │   │   ├── separator.js
-│   │   │   ├── skeleton.js
-│   │   │   └── toast-provider.js
+│   │   │   ├── Button.js
+│   │   │   ├── Input.js
+│   │   │   ├── Badge.js
+│   │   │   ├── Card.js
+│   │   │   ├── Separator.js
+│   │   │   ├── Skeleton.js
+│   │   │   └── ToastProvider.js
 │   │   │
 │   │   ├── layout/                # Structural components
-│   │   │   ├── header.js
-│   │   │   ├── footer.js
-│   │   │   ├── container.js
-│   │   │   └── mobile-nav.js
+│   │   │   ├── Header.js
+│   │   │   ├── Footer.js
+│   │   │   ├── Container.js
+│   │   │   └── MobileNav.js
 │   │   │
 │   │   ├── home/                  # Home page components
-│   │   │   ├── hero-section.js
-│   │   │   ├── feature-card.js
-│   │   │   └── how-it-works.js
+│   │   │   ├── HeroSection.js
+│   │   │   ├── FeatureCard.js
+│   │   │   └── HowItWorks.js
 │   │   │
 │   │   └── navigation/            # AR Navigation components
-│   │       ├── ar-scene.js
-│   │       ├── map-panel.js
-│   │       ├── compass-widget.js
-│   │       ├── multifunction-button.js
-│   │       ├── destination-selector.js
-│   │       ├── route-info-panel.js
-│   │       ├── permission-prompt.js
-│   │       └── navigation-view.js
+│   │       ├── ARScene.js
+│   │       ├── MapPanel.js
+│   │       ├── CompassWidget.js
+│   │       ├── MultifunctionButton.js
+│   │       ├── DestinationSelector.js
+│   │       ├── RouteInfoPanel.js
+│   │       ├── PermissionPrompt.js
+│   │       └── NavigationView.js
 │   │
 │   ├── lib/
 │   │   ├── utils.js               # cn() helper, generic utils
