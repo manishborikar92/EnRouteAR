@@ -1,545 +1,544 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Get HTML elements
-    const destinationSelectInput = document.getElementById('select-destination');
-    const destinationSelectButton = document.getElementById('get-direction-button');
-    const mapContainer = document.getElementById('map');
+/* =============================================================
+   EnRouteAR — script.js
+   Core logic for AR navigation:
+     - Mapbox 2D map initialisation
+     - Device orientation / compass
+     - GPS location watching
+     - Destination selection & Mapbox Directions API
+     - AR route rendering (A-Frame cylinders + GLB pointer)
+     - Multifunction button state management
+   ============================================================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ── DOM REFERENCES ──────────────────────────────────────────────
+
+    const destinationSelect = document.getElementById('select-destination');
+    const directionsButton  = document.getElementById('get-direction-button');
+    const mapContainer      = document.getElementById('map');
+
+
+    // ── STATE ───────────────────────────────────────────────────────
+
     let map;
     let compass;
-    let mapBearing = 0; // Global variable to store the map's bearing
-    let currentLocationMarker;
-    let destinationMarker;
-    let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
-    let destination;
+    let compassRotation  = 0;   // Current device heading in degrees
+    let mapBearing       = 0;   // Current map bearing in degrees
 
-    // Flags to control various aspects of map interaction
-    let isUserInteraction = false; // Flag to control user interaction with the map
-    let isMapCentered = true; // Flag to track if the map is currently centered on the user's location
-    let isBearing = false; // Flag to track if map bearing is applied
-    let compassRotation; // Variable to store device orientation
+    let currentLocationMarker = null;
+    let destinationMarker     = null;
+    let destination           = null;
 
-    // Function to initialize the map and get the user's current location
+    // Map interaction flags
+    let isUserInteraction = false; // True while the user is manually panning/zooming
+    let isMapCentered     = true;  // True when the map is following the user's position
+    let isBearing         = false; // True when the map rotates with the device compass
+
+
+    // ── CONSTANTS ───────────────────────────────────────────────────
+
+    const MAPBOX_TOKEN = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
+    const MAP_STYLE    = 'mapbox://styles/mapbox/satellite-streets-v12';
+    const DEFAULT_ZOOM = 17;
+    const ROUTE_STEP_METERS = 2; // Distance between AR route cylinder markers
+    const AR_SCENE_SELECTOR = 'a-scene';
+
+
+    // ── MAP INITIALISATION ──────────────────────────────────────────
+
+    /**
+     * Creates the Mapbox map, compass DOM element, and attaches
+     * the device-orientation listener.
+     */
     const initMap = async () => {
         try {
-            // Initialize the map with Mapbox
-            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
+            mapboxgl.accessToken = MAPBOX_TOKEN;
+
             map = new mapboxgl.Map({
                 container: mapContainer,
-                style: 'mapbox://styles/mapbox/satellite-streets-v12',
-                center: [78, 20], // Default center
-                zoom: 0,
-                bearing: 0, // Initial bearing
-                pitch: 0, // Initial pitch
+                style:     MAP_STYLE,
+                center:    [78, 20], // Default — overridden once GPS fires
+                zoom:      0,
+                bearing:   0,
+                pitch:     0,
                 projection: 'globe',
             });
 
-            // Enable map controls (zoom, pan, rotate)
-            // map.addControl(new mapboxgl.NavigationControl());
-
-            // Create and append compass element
+            // Create the compass indicator element
             compass = document.createElement('div');
             compass.className = 'compass';
-            // compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
+            document.getElementById('compass-container').appendChild(compass);
 
-            // Add compass to the compass container
-            const compassContainer = document.getElementById('compass-container');
-            compassContainer.appendChild(compass);
-
-            // Watch for changes in the device's orientation
             window.addEventListener('deviceorientation', handleOrientation);
+
         } catch (error) {
             console.error('Error initializing map:', error);
         }
     };
 
-    // Function to watch for changes in the user's location
+
+    // ── GPS LOCATION WATCHING ───────────────────────────────────────
+
+    /**
+     * Watches the device GPS position and updates the map and
+     * current-location marker on every fix.
+     */
     const watchUserLocation = () => {
         navigator.geolocation.watchPosition(
-            // Success callback when position is retrieved
             (position) => {
                 const { latitude, longitude } = position.coords;
-                userLocation = { latitude, longitude }; // Update global userLocation
 
-                // If there is no ongoing user interaction, update the map center
+                // Always keep userLocation current for direction requests
+                userLocation = { latitude, longitude };
+
+                // Only re-centre the map if the user hasn't manually panned
                 if (!isUserInteraction) {
-                    userLocation = { latitude, longitude };
                     updateMapCenter(latitude, longitude);
                 }
 
-                // Update or create the current location marker
-                currentLocationMarker
-                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
-            },
-            // Error callback when there's an issue retrieving position
-            (error) => {
-                if (error.code === 1) {
-                    // Device location is off. Please enable location and refresh the page.
-                    alert('Device location is off. Please enable location and refresh the page.');
-                } else if (error.code === 2) {
-                    // Position information is unavailable
-                    alert('Position information is unavailable. Please try again.');
-                } else if (error.code === 3) {
-                    // The request to get user location timed out
-                    alert('Request to get user location timed out. Please try again.');
+                // Update or create the "You are here" marker
+                if (currentLocationMarker) {
+                    updateMarker(currentLocationMarker, latitude, longitude, 'You are here!');
                 } else {
-                    // For other errors, log the error to the console
-                    console.error('Error in retrieving position:', error.message);
+                    currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png');
                 }
             },
-            // Geolocation options
+            (error) => {
+                switch (error.code) {
+                    case 1: alert('Device location is off. Please enable location and refresh the page.'); break;
+                    case 2: alert('Position information is unavailable. Please try again.'); break;
+                    case 3: alert('Request to get user location timed out. Please try again.'); break;
+                    default: console.error('Error retrieving position:', error.message);
+                }
+            },
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
         );
     };
 
-    // Function to handle changes in device orientation
-    const handleOrientation = (event) => {
-        compassRotation = 360 - event.alpha; // Calculate rotation in degrees
-        compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
+    // userLocation is declared here (after watchUserLocation definition) so it
+    // is accessible to both the watch callback and selectDestination.
+    let userLocation = { latitude: 0, longitude: 0 };
 
-        // If the map is centered and bearing is applied or there's a destination set, apply bearing
+
+    // ── DEVICE ORIENTATION ──────────────────────────────────────────
+
+    /**
+     * Fired on every deviceorientation event.
+     * Rotates the compass widget, optionally rotates the map,
+     * and updates the user-location marker rotation.
+     */
+    const handleOrientation = (event) => {
+        compassRotation = 360 - event.alpha;
+
+        // Rotate the compass widget opposite to the heading so it always points North
+        compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+
+        // Apply compass heading to the map when in bearing mode
         if (isMapCentered && isBearing) {
-            map.setBearing(compassRotation); // Set the bearing of the Mapbox map to achieve rotation
+            map.setBearing(compassRotation);
         }
 
-        // Update or create the current location marker
+        // Keep the user marker pointing in the direction of travel
         if (currentLocationMarker) {
-            // Update the marker's rotation based on the device's orientation and map's bearing
             currentLocationMarker.setRotation(compassRotation - mapBearing);
-            currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
+            currentLocationMarker.setPitchAlignment('map');
         } else {
-            // If the marker doesn't exist, create a new one with the updated rotation
             currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current.png');
             currentLocationMarker.setRotation(compassRotation);
-            currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
+            currentLocationMarker.setPitchAlignment('map');
         }
-        // Call Repeatedly
-        setMultifunctionImage();
+
+        updateMultifunctionButton();
     };
 
-    // Function to dynamically set the image source based on conditions
-    const setMultifunctionImage = () => {
-        const multifunctionButton = document.getElementById('multifunction-button');
-    
-        // Remove existing classes
-        multifunctionButton.classList.remove('reset-all', 'centered', 'recenter', 'bearing');
-    
-        // Set the image source based on conditions
+
+    // ── MULTIFUNCTION BUTTON ────────────────────────────────────────
+
+    /**
+     * Reflects the current navigation state onto the multifunction
+     * button by swapping its CSS class (which swaps the icon image).
+     *
+     * States (in priority order):
+     *   reset-all  — destination set, map centred, bearing on  → tap resets everything
+     *   centered   — map centred, bearing off                  → tap enables bearing
+     *   bearing    — bearing on, no destination yet            → tap disables bearing
+     *   recenter   — user has panned away                      → tap re-centres map
+     */
+    const updateMultifunctionButton = () => {
+        const button = document.getElementById('multifunction-button');
+        button.classList.remove('reset-all', 'centered', 'recenter', 'bearing');
+
         if (destination && isMapCentered && isBearing) {
-            multifunctionButton.classList.add('reset-all');
+            button.classList.add('reset-all');
         } else if (isMapCentered && !isBearing) {
-            multifunctionButton.classList.add('centered');
+            button.classList.add('centered');
         } else if (isUserInteraction) {
-            multifunctionButton.classList.add('recenter');
+            button.classList.add('recenter');
         } else if (isBearing) {
-            multifunctionButton.classList.add('bearing');
+            button.classList.add('bearing');
         }
-    
-        // Set alt text for the button (modify as needed)
-        multifunctionButton.title = 'Multifunction Icon';
-    };    
 
-    // Add a click event listener for the recenter button
-    const recenterButton = document.getElementById('multifunction-button');
-    recenterButton.addEventListener('click', () => {
-        // If there's a destination, the map is centered, and bearing is on, call reset();
+        button.title = 'Multifunction Icon';
+    };
+
+    document.getElementById('multifunction-button').addEventListener('click', () => {
         if (destination && isMapCentered && isBearing) {
-            reset(); // Reset all
-        }
-
-        // If map centered after clicking on multifunction button, set bearing on
-        else if (isMapCentered) {
-                // If bearing is already on, turn it off
-                if (isBearing) {
-                    isBearing = false;
-                    map.setBearing(0); // Stop the map rotation                
-                } else {
-                    // If bearing is off, turn it on
-                    isBearing = true;
-                }
+            // Full reset
+            reset();
+        } else if (isMapCentered) {
+            // Toggle bearing on/off
+            if (isBearing) {
+                isBearing = false;
+                map.setBearing(0);
             } else {
-                // If map not centered after clicking on multifunction button, set map center
-                isUserInteraction = false;
-                isMapCentered = true;
+                isBearing = true;
+            }
+        } else {
+            // Re-centre the map on the user
+            isUserInteraction = false;
+            isMapCentered     = true;
         }
 
-        // Call the function to set the multifunction button image after any changes
-        setMultifunctionImage();
+        updateMultifunctionButton();
     });
 
-    // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude, zoomLevel = 17) => {
+
+    // ── MAP HELPERS ─────────────────────────────────────────────────
+
+    /**
+     * Smoothly flies the map to the given coordinates.
+     */
+    const updateMapCenter = (latitude, longitude, zoomLevel = DEFAULT_ZOOM) => {
         map.flyTo({
-            center: [longitude, latitude],
-            zoom: zoomLevel,
-            essential: true, // This ensures that the animation is considered essential and cannot be interrupted
-            speed: 1.5, // Adjust the speed of the animation as needed
+            center:    [longitude, latitude],
+            zoom:      zoomLevel,
+            essential: true,
+            speed:     1.5,
         });
     };
 
-    // Function to update the marker on the map
+    /**
+     * Moves an existing Mapbox marker to new coordinates.
+     */
     const updateMarker = (marker, latitude, longitude, title) => {
-        marker.setLngLat([longitude, latitude])
+        marker
+            .setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title));
     };
 
-    // Function to add a marker on the map
+    /**
+     * Creates and adds a Mapbox marker.
+     * Uses a custom image element when markerImage is provided,
+     * otherwise falls back to the default red Mapbox marker.
+     */
     const addMarker = (latitude, longitude, title, markerImage) => {
-        const markerOptions = {};
-    
-        // Check if a custom marker image is provided
-        if (markerImage) {
-            markerOptions.element = createCustomMarker(markerImage);
-        } else {
-            // Use the default Mapbox marker with a red color
-            markerOptions.color = '#FF0000'; // Red color
-        }
-    
-        return new mapboxgl.Marker(markerOptions)
+        const options = markerImage
+            ? { element: createCustomMarkerElement(markerImage) }
+            : { color: '#FF0000' };
+
+        return new mapboxgl.Marker(options)
             .setLngLat([longitude, latitude])
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .addTo(map);
     };
-    
-    // Function to create a custom marker element
-    const createCustomMarker = (markerImage) => {
-        const element = document.createElement('div');
-        element.className = 'custom-marker';
-        element.style.backgroundImage = `url(${markerImage})`;
-        element.style.width = '30px';  // Set the width of your custom marker
-        element.style.height = '30px'; // Set the height of your custom marker
-        return element;
+
+    /**
+     * Creates the DOM element used for a custom map marker.
+     */
+    const createCustomMarkerElement = (markerImage) => {
+        const el = document.createElement('div');
+        el.className           = 'custom-marker';
+        el.style.backgroundImage = `url(${markerImage})`;
+        el.style.width           = '30px';
+        el.style.height          = '30px';
+        return el;
     };
 
-    // Function to add a marker for a location on the map
+    /**
+     * Removes the previous destination marker (if any) and places
+     * a new one at the given coordinates.
+     */
     const addDestinationMarker = (latitude, longitude, title) => {
-        // Remove the previous destination marker if it exists
-        if (destinationMarker) {
-            destinationMarker.remove();
-        }
-    
-        // Add a new marker at the destination with a popup
+        if (destinationMarker) destinationMarker.remove();
         destinationMarker = addMarker(latitude, longitude, title);
         return destinationMarker;
     };
 
-    // Function to add AR label for the selected destination
-    /*const addDestinationAREntity = (latitude, longitude, name) => {
-        // Remove existing entities
-        const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
-        
-        if (existingLabels.length > 0) {
-            console.log('Removing existing text entities:', existingLabels.length);
-            existingLabels.forEach(label => label.remove());
-        } else {
-            console.log('No existing text entities to remove.');
-        }
-    
-        console.log('Adding AR label for:', name, 'at', latitude, longitude);
-        
-        // Create a new A-Frame entity (a-text) for the destination label
-        const arLabel = document.createElement('a-text');
 
-        // Set attributes for the label
-        arLabel.setAttribute('value', name);
-        arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
-        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arLabel.setAttribute('color', 'red'); // Set the text color
-        arLabel.setAttribute('scale', '3 3 3'); // Adjust scale as needed
+    // ── AR ROUTE RENDERING ──────────────────────────────────────────
 
-        // Append the label to the A-Frame scene
-        document.querySelector('#ar-destination-entity').appendChild(arLabel);
-    };*/
-
-    // Function to update AR elements based on Mapbox directions
+    /**
+     * Clears any existing AR route entities and rebuilds them from
+     * the Mapbox directions response.
+     * Places a cylinder at every interpolated point along the path
+     * and a GLB pointer model at the final destination coordinate.
+     */
     const updateARDirections = (directionsData) => {
-        // Check if directions data is valid and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-            // Remove all existing route markers
-            const existingMarkers = document.querySelectorAll('[gps-new-entity-place]');
-            existingMarkers.forEach(marker => marker.remove());
-
-            // Loop through the route coordinates to create AR elements
-            for (let i = 0; i < routeCoordinates.length - 1; i++) {
-                const currentCoordinate = routeCoordinates[i];
-                const nextCoordinate = routeCoordinates[i + 1];
-
-                // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 2); // Adjust the distance between intermediary points if needed
-
-                // Create markers at intermediary points
-                intermediaryPoints.forEach(intermediaryPoint => {
-                    createMarkerAtCoordinate(intermediaryPoint);
-                });
-            }
-
-            // Add OBJ location marker at the last coordinate
-            const lastCoordinate = routeCoordinates[routeCoordinates.length - 1];
-            createGLBMarkerAtCoordinate(lastCoordinate);
-
-        } else {
+        if (!directionsData?.routes?.length) {
             console.error('Invalid directions data or missing route coordinates.');
+            return;
         }
+
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+        // Clear all existing AR route entities
+        document.querySelectorAll('[gps-new-entity-place]').forEach(el => el.remove());
+
+        // Place cylinder markers along every segment
+        for (let i = 0; i < routeCoordinates.length - 1; i++) {
+            const points = generateIntermediaryPoints(
+                routeCoordinates[i],
+                routeCoordinates[i + 1],
+                ROUTE_STEP_METERS
+            );
+            points.forEach(createCylinderMarker);
+        }
+
+        // Place GLB pointer at the destination
+        createGLBMarker(routeCoordinates[routeCoordinates.length - 1]);
     };
 
-    // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
-        const intermediaryPoints = [];
-        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
+    /**
+     * Returns an array of [lng, lat] points spaced distanceMeters
+     * apart between startPoint and endPoint.
+     */
+    const generateIntermediaryPoints = (startPoint, endPoint, distanceMeters) => {
+        const points   = [];
+        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceMeters);
 
         for (let i = 1; i < segments; i++) {
             const fraction = i / segments;
-            const intermediateLng = startPoint[0] + (endPoint[0] - startPoint[0]) * fraction;
-            const intermediateLat = startPoint[1] + (endPoint[1] - startPoint[1]) * fraction;
-            intermediaryPoints.push([intermediateLng, intermediateLat]);
+            points.push([
+                startPoint[0] + (endPoint[0] - startPoint[0]) * fraction,
+                startPoint[1] + (endPoint[1] - startPoint[1]) * fraction,
+            ]);
         }
 
-        return intermediaryPoints;
+        return points;
     };
 
-    // Function to calculate the distance between two coordinates (in meters) using the Haversine formula
-    const calculateDistance = (startPoint, endPoint) => {
-        const earthRadius = 6371000; // Radius of the Earth in meters
-        const [startLng, startLat] = startPoint;
-        const [endLng, endLat] = endPoint;
+    /**
+     * Returns the great-circle distance in metres between two
+     * [lng, lat] points using the Haversine formula.
+     */
+    const calculateDistance = ([startLng, startLat], [endLng, endLat]) => {
+        const EARTH_RADIUS_M = 6371000;
+        const toRad = (deg) => deg * Math.PI / 180;
 
-        // Convert coordinates from degrees to radians
-        const startLatRad = startLat * Math.PI / 180;
-        const endLatRad = endLat * Math.PI / 180;
-        const latDiffRad = (endLat - startLat) * Math.PI / 180;
-        const lngDiffRad = (endLng - startLng) * Math.PI / 180;
+        const dLat = toRad(endLat - startLat);
+        const dLng = toRad(endLng - startLng);
 
-        // Haversine formula to calculate distance
-        const a = Math.sin(latDiffRad / 2) * Math.sin(latDiffRad / 2) +
-                Math.cos(startLatRad) * Math.cos(endLatRad) *
-                Math.sin(lngDiffRad / 2) * Math.sin(lngDiffRad / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const distance = earthRadius * c;
+        const a = Math.sin(dLat / 2) ** 2
+                + Math.cos(toRad(startLat)) * Math.cos(toRad(endLat))
+                * Math.sin(dLng / 2) ** 2;
 
-        return distance; // Distance in meters
+        return EARTH_RADIUS_M * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     };
 
-    // Function to create a marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate) => {
-        // Create a cylinder element as the marker
-        const marker = document.createElement('a-cylinder');
-        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('radius', '0.5'); // Adjust marker radius as needed
-        marker.setAttribute('height', '0.15'); // Adjust marker height as needed
-        marker.setAttribute('color', '#3882f6'); // Set the marker color
-        marker.setAttribute('opacity', '1'); // Set marker opacity
-        // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
-        // marker.setAttribute('position', '0 -1 0'); // Adjust position relative to camera
-
-        document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
+    /**
+     * Creates a flat blue cylinder AR entity at the given [lng, lat] coordinate.
+     */
+    const createCylinderMarker = ([lng, lat]) => {
+        const el = document.createElement('a-cylinder');
+        el.setAttribute('gps-new-entity-place', `latitude: ${lat}; longitude: ${lng}`);
+        el.setAttribute('radius',  '0.5');
+        el.setAttribute('height',  '0.15');
+        el.setAttribute('color',   '#3882f6');
+        el.setAttribute('opacity', '1');
+        document.querySelector(AR_SCENE_SELECTOR).appendChild(el);
     };
 
-    // Function to create a GLB marker at the specified coordinate
-    const createGLBMarkerAtCoordinate = (coordinate) => {
-        // Create an <a-entity> element for the GLB marker
-        const glbMarker = document.createElement('a-entity');
-        // glbMarker.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
-        glbMarker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        glbMarker.setAttribute('gltf-model', '../models/map_pointer_3d_icon.glb'); // Set the path to your GLB model file
-        glbMarker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
-        glbMarker.setAttribute('position', '0 1 0'); // Adjust position as needed
-        
-        document.querySelector('a-scene').appendChild(glbMarker); // Append the GLB marker to the AR scene
+    /**
+     * Creates a GLB 3D pointer AR entity at the given [lng, lat] coordinate.
+     */
+    const createGLBMarker = ([lng, lat]) => {
+        const el = document.createElement('a-entity');
+        el.setAttribute('gps-new-entity-place', `latitude: ${lat}; longitude: ${lng}`);
+        el.setAttribute('gltf-model', '../models/map_pointer_3d_icon.glb');
+        el.setAttribute('scale',    '0.5 0.5 0.5');
+        el.setAttribute('position', '0 1 0');
+        document.querySelector(AR_SCENE_SELECTOR).appendChild(el);
     };
 
 
-    // Function to update the 2D map with the route
+    // ── MAPBOX 2D ROUTE ─────────────────────────────────────────────
+
+    /**
+     * Draws (or redraws) the walking route polyline on the 2D map.
+     */
     const updateMapWithRoute = (directionsData) => {
-        // Ensure the map is initialized
         if (!map) {
             console.error('Map not initialized. Unable to update route.');
             return;
         }
-    
-        // Log directionsData to identify the structure
-        console.log('Directions Data:', directionsData);
-    
-        // Check if directionsData is defined and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from Mapbox directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-    
-            // Log route coordinates to identify any issues
-            console.log('Route Coordinates:', routeCoordinates);
-    
-            const sourceId = 'route';
-    
-            // Check if the 'route' source already exists
-            if (map.getSource(sourceId)) {
-                try {
-                    // If it exists, remove the existing source and layer
-                    map.removeLayer(sourceId);
-                    map.removeSource(sourceId);
-                } catch (error) {
-                    console.error('Error removing existing route:', error);
-                }
-            }
-    
-            // Add a new source and layer
-            map.addSource(sourceId, {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: routeCoordinates,
-                    },
-                },
-            });
-    
-            map.addLayer({
-                id: sourceId,
-                type: 'line',
-                source: sourceId,
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round',
-                },
-                paint: {
-                    'line-color': '#3882f6',
-                    'line-width': 7,
-                },
-            });
-        } else {
+
+        if (!directionsData?.routes?.length) {
             console.error('Invalid directionsData or missing route coordinates.');
+            return;
         }
+
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+        const SOURCE_ID        = 'route';
+
+        // Remove existing route source/layer if present
+        if (map.getSource(SOURCE_ID)) {
+            try {
+                map.removeLayer(SOURCE_ID);
+                map.removeSource(SOURCE_ID);
+            } catch (error) {
+                console.error('Error removing existing route:', error);
+            }
+        }
+
+        map.addSource(SOURCE_ID, {
+            type: 'geojson',
+            data: {
+                type:     'Feature',
+                properties: {},
+                geometry: {
+                    type:        'LineString',
+                    coordinates: routeCoordinates,
+                },
+            },
+        });
+
+        map.addLayer({
+            id:     SOURCE_ID,
+            type:   'line',
+            source: SOURCE_ID,
+            layout: {
+                'line-join': 'round',
+                'line-cap':  'round',
+            },
+            paint: {
+                'line-color': '#3882f6',
+                'line-width': 7,
+            },
+        });
     };
 
-    // Function to remove the route from the map
+
+    // ── RESET ───────────────────────────────────────────────────────
+
+    /**
+     * Clears the active destination, removes all AR entities and
+     * the 2D route, and resets map rotation and flags.
+     */
     const reset = () => {
-        // Reset the destination
         destination = null;
+        isBearing   = false;
 
-        // Set the bearing flag to false
-        isBearing = false; 
-
-        // Stop the map rotation
         map.setBearing(0);
 
-        // Remove the previous destination marker if it exists
-        if (destinationMarker) {
-            destinationMarker.remove();
-        }
+        if (destinationMarker) destinationMarker.remove();
 
-        // Remove all existing route markers
-        const existingMarkers = document.querySelectorAll('[gps-new-entity-place]');
-        existingMarkers.forEach(marker => marker.remove());
+        document.querySelectorAll('[gps-new-entity-place]').forEach(el => el.remove());
 
-        // Check if the 'route' source and layer exist
-        const sourceId = 'route';
-
-        if (map.getSource(sourceId) && map.getLayer(sourceId)) {
+        const SOURCE_ID = 'route';
+        if (map.getSource(SOURCE_ID) && map.getLayer(SOURCE_ID)) {
             try {
-                // Remove the existing source and layer
-                map.removeLayer(sourceId);
-                map.removeSource(sourceId);
+                map.removeLayer(SOURCE_ID);
+                map.removeSource(SOURCE_ID);
             } catch (error) {
                 console.error('Error removing existing route:', error);
             }
         }
     };
 
-    // Function to get directions from the Mapbox API
-    const getDirections = async (origin, destination) => {
-        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
+
+    // ── DIRECTIONS API ──────────────────────────────────────────────
+
+    /**
+     * Fetches a walking route between origin and destination
+     * from the Mapbox Directions API.
+     * @returns {Promise<Object>} Directions response JSON
+     */
+    const getDirections = async (origin, dest) => {
+        const url = [
+            'https://api.mapbox.com/directions/v5/mapbox/walking/',
+            `${origin.longitude},${origin.latitude}`,
+            ';',
+            `${dest.longitude},${dest.latitude}`,
+            `?access_token=${MAPBOX_TOKEN}&geometries=geojson`,
+        ].join('');
+
+        const response = await fetch(url);
+        return response.json();
+    };
+
+
+    // ── DESTINATION SELECTION ───────────────────────────────────────
+
+    /**
+     * Triggered when the user taps "Get Directions".
+     * Looks up the selected place, fetches the walking route,
+     * then updates the AR scene and 2D map.
+     */
+    const selectDestination = async () => {
+        const selectedName = destinationSelect.value;
+        destination = places.find(place => place.name === selectedName);
+
+        if (!destination) {
+            console.log('Destination not found:', selectedName);
+            return;
+        }
 
         try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching directions:', error);
-            throw error;
-        }
-    };
+            const directionsData = await getDirections(userLocation, destination);
 
-    // Function to handle destination selection and initiate directions
-    const selectDestination = async () => {
-        const selectedDestination = destinationSelectInput.value;
-        destination = places.find(place => place.name === selectedDestination);
-    
-        if (destination) {
-            try {
-                const directionsData = await getDirections(userLocation, destination);
+            updateMapCenter(userLocation.latitude, userLocation.longitude);
+            addDestinationMarker(destination.latitude, destination.longitude, destination.name);
+            updateARDirections(directionsData);
+            updateMapWithRoute(directionsData);
 
-                // Update 2D map with user's current location
-                updateMapCenter(userLocation.latitude, userLocation.longitude);
-
-                // If the destination marker exists, update its position; otherwise, create a new marker
-                const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
-
-                // Add AR entity for the selected destination
-                // addDestinationAREntity(destination.latitude, destination.longitude, destination.name);
-
-                // Update AR elements
-                updateARDirections(directionsData);
-    
-                // Update 2D map with route
-                updateMapWithRoute(directionsData);
-                
-                // If map is not centered, set it to centered
-                if (!isMapCentered) {
-                    isUserInteraction = false;
-                    isMapCentered = true;
-                }
-
-                // If bearing is off, turn it on
-                if (!isBearing) {
-                    isBearing = true;
-                }
-
-            } catch (error) {
-                console.error('Error in retrieving position', error);
+            // Ensure map is centred and bearing is on when a route is active
+            if (!isMapCentered) {
+                isUserInteraction = false;
+                isMapCentered     = true;
             }
-        } else {
-            console.log('Destination not found:', selectedDestination);
-            // Handle case when the selected destination is not found
+            if (!isBearing) {
+                isBearing = true;
+            }
+
+        } catch (error) {
+            console.error('Error retrieving directions:', error);
         }
     };
 
-    // Populate the dropdown with places from places.js
+
+    // ── POPULATE DESTINATION DROPDOWN ───────────────────────────────
+
     places.forEach(place => {
-        const option = document.createElement('option');
-        option.value = place.name;
-        option.text = place.name;
-        destinationSelectInput.appendChild(option);
+        const option   = document.createElement('option');
+        option.value   = place.name;
+        option.text    = place.name;
+        destinationSelect.appendChild(option);
     });
 
-    destinationSelectButton.addEventListener('click', selectDestination);
 
-    // End of the 'DOMContentLoaded' event listener
-    // Call the function to initialize map and location
+    // ── BOOTSTRAP ───────────────────────────────────────────────────
+
+    directionsButton.addEventListener('click', selectDestination);
+
     initMap();
-    // Call the function to start watching the user's location
     watchUserLocation();
-    // Call the function to set the initial multifunction button image
-    setMultifunctionImage();
+    updateMultifunctionButton();
 
-    // Watch for changes in the map's bearing
+    // Track map bearing changes (used to counter-rotate the user marker)
     map.on('rotate', (event) => {
-        // Update the map's bearing variable when the map is rotated
         mapBearing = event.target.getBearing();
     });
 
+    // Apply the globe atmosphere once the map style has loaded
     map.on('load', () => {
-        // Set the default atmosphere style
         map.setFog({});
-    });
+    });
 
-    // Add an event listener for map interaction (e.g., drag or zoom)
+    // Detect manual map interaction so we stop auto-centering
     map.on('touchstart', () => {
-        isUserInteraction = true; // Set the user interaction flag to true
-        isMapCentered = false; // Set the map-centered flag to false
-        isBearing = false; // Set the bearing flag to false
+        isUserInteraction = true;
+        isMapCentered     = false;
+        isBearing         = false;
     });
 
 });
