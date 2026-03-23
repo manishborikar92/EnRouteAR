@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let destinationMarker     = null;
     let destination           = null;
 
+    let userLocation = { latitude: 0, longitude: 0 };
+
     // Map interaction flags
     let isUserInteraction = false; // True while the user is manually panning/zooming
     let isMapCentered     = true;  // True when the map is following the user's position
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const DEFAULT_ZOOM = 17;
     const ROUTE_STEP_METERS = 2; // Distance between AR route cylinder markers
     const AR_SCENE_SELECTOR = 'a-scene';
+    const SOURCE_ID         = 'route';
 
 
     // ── MAP INITIALISATION ──────────────────────────────────────────
@@ -114,10 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
         );
     };
-
-    // userLocation is declared here (after watchUserLocation definition) so it
-    // is accessible to both the watch callback and selectDestination.
-    let userLocation = { latitude: 0, longitude: 0 };
 
 
     // ── DEVICE ORIENTATION ──────────────────────────────────────────
@@ -247,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const createCustomMarkerElement = (markerImage) => {
         const el = document.createElement('div');
-        el.className           = 'custom-marker';
+        el.className             = 'custom-marker';
         el.style.backgroundImage = `url(${markerImage})`;
         el.style.width           = '30px';
         el.style.height          = '30px';
@@ -378,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-        const SOURCE_ID        = 'route';
 
         // Remove existing route source/layer if present
         if (map.getSource(SOURCE_ID)) {
@@ -434,7 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('[gps-new-entity-place]').forEach(el => el.remove());
 
-        const SOURCE_ID = 'route';
         if (map.getSource(SOURCE_ID) && map.getLayer(SOURCE_ID)) {
             try {
                 map.removeLayer(SOURCE_ID);

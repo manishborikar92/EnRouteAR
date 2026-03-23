@@ -1,17 +1,59 @@
 /* =============================================================
    EnRouteAR — navigation.css
-   Styles for the AR navigation view (navigation.html)
+   Design: Mission Control × AR Interface
+
+   Camera rendering approach: video-as-DOM-element
+   ─────────────────────────────────────────────────
+   AR.js injects a <video> element and keeps it VISIBLE in the DOM.
+   The A-Frame WebGL canvas sits on top with alpha:true (transparent).
+   3D AR objects are drawn on the transparent canvas, appearing to
+   float over the live camera feed.
+
+   This is more stable on Android Chrome than videoTexture:true,
+   which hides the video element (causing Android power management
+   to suspend it → black screen after ~1 second).
+
+   Z-index stack (bottom → top):
+     0  — camera <video>       (AR.js, full screen, always visible)
+     1  — A-Frame <canvas>     (transparent, full screen, AR objects)
+     2  — #map-container       (bottom panel)
+     3  — .compass             (above map)
+     3  — #multifunction       (above map)
+     5  — #destination-select  (topmost UI)
    ============================================================= */
 
 
-/* ── BASE ── */
+/* ── VARIABLES ─────────────────────────────────────────────── */
+
+:root {
+    --primary:    #00b4ff;
+    --primary-dk: #007ab8;
+    --accent:     #facf0e;
+    --text-1:     #e8f4ff;
+    --text-2:     #7ab8d9;
+    --text-3:     #3d7a9b;
+    --border:     rgba(0, 180, 255, 0.20);
+    --border-hi:  rgba(0, 180, 255, 0.40);
+    --ui-bg:      rgba(4, 26, 42, 0.93);  /* solid — no backdrop-filter */
+    --font-d:     'Orbitron', monospace;
+    --font-b:     'Outfit', sans-serif;
+    --r-sm:       8px;
+    --r-lg:       18px;
+    --t:          0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ── BASE ───────────────────────────────────────────────────── */
 
 html, body {
     margin: 0;
     padding: 0;
     border: 0;
-    font-family: Arial, sans-serif;
+    /* No background-color on body — camera video sits at z-index 0
+       and must not be obscured by anything behind it.             */
+    font-family: var(--font-b);
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .container {
@@ -21,60 +63,125 @@ html, body {
 }
 
 
-/* ── DESTINATION SELECTOR ── */
+/* ── AR CAMERA VIDEO (z-index 0) ────────────────────────────── */
+/*
+   AR.js injects a <video> element at runtime.
+   It must stay VISIBLE (not display:none) so Android Chrome never
+   suspends it. We position it full-screen behind everything else.
+*/
+
+video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+
+/* ── A-FRAME CANVAS (z-index 1) ─────────────────────────────── */
+/*
+   With renderer="alpha:true", the WebGL clear color is transparent
+   each frame. This lets the camera video show through from z-index 0.
+   Only the 3D AR cylinders / GLB model are drawn on this canvas.
+*/
+
+canvas.a-canvas {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+    z-index: 1 !important;
+}
+
+
+/* ── DESTINATION SELECTOR BAR (z-index 5) ───────────────────── */
+/*
+   Width model: select = calc(100% - 130px), button = 120px fixed.
+   No backdrop-filter — it causes Android GPU compositing conflicts.
+*/
 
 #destination-select-container {
     position: absolute;
     top: 2%;
     left: 1%;
     right: 1%;
-    padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #041a2ac9;
-    border-radius: 8px;
-    color: #fff;
-    z-index: 4;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--ui-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    color: var(--text-1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+    z-index: 5;
 }
 
 #select-destination {
-    width: calc(100% - 120px);
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border-radius: 8px;
-    text-align: center;
-    z-index: 4;
+    width: calc(100% - 130px);
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.40);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--text-1);
+    font-family: var(--font-b);
+    font-size: 0.9rem;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: border-color var(--t), box-shadow var(--t);
+    z-index: 5;
+}
+
+#select-destination:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 180, 255, 0.15);
+}
+
+#select-destination option {
+    background: #041528;
+    color: var(--text-1);
 }
 
 #get-direction-button {
-    width: 110px;
-    padding-top: 9px;
-    padding-bottom: 9px;
-    border-radius: 8px;
-    text-align: center;
-    background-color: #0072ff;
-    border: 2px solid #003576;
+    width: 120px;
+    padding: 9px 0;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+    border: none;
+    border-radius: var(--r-sm);
     color: #fff;
-    text-size-adjust: auto;
-    text-decoration: none;
-    z-index: 4;
+    font-family: var(--font-d);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow var(--t), transform var(--t);
+    z-index: 5;
+}
+
+#get-direction-button:hover {
+    box-shadow: 0 0 20px rgba(0, 180, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+#get-direction-button:active {
+    transform: none;
 }
 
 
-/* ── AR SCENE ── */
-
-#a-scene {
-    flex: 1;
-    margin: 0 auto;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
-
-
-/* ── 2D MAP ── */
+/* ── 2D MAP (z-index 2) ─────────────────────────────────────── */
 
 #map-container {
     position: fixed;
@@ -83,8 +190,9 @@ html, body {
     transform: translateX(-50%);
     width: 100%;
     height: 180px;
-    border-top: 3px solid #041a2a;
-    z-index: 1;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 2;
 }
 
 #map {
@@ -92,22 +200,29 @@ html, body {
     height: 100%;
 }
 
+.mapboxgl-ctrl-attrib {
+    font-size: 9px !important;
+}
 
-/* ── COMPASS ── */
+
+/* ── COMPASS (z-index 3) ────────────────────────────────────── */
 
 .compass {
     position: absolute;
-    bottom: 150px;
-    left: 5px;
-    width: 25px;
-    height: 25px;
+    bottom: 195px;
+    left: 12px;
+    width: 38px;
+    height: 38px;
+    background-color: var(--ui-bg);
     background-image: url(../models/compass.png);
-    background-size: cover;
+    background-size: 70%;
+    background-repeat: no-repeat;
     background-position: center;
-    border: 1px solid #041a2a;
+    border: 1px solid var(--border);
     border-radius: 50%;
     transform-origin: center center;
-    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    z-index: 3;
 }
 
 .compass img {
@@ -116,47 +231,70 @@ html, body {
 }
 
 
-/* ── MULTIFUNCTION BUTTON ── */
+/* ── MULTIFUNCTION BUTTON (z-index 3) ───────────────────────── */
 
 #multifunction-container {
     position: absolute;
-    bottom: 1%;
-    right: 1%;
-    width: 45px;
-    height: 45px;
-    border: 1px solid #041a2a;
+    bottom: 190px;
+    right: 12px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     transform-origin: center center;
-    z-index: 2;
+    z-index: 3;
 }
 
 #multifunction-button {
-    background: none;
-    border: none;
-    padding: 0;
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0;
+    background: var(--ui-bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    transition: border-color var(--t), box-shadow var(--t), transform var(--t);
+}
+
+#multifunction-button:hover {
+    border-color: var(--border-hi);
+    box-shadow: 0 0 18px rgba(0, 180, 255, 0.25);
+    transform: scale(1.06);
+}
+
+#multifunction-button:active {
+    transform: scale(0.97);
 }
 
 #multifunction-button img {
-    width: 100%;
-    height: 100%;
+    width: 62%;
+    height: 62%;
     object-fit: contain;
+    filter: brightness(1.15);
 }
 
-/* Button state variants — each swaps the img via CSS content */
 .multifunction-button.reset-all img { content: url(../models/reset-all.png); }
 .multifunction-button.centered img  { content: url(../models/centered.png);  }
 .multifunction-button.recenter img  { content: url(../models/recenter.png);  }
 .multifunction-button.bearing img   { content: url(../models/bearing.png);   }
 
 
-/* ── MAP MARKERS ── */
+/* ── MAP MARKERS ────────────────────────────────────────────── */
 
 .custom-marker {
     background-size: cover;
     border-radius: 50%;
+}
+
+
+/* ── ACCESSIBILITY ──────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    #get-direction-button,
+    #multifunction-button {
+        transition: none;
+    }
 }
