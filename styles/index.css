@@ -189,7 +189,7 @@ body {
 .mobile-menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
 .mobile-nav {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 0;
   background: rgba(2, 12, 22, 0.97);
@@ -435,12 +435,7 @@ main { position: relative; z-index: 2; }
 .phone-mockup {
   position: relative;
   width: 260px;
-  animation: float 5s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-14px); }
+  /* No float animation — static display is cleaner */
 }
 
 .phone-frame {
@@ -1036,7 +1031,7 @@ footer {
   .hero-badge { align-self: center; }
   .hero-desc { margin: 0 auto 36px; }
 
-  .hero-visual { order: -1; }
+  .hero-visual { order: 1; } /* mockup sits below hero-content on mobile */
   .phone-mockup { width: 180px; }
 
   .content-section { padding: 72px 24px; }
