@@ -3,385 +3,359 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EnRouteAR — Augmented Reality Navigation</title>
+  <meta name="theme-color" content="#060a12">
+  <title>EnRouteAR: Spatial Campus Navigation for KITS Ramtek</title>
+  <meta name="description" content="Augmented reality walking navigation for KITS Ramtek. Real-time 3D waypoints and satellite radar overlaid on your phone camera feed.">
+
+  <!-- Favicons -->
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
   <link rel="manifest" href="favicon/site.webmanifest">
+
+  <!-- Fonts: Plus Jakarta Sans & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
 
-  <!-- Animated background canvas -->
-  <canvas id="bg-canvas"></canvas>
+  <!-- Ambient lighting -->
+  <div class="ambient-lighting" aria-hidden="true">
+    <div class="ambient-radial-glow"></div>
+  </div>
 
-  <!-- Scan-line overlay -->
-  <div class="scanlines" aria-hidden="true"></div>
-
-  <!-- Header -->
+  <!-- ═══ NAVIGATION BAR ═══ -->
   <header id="site-header">
-    <div class="header-inner">
-      <div class="logo-wrap">
-        <div class="logo-mark">
-          <span class="logo-bracket">[</span>
-          <span class="logo-text">EnRoute<span class="logo-accent">AR</span></span>
-          <span class="logo-bracket">]</span>
+    <div class="header-container">
+      <a href="#hero" class="brand-anchor">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+          </svg>
         </div>
-        <div class="logo-sub">AUGMENTED REALITY NAVIGATION</div>
-      </div>
-      <nav class="site-nav">
-        <a href="#about">About</a>
-        <a href="#college">Campus</a>
-        <a href="#vision">Vision</a>
-        <a href="#contact">Contact</a>
-        <a href="navigation.html" class="nav-cta" id="nav-launch-btn">Launch AR</a>
+        <span class="brand-name">EnRoute<span class="brand-accent">AR</span></span>
+      </a>
+
+      <nav class="nav-links-cluster">
+        <a href="#overview" class="nav-anchor">System</a>
+        <a href="#campus" class="nav-anchor">Campus Hubs</a>
+        <a href="#architecture" class="nav-anchor">Architecture</a>
+        <a href="#heritage" class="nav-anchor">Heritage</a>
+        <a href="#contact" class="nav-anchor">Contact</a>
+        <a href="navigation.html" class="header-cta-pill" id="nav-launch-btn">
+          <span>Launch AR</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
       </nav>
-      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+
+      <button class="mobile-toggle-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu">
         <span></span><span></span><span></span>
       </button>
     </div>
-    <nav class="mobile-nav" id="mobile-nav">
-      <a href="#about">About</a>
-      <a href="#college">Campus</a>
-      <a href="#vision">Vision</a>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav class="mobile-nav-panel" id="mobile-nav">
+      <a href="#overview">System Overview</a>
+      <a href="#campus">14 Campus Hubs</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#heritage">Campus Heritage</a>
       <a href="#contact">Contact</a>
-      <a href="navigation.html" class="nav-cta" id="mobile-launch-btn">Launch AR</a>
+      <a href="navigation.html" class="header-cta-pill" style="justify-content:center; margin-top:8px;">Launch AR Navigation</a>
     </nav>
   </header>
 
   <main>
 
-    <!-- ═══ HERO ═══ -->
-    <section class="hero" id="hero">
-      <div class="hero-content">
-        <div class="hero-badge reveal">
-          <span class="pulse-dot"></span>
-          LIVE · GPS ENABLED
-        </div>
-        <h1 class="hero-title reveal">
-          Navigate the<br>
-          <span class="gradient-text">Real World</span><br>
-          in Augmented Reality
-        </h1>
-        <p class="hero-desc reveal">
-          Overlay digital waypoints, 3D markers, and turn-by-turn directions directly onto your camera feed. Built for KITS Ramtek campus — powered by A-Frame, AR.js &amp; Mapbox.
-        </p>
-        <div class="hero-actions reveal">
-          <a href="navigation.html" class="btn-primary" id="turnOnLocationBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Launch Navigation
-          </a>
-          <a href="#about" class="btn-ghost">
-            Learn More
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
-          </a>
-        </div>
-        <div class="hero-stats reveal">
-          <div class="stat">
-            <span class="stat-num">14+</span>
-            <span class="stat-label">Campus Locations</span>
+    <!-- ═══ HERO SECTION (Asymmetric Real Visual Layout) ═══ -->
+    <section class="hero-section" id="hero">
+      <div class="hero-wrap">
+        <div class="hero-text-side">
+          <div class="hero-badge-pill">
+            <span class="pulse-beacon-dot"></span>
+            RTK GPS Calibrated: KITS Ramtek
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-num">3D</span>
-            <span class="stat-label">AR Waypoints</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-num">RT</span>
-            <span class="stat-label">Real-Time GPS</span>
-          </div>
-        </div>
-      </div>
-      <div class="hero-visual reveal">
-        <div class="phone-mockup">
-          <div class="phone-frame">
-            <div class="phone-screen">
-              <div class="ar-scene-preview">
-                <div class="ar-grid"></div>
-                <div class="ar-waypoint wp1">
-                  <div class="wp-icon">📍</div>
-                  <div class="wp-label">Library</div>
-                  <div class="wp-dist">42m</div>
-                </div>
-                <div class="ar-waypoint wp2">
-                  <div class="wp-icon">🏛</div>
-                  <div class="wp-label">CS Dept.</div>
-                  <div class="wp-dist">87m</div>
-                </div>
-                <div class="ar-trail"></div>
-                <div class="ar-hud-top">
-                  <span>▲ N  12°</span>
-                  <span>GPS ●</span>
-                </div>
-                <div class="ar-hud-bottom">
-                  <span>HEAD: 042°</span>
-                  <span>ALT: 312m</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="phone-glow"></div>
-        </div>
-      </div>
-    </section>
 
-    <!-- ═══ TECH STACK TICKER ═══ -->
-    <div class="tech-ticker">
-      <div class="ticker-track">
-        <span>A-FRAME</span><span class="sep">◆</span>
-        <span>AR.JS</span><span class="sep">◆</span>
-        <span>MAPBOX GL JS</span><span class="sep">◆</span>
-        <span>WEBGL</span><span class="sep">◆</span>
-        <span>THREE.JS</span><span class="sep">◆</span>
-        <span>GPS GEOLOCATION</span><span class="sep">◆</span>
-        <span>DEVICE ORIENTATION API</span><span class="sep">◆</span>
-        <span>A-FRAME</span><span class="sep">◆</span>
-        <span>AR.JS</span><span class="sep">◆</span>
-        <span>MAPBOX GL JS</span><span class="sep">◆</span>
-        <span>WEBGL</span><span class="sep">◆</span>
-        <span>THREE.JS</span><span class="sep">◆</span>
-        <span>GPS GEOLOCATION</span><span class="sep">◆</span>
-        <span>DEVICE ORIENTATION API</span><span class="sep">◆</span>
-      </div>
-    </div>
+          <h1 class="hero-headline">
+            Walk your campus in augmented reality
+          </h1>
 
-    <!-- ═══ ABOUT ═══ -->
-    <section class="content-section" id="about">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
-          ABOUT THE PROJECT
-          <span class="label-line"></span>
-        </div>
-        <h2 class="section-title reveal">What is <span class="gradient-text">EnRouteAR</span>?</h2>
-        <div class="feature-grid">
-          <div class="feature-card reveal" data-delay="0">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-            </div>
-            <h3>Real-World Navigation</h3>
-            <p>Navigate physical spaces with GPS-accurate positioning. Your live camera feed becomes the map.</p>
-          </div>
-          <div class="feature-card reveal" data-delay="100">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-            </div>
-            <h3>3D AR Overlays</h3>
-            <p>Destination markers, route arrows, and 3D models anchored to real-world GPS coordinates.</p>
-          </div>
-          <div class="feature-card reveal" data-delay="200">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            </div>
-            <h3>Live Route Tracking</h3>
-            <p>Watchs your GPS position in real time and redraws the walking route dynamically as you move.</p>
-          </div>
-          <div class="feature-card reveal" data-delay="300">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <h3>Compass-Corrected</h3>
-            <p>Device orientation sensor keeps the AR scene and map bearing locked to your heading automatically.</p>
-          </div>
-          <div class="feature-card reveal" data-delay="0">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-            </div>
-            <h3>Satellite Map View</h3>
-            <p>Embedded Mapbox satellite-streets mini-map keeps context grounded even while you look through the AR lens.</p>
-          </div>
-          <div class="feature-card reveal" data-delay="100">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.1 19.79 19.79 0 01.06 2.42 2 2 0 012.03.5h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.09a16 16 0 006.29 6.29l1.69-1.69a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            </div>
-            <h3>14 Campus Destinations</h3>
-            <p>Pre-mapped locations including departments, hostels, canteen, library, gym and more within KITS campus.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+          <p class="hero-subhead">
+            Turn outdoor walkways into live 3D routes anchored to physical GPS coordinates. Built for students and visitors navigating KITS Ramtek.
+          </p>
 
-    <!-- ═══ COLLEGE ═══ -->
-    <section class="content-section alt-bg" id="college">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
-          THE CAMPUS
-          <span class="label-line"></span>
-        </div>
-        <div class="college-layout">
-          <div class="college-text">
-            <h2 class="section-title reveal">Kavikulguru Institute of Technology &amp; Science</h2>
-            <p class="reveal">KITS Ramtek is a private un-aided institution run by Vodithala Education Society, Hyderabad. Founded in 1985 with a foundation stone laid by former Prime Minister Late Sri P. V. Narsimha Rao, the institute has grown into a distinguished technical institution serving rural students across Central India.</p>
-            <p class="reveal">Permanently affiliated to RTMNU Nagpur, KITS offers B.E., B.Arch., M.Tech. and Ph.D. programs across its lush 48.96-acre pollution-free campus. Awarded 'A' Grade twice by Maharashtra State Government, accredited by NBA, and NAAC-rated B++.</p>
-            <div class="badge-row reveal">
-              <div class="badge">NAAC B++</div>
-              <div class="badge">NBA Accredited</div>
-              <div class="badge">'A' Grade × 2</div>
-              <div class="badge">RTMNU Affiliated</div>
-            </div>
-            <a href="https://www.kits.edu/" target="_blank" rel="noopener" class="btn-outline reveal">
-              Visit kits.edu
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <div class="hero-cta-cluster">
+            <a href="navigation.html" class="cta-button-primary" id="turnOnLocationBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Launch AR Navigation
+            </a>
+            <a href="#campus" class="cta-button-secondary">
+              View Campus Hubs
             </a>
           </div>
-          <div class="campus-map-card reveal">
-            <div class="map-card-header">
-              <span class="pulse-dot"></span>
-              KITS CAMPUS · RAMTEK
+
+          <div class="hero-metrics-strip">
+            <div class="metric-cell">
+              <span class="metric-num">14</span>
+              <span class="metric-txt">Mapped Hubs</span>
             </div>
-            <div class="campus-locations">
-              <div class="loc-item"><span class="loc-dot"></span>Administrative Dept.</div>
-              <div class="loc-item"><span class="loc-dot"></span>Architecture Dept.</div>
-              <div class="loc-item"><span class="loc-dot"></span>CS / IT / Electronics</div>
-              <div class="loc-item"><span class="loc-dot"></span>Civil &amp; Mechanical Depts.</div>
-              <div class="loc-item"><span class="loc-dot"></span>Library &amp; Canteen</div>
-              <div class="loc-item"><span class="loc-dot"></span>Gym / Indoor Stadium</div>
-              <div class="loc-item"><span class="loc-dot"></span>Jamuna &amp; Triveni Hostels</div>
-              <div class="loc-item"><span class="loc-dot"></span>Kaveri Girls Hostel</div>
+            <div class="metric-cell">
+              <span class="metric-num">±2m</span>
+              <span class="metric-txt">GPS Accuracy</span>
             </div>
-            <div class="map-card-footer">21.385°N · 79.306°E</div>
+            <div class="metric-cell">
+              <span class="metric-num">360°</span>
+              <span class="metric-txt">Compass Lock</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-num">0s</span>
+              <span class="metric-txt">Web Installation</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real in-hand visual photography asset -->
+        <div class="hero-visual-side">
+          <div class="hero-photo-card">
+            <img src="models/ar_mobile_hand.jpg" alt="Person holding phone outdoors displaying real-time AR navigation waypoints on campus walkway" class="hero-main-photo">
+            <div class="photo-overlay-telemetry">
+              <div class="telemetry-tag-group">
+                <span class="telemetry-tag-name">Live Camera Viewfinder</span>
+                <span class="telemetry-tag-sub">3D Waypoints Anchored to Path</span>
+              </div>
+              <span class="telemetry-status-pill">GPS ACTIVE</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ═══ VISION ═══ -->
-    <section class="content-section" id="vision">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
-          PROJECT VISION
-          <span class="label-line"></span>
+    <!-- ═══ SYSTEM OVERVIEW (Camera vs Radar) ═══ -->
+    <section class="content-wrapper" id="overview">
+      <div class="section-head">
+        <h2 class="section-h2">Two viewpoints working as one</h2>
+        <p class="section-p">EnRouteAR couples your camera feed with a synchronised satellite mini-radar so you never lose physical context while walking.</p>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comparison-photo-frame">
+            <img src="models/hero_ar_view.jpg" alt="First person perspective of campus pavement with glowing AR route markers leading to destination" class="comparison-photo">
+            <span class="comparison-badge">AR CAMERA LENS</span>
+          </div>
+          <div class="comparison-body">
+            <h3>3D Physical Waypoints</h3>
+            <p>Cyan ground markers trace the pedestrian path directly on the asphalt, with a 3D pointer pinned over your destination building.</p>
+          </div>
         </div>
-        <h2 class="section-title reveal">Navigation as an <span class="gradient-text">Experience</span></h2>
-        <div class="vision-grid">
-          <div class="vision-block reveal" data-delay="0">
-            <div class="vision-num">01</div>
-            <h3>Redefining Navigation</h3>
-            <p>Navigation should not merely serve as a means to an end but inspire and engage users on their journey. We fuse state-of-the-art AR with real-world utility.</p>
+
+        <div class="comparison-card">
+          <div class="comparison-photo-frame">
+            <div style="width:100%; height:100%; background:radial-gradient(circle at 50% 50%, #0d1e33, #040912); display:flex; align-items:center; justify-content:center;">
+              <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#00e5ff" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+              </svg>
+            </div>
+            <span class="comparison-badge">SATELLITE RADAR</span>
           </div>
-          <div class="vision-block reveal" data-delay="150">
-            <div class="vision-num">02</div>
-            <h3>Universal Accessibility</h3>
-            <p>Whether exploring a bustling city or navigating a sprawling campus, EnRouteAR makes every journey unforgettable — for users of all backgrounds and ages.</p>
-          </div>
-          <div class="vision-block reveal" data-delay="300">
-            <div class="vision-num">03</div>
-            <h3>Future-Forward Design</h3>
-            <p>By combining cutting-edge AR with a user-centric approach, we aim to set new standards — paving the way for a future where exploration knows no bounds.</p>
+          <div class="comparison-body">
+            <h3>Top-Down Map Tracking</h3>
+            <p>An integrated Mapbox satellite sheet rotates with your device heading, displaying the walking polyline and real-time geodetic position.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ═══ CTA ═══ -->
-    <section class="cta-section">
-      <div class="cta-inner reveal">
-        <div class="cta-glow"></div>
-        <h2>Ready to navigate in AR?</h2>
-        <p>Point your phone, pick a destination, and walk toward a new era of wayfinding.</p>
-        <a href="navigation.html" class="btn-primary btn-large" id="cta-launch-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Launch EnRouteAR
+    <!-- ═══ CAMPUS HUBS DIRECTORY ═══ -->
+    <section class="content-wrapper" id="campus">
+      <div class="section-head">
+        <h2 class="section-h2">14 campus destinations</h2>
+        <p class="section-p">Explore pre-mapped geodetic waypoints across KITS Ramtek or start navigation directly with one tap.</p>
+      </div>
+
+      <div class="directory-controls">
+        <div class="category-filter-bar">
+          <button type="button" class="filter-tab-pill active" data-cat="all">All Hubs (14)</button>
+          <button type="button" class="filter-tab-pill" data-cat="academic">Academic</button>
+          <button type="button" class="filter-tab-pill" data-cat="hostel">Hostels</button>
+          <button type="button" class="filter-tab-pill" data-cat="facility">Facilities</button>
+          <button type="button" class="filter-tab-pill" data-cat="admin">Administration</button>
+        </div>
+        <input type="text" id="campus-search" class="directory-search-input" placeholder="Search departments, hostels, dining..." autocomplete="off">
+      </div>
+
+      <div class="directory-grid" id="campus-directory-grid">
+        <!-- Dynamically rendered by script -->
+      </div>
+    </section>
+
+    <!-- ═══ TECHNICAL ARCHITECTURE ═══ -->
+    <section class="content-wrapper" id="architecture">
+      <div class="section-head">
+        <h2 class="section-h2">Architecture built for the web</h2>
+        <p class="section-p">Pure client-side execution combining hardware sensors with WebGL rendering.</p>
+      </div>
+
+      <div class="tech-cols-grid">
+        <div class="tech-col-card">
+          <h3>Location-Based WebAR</h3>
+          <p>AR.js and A-Frame project virtual geometry into three-dimensional space based on spherical coordinate transforms from device GPS readings.</p>
+          <span class="tech-spec-tag">A-FRAME 1.3 &bull; THREE.JS</span>
+        </div>
+
+        <div class="tech-col-card">
+          <h3>Pedestrian Path Routing</h3>
+          <p>Walking routes are calculated through the Mapbox Directions API, generating sub-meter intermediate waypoints spaced two meters apart.</p>
+          <span class="tech-spec-tag">MAPBOX DIRECTIONS v5</span>
+        </div>
+
+        <div class="tech-col-card">
+          <h3>Sensor Fusion Bearing</h3>
+          <p>Device Orientation events synchronize camera heading and map rotation with real-world magnetic north in real time.</p>
+          <span class="tech-spec-tag">GEOLOCATION &bull; GYROSCOPE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CAMPUS HERITAGE ═══ -->
+    <section class="content-wrapper" id="heritage">
+      <div class="heritage-split">
+        <div class="heritage-text-block">
+          <h2 class="section-h2">Kavikulguru Institute of Technology &amp; Science</h2>
+          <p class="section-p">Founded in 1985 at Ramtek with its foundation stone laid by former Prime Minister Late Sri P. V. Narasimha Rao, KITS Ramtek spans a 48.96-acre campus affiliated with RTMNU Nagpur.</p>
+          <div class="heritage-accreditation-row">
+            <span class="accred-pill">NAAC B++ Accredited</span>
+            <span class="accred-pill">NBA Certified</span>
+            <span class="accred-pill">Twice 'A' Grade</span>
+            <span class="accred-pill">48.96 Acres</span>
+          </div>
+        </div>
+
+        <div class="heritage-stats-box">
+          <div class="stats-box-header">PRIMARY CAMPUS COORDINATES</div>
+          <div class="poi-list">
+            <div class="poi-item"><span class="poi-dot"></span>Central Admin Block (21.3854°N, 79.3056°E)</div>
+            <div class="poi-item"><span class="poi-dot"></span>Computer Technology &amp; AI Labs</div>
+            <div class="poi-item"><span class="poi-dot"></span>Central Library &amp; Digital Center</div>
+            <div class="poi-item"><span class="poi-dot"></span>Jamuna and Triveni Hostels</div>
+            <div class="poi-item"><span class="poi-dot"></span>Gymnasium and Sports Stadium</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CALL TO ACTION ═══ -->
+    <section class="content-wrapper">
+      <div class="launch-banner-wrap">
+        <h2>Start navigating now</h2>
+        <p>No app stores or downloads required. Launch EnRouteAR in your mobile browser and explore campus in augmented reality.</p>
+        <a href="navigation.html" class="cta-button-primary" style="height:52px; padding:0 32px; font-size:1rem;" id="cta-launch-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Open AR Viewfinder
         </a>
       </div>
     </section>
 
     <!-- ═══ CONTACT ═══ -->
-    <section class="content-section alt-bg" id="contact">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
-          CONTACT US
-          <span class="label-line"></span>
-        </div>
-        <h2 class="section-title reveal">Get in <span class="gradient-text">Touch</span></h2>
-        <div class="contact-layout">
-          <div class="contact-info reveal">
-            <p>Have questions about the project, want to collaborate, or found a bug? Fill out the form and our team will get back to you.</p>
-            <div class="contact-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              KITS Ramtek, Nagpur, Maharashtra
-            </div>
-            <div class="contact-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              via kits.edu contact portal
+    <section class="content-wrapper" id="contact">
+      <div class="section-head">
+        <h2 class="section-h2">Get in touch</h2>
+        <p class="section-p">Questions regarding EnRouteAR or campus navigation? Send a message directly to the project team.</p>
+      </div>
+
+      <div class="contact-split-wrap">
+        <div class="contact-info-panel">
+          <h3>Campus Location</h3>
+          <div class="contact-meta-row">
+            <div>
+              <strong>Address</strong><br>
+              Kavikulguru Institute of Technology &amp; Science, Ramtek, Nagpur District, Maharashtra 441106
             </div>
           </div>
-          <form class="contact-form reveal" action="https://formspree.io/f/mgegpkeb" method="POST">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" placeholder="Your full name" required>
+          <div class="contact-meta-row">
+            <div>
+              <strong>Institution Portal</strong><br>
+              <a href="https://www.kits.edu/" target="_blank" rel="noopener" style="color:var(--accent-cyan); text-decoration:none;">kits.edu</a>
             </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="your@email.com" required>
-            </div>
-            <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="5" placeholder="Tell us what you're thinking…" required></textarea>
-            </div>
-            <button type="submit" class="btn-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Send Message
-            </button>
-          </form>
+          </div>
         </div>
+
+        <form class="contact-form-panel" action="https://formspree.io/f/mgegpkeb" method="POST">
+          <div class="field-group">
+            <label for="contact-name" class="field-label">Name</label>
+            <input type="text" id="contact-name" name="name" class="field-input" placeholder="Your full name" required>
+          </div>
+          <div class="field-group">
+            <label for="contact-email" class="field-label">Email</label>
+            <input type="email" id="contact-email" name="email" class="field-input" placeholder="you@domain.com" required>
+          </div>
+          <div class="field-group">
+            <label for="contact-message" class="field-label">Message</label>
+            <textarea id="contact-message" name="message" class="field-textarea" rows="4" placeholder="How can we help?" required></textarea>
+          </div>
+          <button type="submit" class="cta-button-primary" style="align-self:flex-start; margin-top:4px;">
+            Send Message
+          </button>
+        </form>
       </div>
     </section>
 
   </main>
 
+  <!-- ═══ FOOTER ═══ -->
   <footer>
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="logo-mark sm">
-          <span class="logo-bracket">[</span>
-          <span class="logo-text">EnRoute<span class="logo-accent">AR</span></span>
-          <span class="logo-bracket">]</span>
-        </div>
-        <p>Augmented Reality Navigation for KITS Ramtek Campus.</p>
+    <div class="footer-content">
+      <div>
+        <div class="footer-brand-title">EnRouteAR</div>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;">Spatial Campus Navigation for KITS Ramtek</p>
       </div>
-      <div class="footer-links">
-        <a href="#about">About</a>
-        <a href="#college">Campus</a>
-        <a href="#vision">Vision</a>
-        <a href="#contact">Contact</a>
-        <a href="https://www.kits.edu/" target="_blank" rel="noopener">kits.edu</a>
+
+      <div class="footer-nav-list">
+        <a href="#overview">System</a>
+        <a href="#campus">Campus Hubs</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#heritage">Heritage</a>
+        <a href="https://www.kits.edu/" target="_blank" rel="noopener">KITS Ramtek</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 EnRouteAR — All rights reserved.</p>
+
+    <div class="footer-bottom-row">
+      <span>&copy; 2026 EnRouteAR. Built with A-Frame, AR.js, Three.js, and Mapbox GL.</span>
+      <span>Kavikulguru Institute of Technology &amp; Science</span>
     </div>
   </footer>
 
+  <!-- Scripts -->
+  <script src="scripts/places.js"></script>
   <script>
-    // Location permission + navigation
+    // Navigation handler
     function launchAR(event) {
       event.preventDefault();
-      const dest = event.currentTarget.href;
+      const dest = event.currentTarget.href || 'navigation.html';
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           () => { window.location.href = dest; },
-          (err) => { console.warn('Geolocation error:', err.message); window.location.href = dest; },
-          { enableHighAccuracy: false, timeout: 8000 }
+          (err) => { console.warn('Location check notice:', err.message); window.location.href = dest; },
+          { enableHighAccuracy: false, timeout: 6000 }
         );
       } else {
         window.location.href = dest;
       }
     }
 
-    ['turnOnLocationBtn','nav-launch-btn','mobile-launch-btn','cta-launch-btn'].forEach(id => {
+    ['turnOnLocationBtn', 'nav-launch-btn', 'cta-launch-btn'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('click', launchAR);
     });
 
-    // Mobile menu
+    // Mobile nav toggle
     const menuBtn = document.getElementById('mobile-menu-btn');
     const mobileNav = document.getElementById('mobile-nav');
     if (menuBtn && mobileNav) {
@@ -389,84 +363,92 @@
         mobileNav.classList.toggle('open');
         menuBtn.classList.toggle('active');
       });
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNav.classList.remove('open');
+          menuBtn.classList.remove('active');
+        });
+      });
     }
 
-    // Header scroll behaviour
+    // Header scroll background
     const header = document.getElementById('site-header');
     window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 40);
+      if (header) {
+        header.classList.toggle('scrolled', window.scrollY > 25);
+      }
     }, { passive: true });
 
-    // Reveal on scroll
-    const revealEls = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const delay = entry.target.dataset.delay || 0;
-          setTimeout(() => entry.target.classList.add('visible'), Number(delay));
-          observer.unobserve(entry.target);
-        }
+    // Render Campus Hubs Directory
+    const directoryGrid = document.getElementById('campus-directory-grid');
+    const filterTabs = document.querySelectorAll('.filter-tab-pill');
+    const searchInput = document.getElementById('campus-search');
+
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    function renderDirectory() {
+      if (!directoryGrid || typeof places === 'undefined') return;
+      directoryGrid.innerHTML = '';
+
+      const filtered = places.filter(p => {
+        if (p.category === 'test') return false;
+        const matchesCategory = currentCategory === 'all' || p.category === currentCategory;
+        const matchesSearch = !currentSearch || 
+          p.name.toLowerCase().includes(currentSearch) || 
+          (p.desc && p.desc.toLowerCase().includes(currentSearch)) ||
+          (p.code && p.code.toLowerCase().includes(currentSearch));
+        return matchesCategory && matchesSearch;
       });
-    }, { threshold: 0.12 });
-    revealEls.forEach(el => observer.observe(el));
 
-    // Background canvas — animated star-grid
-    (function() {
-      const canvas = document.getElementById('bg-canvas');
-      const ctx = canvas.getContext('2d');
-      let W, H, stars = [], animId;
-
-      function resize() {
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
+      if (filtered.length === 0) {
+        directoryGrid.innerHTML = '<div style="grid-column: 1 / -1; padding: 32px 0; color: var(--text-muted); text-align: center;">No campus destinations match your search.</div>';
+        return;
       }
 
-      function initStars() {
-        stars = Array.from({ length: 120 }, () => ({
-          x: Math.random() * W, y: Math.random() * H,
-          r: Math.random() * 1.2 + 0.2,
-          alpha: Math.random() * 0.6 + 0.1,
-          speed: Math.random() * 0.15 + 0.03,
-        }));
-      }
+      filtered.forEach(p => {
+        const code = p.code || p.name.slice(0, 3).toUpperCase();
+        const cat = p.category ? p.category.toUpperCase() : 'CAMPUS';
+        const desc = p.desc || 'Campus location at KITS Ramtek';
 
-      function drawGrid() {
-        const spacing = 60;
-        ctx.strokeStyle = 'rgba(0,180,255,0.04)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (let x = 0; x < W; x += spacing) {
-          ctx.moveTo(x, 0); ctx.lineTo(x, H);
-        }
-        for (let y = 0; y < H; y += spacing) {
-          ctx.moveTo(0, y); ctx.lineTo(W, y);
-        }
-        ctx.stroke();
-      }
+        const card = document.createElement('div');
+        card.className = 'directory-card';
+        card.innerHTML = `
+          <div class="card-top-row">
+            <span class="card-code-pill">${code}</span>
+            <span class="card-cat-label">${cat}</span>
+          </div>
+          <div class="card-title">${p.name}</div>
+          <div class="card-desc">${desc}</div>
+          <div class="card-bottom-row">
+            <span class="card-coords">${p.latitude.toFixed(4)}°N, ${p.longitude.toFixed(4)}°E</span>
+            <a href="navigation.html?dest=${encodeURIComponent(p.name)}" class="card-nav-link">
+              Navigate
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>
+          </div>
+        `;
+        directoryGrid.appendChild(card);
+      });
+    }
 
-      function drawStars() {
-        stars.forEach(s => {
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(180,230,255,${s.alpha})`;
-          ctx.fill();
-          s.y -= s.speed;
-          if (s.y < -2) { s.y = H + 2; s.x = Math.random() * W; }
-        });
-      }
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentCategory = tab.dataset.cat;
+        renderDirectory();
+      });
+    });
 
-      function frame() {
-        ctx.clearRect(0, 0, W, H);
-        drawGrid();
-        drawStars();
-        animId = requestAnimationFrame(frame);
-      }
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim().toLowerCase();
+        renderDirectory();
+      });
+    }
 
-      resize();
-      initStars();
-      frame();
-      window.addEventListener('resize', () => { resize(); initStars(); }, { passive: true });
-    })();
+    renderDirectory();
   </script>
 </body>
 </html>

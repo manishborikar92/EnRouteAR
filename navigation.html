@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>EnRouteAR</title>
+    <meta name="theme-color" content="#070b12">
+    <title>EnRouteAR : Spatial Campus Navigation</title>
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
@@ -12,10 +13,10 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
     <link rel="manifest" href="favicon/site.webmanifest">
 
-    <!-- Fonts (same as index page) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- A-Frame core -->
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
@@ -40,20 +41,84 @@
 
     <div class="container">
 
-        <!-- Destination selector -->
-        <div id="destination-select-container">
+        <!-- Top Spatial HUD Island -->
+        <header id="spatial-top-island">
+            <a href="index.html" class="spatial-island-btn" id="btn-back-home" aria-label="Return to Campus Home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </a>
+
+            <button class="spatial-search-capsule" id="search-trigger" type="button" aria-haspopup="dialog" aria-expanded="false">
+                <div class="search-capsule-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <div class="search-capsule-info">
+                    <span class="search-capsule-label">Destination</span>
+                    <span class="search-capsule-val" id="search-trigger-text">Select Campus Hub...</span>
+                </div>
+                <div class="search-capsule-badge">
+                    <span>14 Hubs</span>
+                </div>
+            </button>
+
+            <div class="spatial-telemetry-badge" id="gps-status-badge">
+                <span class="status-pulse-dot" id="gps-pulse"></span>
+                <span class="status-text" id="gps-status-text">GPS Sync</span>
+            </div>
+        </header>
+
+        <!-- Hidden legacy controls for backward compatibility with script.js -->
+        <div id="destination-select-container" style="display: none;" aria-hidden="true">
             <select id="select-destination">
                 <option value="example">Select Destination</option>
             </select>
             <button id="get-direction-button">Navigate</button>
         </div>
 
-        <!-- AR scene -->
-        <!--
-            renderer="alpha: true" — canvas is transparent so the camera video
-            shows through it from behind. This replaces videoTexture:true which
-            hides the video element, causing Android Chrome to suspend it.
-        -->
+        <!-- AR Reticle / Spatial Horizon Guide -->
+        <div class="spatial-reticle" aria-hidden="true">
+            <div class="reticle-crosshair"></div>
+            <div class="reticle-bracket top-left"></div>
+            <div class="reticle-bracket top-right"></div>
+            <div class="reticle-bracket bottom-left"></div>
+            <div class="reticle-bracket bottom-right"></div>
+            <div class="reticle-horizon"></div>
+        </div>
+
+        <!-- Active Route Guidance Card (Floats below top bar when navigating) -->
+        <div class="active-route-card" id="active-route-card">
+            <div class="route-card-main">
+                <div class="route-icon-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                    </svg>
+                </div>
+                <div class="route-card-text">
+                    <div class="route-step-action">Follow 3D waypoints</div>
+                    <div class="route-dest-name" id="route-dest-name">Destination</div>
+                    <div class="route-meta">
+                        <span class="route-dist-tag" id="route-dest-distance">-- m</span>
+                        <span class="route-meta-sep">&bull;</span>
+                        <span class="route-eta-tag" id="route-dest-eta">-- min</span>
+                    </div>
+                </div>
+                <button class="route-close-btn" id="btn-end-route" aria-label="End Navigation">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="route-progress-track">
+                <div class="route-progress-bar" id="route-progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- AR Scene -->
         <a-scene
             loading-screen="enabled: false"
             renderer="alpha: true; logarithmicDepthBuffer: true;"
@@ -65,20 +130,83 @@
             <a-camera gps-new-camera="minDistance: 10;" rotation-reader></a-camera>
         </a-scene>
 
-        <!-- Compass -->
-        <div id="compass-container"></div>
+        <!-- Spatial Controls Layer (Compass & Multifunction pill) -->
+        <div class="spatial-controls-layer">
+            <div id="compass-container" class="compass-wrapper">
+                <div class="compass-degree-chip" id="compass-degrees">0° N</div>
+            </div>
 
-        <!-- 2D map -->
-        <div id="map-container">
+            <div id="multifunction-container">
+                <button id="multifunction-button" class="multifunction-button" aria-label="Toggle camera map sync">
+                    <img id="centeredImage" alt="Multifunction Icon">
+                    <span class="multifunction-label" id="multifunction-label">Center GPS</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2D Map Spatial Sheet -->
+        <div id="map-container" class="map-sheet">
+            <div class="map-sheet-header" id="map-sheet-toggle">
+                <div class="map-sheet-handle"></div>
+                <div class="map-sheet-info">
+                    <span class="map-radar-pulse"></span>
+                    <span class="map-sheet-title">Satellite Radar</span>
+                </div>
+                <button class="map-expand-toggle" id="map-expand-btn" aria-label="Toggle map size">
+                    <svg id="map-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                </button>
+            </div>
             <div id="map"></div>
         </div>
 
-        <!-- Multifunction button -->
-        <div id="multifunction-container">
-            <button id="multifunction-button" class="multifunction-button">
-                <img id="centeredImage" alt="Multifunction Icon">
-            </button>
-        </div>
+        <!-- Destination Selection Drawer (Bottom Sheet) -->
+        <div class="destination-drawer-overlay" id="drawer-backdrop"></div>
+        <aside class="destination-drawer" id="destination-drawer" role="dialog" aria-modal="true" aria-label="Select Campus Destination">
+            <div class="drawer-header">
+                <div class="drawer-drag-pill"></div>
+                <div class="drawer-header-row">
+                    <div>
+                        <h2 class="drawer-title">Campus Destinations</h2>
+                        <p class="drawer-subtitle">KITS Ramtek, 14 GPS Waypoints</p>
+                    </div>
+                    <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close drawer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Instant Search Input -->
+                <div class="drawer-search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-svg">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="dest-search-input" class="drawer-search-input" placeholder="Search department, hostel, canteen..." autocomplete="off">
+                    <button type="button" id="dest-search-clear" class="search-clear-btn" style="display:none;" aria-label="Clear search">✕</button>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="drawer-filter-chips">
+                    <button type="button" class="filter-chip active" data-category="all">All Hubs</button>
+                    <button type="button" class="filter-chip" data-category="academic">Academic</button>
+                    <button type="button" class="filter-chip" data-category="hostel">Hostels</button>
+                    <button type="button" class="filter-chip" data-category="facility">Facilities</button>
+                    <button type="button" class="filter-chip" data-category="admin">Admin</button>
+                </div>
+            </div>
+
+            <!-- Scrollable Places Cards List -->
+            <div class="drawer-places-list" id="drawer-places-list">
+                <!-- Dynamically populated by script.js -->
+            </div>
+        </aside>
 
     </div>
 
