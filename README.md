@@ -15,9 +15,8 @@ EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto yo
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-  - [Next.js Application (`web/`)](#1-nextjs-application-web---active-production-app)
-  - [Vanilla Reference Site (`vanilla/`)](#2-vanilla-reference-site-vanilla---standalone)
-- [Vercel Deployment Configuration](#vercel-deployment-configuration)
+  - [Vanilla Site (`vanilla/`)](#1-vanilla-site-vanilla---active-production-app)
+  - [Next.js Application (`web/`)](#2-nextjs-application-web---in-development)
 - [Campus Locations](#campus-locations)
 - [How It Works](#how-it-works)
 - [Device Requirements](#device-requirements)
@@ -37,8 +36,8 @@ EnRouteAR is a mobile-first web application that fuses augmented reality with re
 A device-orientation compass keeps both the AR scene and the map bearing locked to the user's heading as they walk.
 
 The repository contains two clean, decoupled implementations:
-1. **`web/`** — Modern **Next.js 16 + React 19 + Tailwind CSS v4** progressive web application (active target for Vercel production deployment).
-2. **`vanilla/`** — Self-contained, zero-dependency **HTML5 + Tailwind CSS v4 + Vanilla JS** reference implementation.
+1. **`vanilla/`** — Active production deployment: Self-contained, zero-dependency **HTML5 + Tailwind CSS v4 + Vanilla JS** application.
+2. **`web/`** — Under development: Future **Next.js 16 + React 19 + Tailwind CSS v4** progressive web application.
 
 ---
 
@@ -70,7 +69,7 @@ The repository contains two clean, decoupled implementations:
 | 2D Mapping | [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) | 3.2.0 | Satellite-streets tiles |
 | Walking Directions | [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/) | v5 | GeoJSON route geometry |
 | Fonts | [Google Fonts](https://fonts.google.com/) | — | Orbitron (display) & Outfit (body) |
-| Hosting | [Vercel](https://vercel.com/) | — | Deployed from `web/` root directory |
+| Hosting | [Vercel](https://vercel.com/) | — | Deployed from `vanilla/` root directory |
 
 ---
 
@@ -79,7 +78,19 @@ The repository contains two clean, decoupled implementations:
 ```
 enroutear/
 │
-├── web/                                # Next.js 16 + React 19 application (Vercel Root)
+├── vanilla/                            # Active HTML5/Tailwind v4 app (Vercel Root)
+│   ├── index.html                      # Landing page
+│   ├── navigation.html                 # AR navigation view
+│   ├── styles/
+│   │   ├── index.css                   # Compiled Tailwind v4 landing styles
+│   │   └── navigation.css              # Compiled Tailwind v4 navigation styles
+│   ├── scripts/
+│   │   ├── places.js                   # 14 campus destination coordinates
+│   │   └── script.js                   # Navigation logic (map, AR, GPS, compass)
+│   ├── models/                         # 3D assets & HUD icons
+│   └── favicon/                        # Favicon assets & webmanifest
+│
+├── web/                                # Next.js 16 + React 19 application (In Development)
 │   ├── src/
 │   │   └── app/
 │   │       ├── layout.js               # Root layout with PWA metadata
@@ -95,18 +106,6 @@ enroutear/
 │   ├── package.json                    # Next.js & React dependencies
 │   ├── next.config.mjs                 # Next.js configuration
 │   └── postcss.config.mjs              # PostCSS / Tailwind v4 plugin
-│
-├── vanilla/                            # Self-contained vanilla HTML/CSS/JS reference
-│   ├── index.html                      # Landing page
-│   ├── navigation.html                 # AR navigation view
-│   ├── styles/
-│   │   ├── index.css                   # Compiled Tailwind v4 landing styles
-│   │   └── navigation.css              # Compiled Tailwind v4 navigation styles
-│   ├── scripts/
-│   │   ├── places.js                   # 14 campus destination coordinates
-│   │   └── script.js                   # Navigation logic (map, AR, GPS, compass)
-│   ├── models/                         # 3D assets & HUD icons
-│   └── favicon/                        # Favicon assets & webmanifest
 │
 ├── docs/                               # Architectural plans & migration specs
 ├── design/                             # UI mockups & color palette references
@@ -128,7 +127,29 @@ enroutear/
 
 ---
 
-### 1. Next.js Application (`web/`) — Active Production App
+### 1. Vanilla Site (`vanilla/`) — Active Production App
+
+The `vanilla/` directory runs directly in the browser with zero build tools:
+
+1. **Serve over HTTPS (Local Development):**
+
+   ```bash
+   # Start a local static file server inside vanilla/
+   npx serve vanilla -l 8080
+
+   # In a separate terminal, tunnel via ngrok to test on a physical smartphone
+   ngrok http 8080
+   ```
+
+2. **Grant permissions on your smartphone:**
+   - **Camera** — required for the AR camera pass-through
+   - **Location** — required for GPS positioning and route calculation
+
+---
+
+### 2. Next.js Application (`web/`) — In Development
+
+> **Note:** The Next.js implementation is currently in development and not yet the production target.
 
 1. **Navigate to the web directory and install dependencies:**
 
@@ -153,51 +174,11 @@ enroutear/
    npm run dev
    ```
 
-4. **Build for production:**
+4. **Build:**
 
    ```bash
    npm run build
    ```
-
----
-
-### 2. Vanilla Reference Site (`vanilla/`) — Standalone
-
-The `vanilla/` directory runs directly in the browser with zero build tools:
-
-1. **Serve over HTTPS:**
-
-   ```bash
-   # Start a local static file server inside vanilla/
-   npx serve vanilla -l 8080
-
-   # In a separate terminal, tunnel via ngrok to test on a physical smartphone
-   ngrok http 8080
-   ```
-
-2. **Grant permissions on your smartphone:**
-   - **Camera** — required for the AR camera pass-through
-   - **Location** — required for GPS positioning and route calculation
-
----
-
-## Vercel Deployment Configuration
-
-When deploying this repository to [Vercel](https://vercel.com/), configure the project settings to build from `web/`:
-
-| Setting | Value | Notes |
-|---|---|---|
-| **Root Directory** | `web` | In Project Settings ➔ General ➔ Root Directory |
-| **Framework Preset** | **Next.js** | Automatically detected |
-| **Build Command** | `next build` (Default) | Standard Next.js production build |
-| **Output Directory** | `.next` (Default) | Next.js build output |
-| **Install Command** | `npm install` (Default) | Installs dependencies in `web/` |
-
-### Environment Variables on Vercel
-Add the following in Vercel **Settings ➔ Environment Variables**:
-- `NEXT_PUBLIC_APP_URL` — e.g. `https://enroutear.vercel.app`
-- `NEXT_PUBLIC_FORMSPREE_ENDPOINT` — Formspree submission endpoint
-- `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` — Your Mapbox public access token
 
 ---
 
