@@ -46,7 +46,7 @@ The chosen tech stack is optimized for rapid development, scalability, and AR/ma
 The project structure is modular, feature-based, and follows Next.js conventions:
 
 ```
-ar-navigation-app/
+EnRouteAR/
 ├── src/
 │   ├── app/                     # App Router (Next.js 13+)
 │   │   ├── api/                 # Backend API routes

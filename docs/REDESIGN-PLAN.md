@@ -1,4 +1,3 @@
-# REDESIGN-PLAN.md
 # EnRouteAR — Professional UI Redesign Plan
 
 ---
