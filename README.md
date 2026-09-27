@@ -1,6 +1,6 @@
 # EnRouteAR
 
-**Augmented Reality campus navigation for smartphones — powered by A-Frame, AR.js, and Mapbox.**
+**Augmented Reality campus navigation for smartphones — powered by Next.js, Tailwind CSS, A-Frame, AR.js, and Mapbox.**
 
 EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto your live camera feed, letting you navigate Kavikulguru Institute of Technology and Science (KITS), Ramtek without ever looking down at a traditional map.
 
@@ -15,6 +15,9 @@ EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto yo
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
+  - [Next.js Application (`web/`)](#1-nextjs-application-web---active-production-app)
+  - [Vanilla Reference Site (`vanilla/`)](#2-vanilla-reference-site-vanilla---standalone)
+- [Vercel Deployment Configuration](#vercel-deployment-configuration)
 - [Campus Locations](#campus-locations)
 - [How It Works](#how-it-works)
 - [Device Requirements](#device-requirements)
@@ -33,6 +36,10 @@ EnRouteAR is a mobile-first web application that fuses augmented reality with re
 
 A device-orientation compass keeps both the AR scene and the map bearing locked to the user's heading as they walk.
 
+The repository contains two clean, decoupled implementations:
+1. **`web/`** — Modern **Next.js 16 + React 19 + Tailwind CSS v4** progressive web application (active target for Vercel production deployment).
+2. **`vanilla/`** — Self-contained, zero-dependency **HTML5 + Tailwind CSS v4 + Vanilla JS** reference implementation.
+
 ---
 
 ## Features
@@ -46,24 +53,24 @@ A device-orientation compass keeps both the AR scene and the map bearing locked 
 | **Satellite mini-map** | Mapbox satellite-streets panel with live position marker and route polyline |
 | **Multifunction button** | Context-aware button that cycles through: centre map → enable bearing → reset route |
 | **14 campus destinations** | Pre-mapped locations covering all departments, hostels, canteen, library, and gym |
+| **Tailwind CSS v4 Styling** | High-performance CSS-first architecture with custom neon HUD aesthetic and glassmorphism |
 | **Responsive landing page** | Animated hero, scroll-reveal sections, mobile navigation, and a contact form |
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| AR framework | [A-Frame](https://aframe.io/) | 1.3.0 |
-| Location-based AR | [AR.js](https://ar-js-org.github.io/AR.js-Docs/) (location-only build) | latest |
-| 3D engine | Three.js | bundled with AR.js |
-| 2D mapping | [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) | 3.2.0 |
-| Walking directions | [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/) | v5 |
-| Fonts | [Google Fonts](https://fonts.google.com/) — Orbitron, Outfit | — |
-| Hosting | [Vercel](https://vercel.com/) | — |
-| Language | Vanilla HTML, CSS, JavaScript (ES2020+) | — |
-
-No build tools, bundlers, or frameworks are required. The project runs directly in the browser from static files.
+| Layer | Technology | Version | Notes |
+|---|---|---|---|
+| Web Framework | [Next.js](https://nextjs.org/) | 16.3+ | App Router, Turbopack, React 19 in `web/` |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) | 4.3+ | CSS-first configuration (`@theme`) across all views |
+| AR Framework | [A-Frame](https://aframe.io/) | 1.3.0 | WebGL 3D scene graph |
+| Location-based AR | [AR.js](https://ar-js-org.github.io/AR.js-Docs/) | latest | Location-only build |
+| 3D Engine | Three.js | bundled | Bundled with AR.js |
+| 2D Mapping | [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) | 3.2.0 | Satellite-streets tiles |
+| Walking Directions | [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/) | v5 | GeoJSON route geometry |
+| Fonts | [Google Fonts](https://fonts.google.com/) | — | Orbitron (display) & Outfit (body) |
+| Hosting | [Vercel](https://vercel.com/) | — | Deployed from `web/` root directory |
 
 ---
 
@@ -72,31 +79,39 @@ No build tools, bundlers, or frameworks are required. The project runs directly 
 ```
 enroutear/
 │
-├── index.html              # Landing page
-├── navigation.html         # AR navigation view
+├── web/                                # Next.js 16 + React 19 application (Vercel Root)
+│   ├── src/
+│   │   └── app/
+│   │       ├── layout.js               # Root layout with PWA metadata
+│   │       ├── page.js                 # Landing page route
+│   │       └── globals.css             # Tailwind CSS v4 stylesheet
+│   ├── public/                         # Public static assets
+│   │   ├── models/                     # 3D pointer GLB, compass & button state icons
+│   │   ├── favicon/                    # PWA icons & site.webmanifest
+│   │   ├── logos/                      # Brand vector and transparent logos
+│   │   ├── web-app-manifest-192x192.png
+│   │   └── web-app-manifest-512x512.png
+│   ├── .env.local                      # Local environment variables
+│   ├── package.json                    # Next.js & React dependencies
+│   ├── next.config.mjs                 # Next.js configuration
+│   └── postcss.config.mjs              # PostCSS / Tailwind v4 plugin
 │
-├── styles/
-│   ├── index.css           # Landing page styles
-│   └── navigation.css      # Navigation view styles
+├── vanilla/                            # Self-contained vanilla HTML/CSS/JS reference
+│   ├── index.html                      # Landing page
+│   ├── navigation.html                 # AR navigation view
+│   ├── styles/
+│   │   ├── index.css                   # Compiled Tailwind v4 landing styles
+│   │   └── navigation.css              # Compiled Tailwind v4 navigation styles
+│   ├── scripts/
+│   │   ├── places.js                   # 14 campus destination coordinates
+│   │   └── script.js                   # Navigation logic (map, AR, GPS, compass)
+│   ├── models/                         # 3D assets & HUD icons
+│   └── favicon/                        # Favicon assets & webmanifest
 │
-├── scripts/
-│   ├── places.js           # Campus location coordinates
-│   └── script.js           # Navigation logic (map, AR, GPS, compass)
-│
-├── models/
-│   ├── map_pointer_3d_icon.glb   # Destination pointer (3D model)
-│   ├── compass.png               # Compass indicator image
-│   ├── current.png               # Current-location marker image
-│   ├── centered.png              # Multifunction button — centred state
-│   ├── bearing.png               # Multifunction button — bearing state
-│   ├── recenter.png              # Multifunction button — recenter state
-│   └── reset-all.png             # Multifunction button — reset state
-│
-└── favicon/
-    ├── apple-touch-icon.png
-    ├── favicon-32x32.png
-    ├── favicon-16x16.png
-    └── site.webmanifest
+├── docs/                               # Architectural plans & migration specs
+├── design/                             # UI mockups & color palette references
+├── logos/                              # Master brand logos
+└── README.md
 ```
 
 ---
@@ -105,57 +120,84 @@ enroutear/
 
 ### Prerequisites
 
+- Node.js 18.17+ or 20+ (for `web/`)
 - A modern smartphone with a rear-facing camera
-- A browser that supports the [Geolocation API](https://caniuse.com/geolocation), [DeviceOrientation API](https://caniuse.com/deviceorientation), and [WebGL](https://caniuse.com/webgl)
+- A browser supporting the [Geolocation API](https://caniuse.com/geolocation), [DeviceOrientation API](https://caniuse.com/deviceorientation), and [WebGL](https://caniuse.com/webgl)
 - Recommended: **Android Chrome** or **iOS Safari 15+**
-- HTTPS is required — the Geolocation and Camera APIs will not work over plain HTTP
+- HTTPS is mandatory for camera and GPS access
 
-### Running locally
+---
 
-1. **Clone the repository**
+### 1. Next.js Application (`web/`) — Active Production App
+
+1. **Navigate to the web directory and install dependencies:**
 
    ```bash
-   git clone https://github.com/your-username/enroutear.git
-   cd enroutear
+   cd web
+   npm install
    ```
 
-2. **Serve over HTTPS**
+2. **Configure environment variables:**
 
-   The app requires HTTPS for camera and GPS access. Use any local HTTPS server. A quick option with [ngrok](https://ngrok.com/):
+   Create or verify `web/.env.local`:
+
+   ```env
+   NEXT_PUBLIC_APP_URL="https://enroutear.vercel.app"
+   NEXT_PUBLIC_FORMSPREE_ENDPOINT="https://formspree.io/f/mgegpkeb"
+   NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="your_mapbox_token_here"
+   ```
+
+3. **Start the local development server:**
 
    ```bash
-   # Start any static file server on port 8080
-   npx serve . -l 8080
+   npm run dev
+   ```
 
-   # In a separate terminal, expose it over HTTPS
+4. **Build for production:**
+
+   ```bash
+   npm run build
+   ```
+
+---
+
+### 2. Vanilla Reference Site (`vanilla/`) — Standalone
+
+The `vanilla/` directory runs directly in the browser with zero build tools:
+
+1. **Serve over HTTPS:**
+
+   ```bash
+   # Start a local static file server inside vanilla/
+   npx serve vanilla -l 8080
+
+   # In a separate terminal, tunnel via ngrok to test on a physical smartphone
    ngrok http 8080
    ```
 
-   Then open the ngrok HTTPS URL on your phone.
-
-   Alternatively, deploy directly to Vercel or Netlify — both serve over HTTPS by default.
-
-3. **Grant permissions**
-
-   When the navigation page loads, the browser will request:
-   - **Camera** — required for the AR view
+2. **Grant permissions on your smartphone:**
+   - **Camera** — required for the AR camera pass-through
    - **Location** — required for GPS positioning and route calculation
 
-### Mapbox access token
+---
 
-The Mapbox token in `script.js` and `navigation.html` is scoped to the project's domain. If you fork this project and deploy to a different domain, you will need to replace it with your own token from [account.mapbox.com](https://account.mapbox.com/).
+## Vercel Deployment Configuration
 
-```js
-// script.js — line 42
-const MAPBOX_TOKEN = 'your_token_here';
-```
+When deploying this repository to [Vercel](https://vercel.com/), configure the project settings to build from `web/`:
 
-```html
-<!-- navigation.html — head section -->
-<script>
-    mapboxgl.accessToken = 'your_token_here';
-</script>
-```
+| Setting | Value | Notes |
+|---|---|---|
+| **Root Directory** | `web` | In Project Settings ➔ General ➔ Root Directory |
+| **Framework Preset** | **Next.js** | Automatically detected |
+| **Build Command** | `next build` (Default) | Standard Next.js production build |
+| **Output Directory** | `.next` (Default) | Next.js build output |
+| **Install Command** | `npm install` (Default) | Installs dependencies in `web/` |
+
+### Environment Variables on Vercel
+Add the following in Vercel **Settings ➔ Environment Variables**:
+- `NEXT_PUBLIC_APP_URL` — e.g. `https://enroutear.vercel.app`
+- `NEXT_PUBLIC_FORMSPREE_ENDPOINT` — Formspree submission endpoint
+- `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` — Your Mapbox public access token
 
 ---
 
@@ -182,13 +224,11 @@ The following 14 locations are pre-mapped within KITS Ramtek campus (21.385°N, 
 
 ### Adding a new location
 
-Open `scripts/places.js` and append an entry to the `places` array:
+In `vanilla/scripts/places.js` (or in the Next.js places configuration), append an entry to the `places` array:
 
 ```js
 { name: 'New Building', latitude: 21.38600, longitude: 79.30650 },
 ```
-
-No other changes are needed — the destination dropdown is populated dynamically from this array.
 
 ---
 
@@ -208,7 +248,7 @@ getUserMedia() → <video> element (visible in DOM)
      appear to float over the real world
 ```
 
-Using `renderer="alpha: true"` keeps the `<video>` element visible in the DOM at all times. This is important for Android Chrome stability — hiding the video element (as `videoTexture: true` does) causes the browser's power manager to suspend the camera stream after approximately one second, resulting in a black screen.
+Using `renderer="alpha: true"` keeps the `<video>` element visible in the DOM at all times. This prevents Android Chrome's power manager from suspending the camera stream.
 
 ### Route rendering
 
@@ -263,11 +303,9 @@ Contributions are welcome. To propose a change:
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m "feat: describe your change"`
+3. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/): `git commit -m "feat: describe your change"`
 4. Push to the branch: `git push origin feature/your-feature-name`
 5. Open a Pull Request
-
-Please keep changes focused and test on a physical mobile device before submitting.
 
 ---
 
@@ -300,5 +338,5 @@ SOFTWARE.
 ---
 
 <p align="center">
-  Built for KITS Ramtek Campus &nbsp;·&nbsp; Powered by A-Frame, AR.js &amp; Mapbox
+  Built for KITS Ramtek Campus &nbsp;·&nbsp; Powered by Next.js, Tailwind CSS, A-Frame, AR.js &amp; Mapbox
 </p>
