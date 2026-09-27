@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth text-[16px]">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,321 +13,323 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/index.css">
 </head>
-<body>
+<body class="font-body bg-bg text-text-1 overflow-x-hidden leading-[1.6] antialiased">
 
   <!-- Animated background canvas -->
-  <canvas id="bg-canvas"></canvas>
+  <canvas id="bg-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
 
   <!-- Scan-line overlay -->
-  <div class="scanlines" aria-hidden="true"></div>
+  <div class="scanlines fixed inset-0 z-1 pointer-events-none" aria-hidden="true"></div>
 
   <!-- Header -->
-  <header id="site-header">
-    <div class="header-inner">
-      <div class="logo-wrap">
-        <div class="logo-mark">
-          <span class="logo-bracket">[</span>
-          <span class="logo-text">EnRoute<span class="logo-accent">AR</span></span>
-          <span class="logo-bracket">]</span>
+  <header id="site-header" class="fixed top-0 left-0 right-0 z-100 transition-[background,padding,border-color,backdrop-filter] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">
+    <div class="header-inner flex items-center justify-between px-10 py-[18px] max-md:px-5 max-md:py-3.5 transition-[padding,background,border-color,backdrop-filter] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">
+      <div class="logo-wrap select-none">
+        <div class="logo-mark font-display font-bold text-[1.25rem] tracking-[0.08em] text-text-1">
+          <span class="logo-bracket text-primary">[</span>
+          <span class="logo-text">EnRoute<span class="logo-accent text-accent">AR</span></span>
+          <span class="logo-bracket text-primary">]</span>
         </div>
-        <div class="logo-sub">AUGMENTED REALITY NAVIGATION</div>
+        <div class="logo-sub font-display text-[0.52rem] tracking-[0.2em] text-text-3 mt-[2px]">AUGMENTED REALITY NAVIGATION</div>
       </div>
-      <nav class="site-nav">
-        <a href="#about">About</a>
-        <a href="#college">Campus</a>
-        <a href="#vision">Vision</a>
-        <a href="#contact">Contact</a>
-        <a href="navigation.html" class="nav-cta" id="nav-launch-btn">Launch AR</a>
+      <nav class="site-nav hidden md:flex items-center gap-8">
+        <a href="#about" class="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">About</a>
+        <a href="#college" class="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">Campus</a>
+        <a href="#vision" class="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">Vision</a>
+        <a href="#contact" class="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">Contact</a>
+        <a href="navigation.html" class="nav-cta inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-dk text-white! px-5 py-2 rounded-sm font-display text-[0.68rem]! tracking-[0.12em] no-underline hover:shadow-[0_0_20px_rgba(0,180,255,0.4)]! hover:-translate-y-px transition-[box-shadow,transform]! duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]" id="nav-launch-btn">Launch AR</a>
       </nav>
-      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
+      <button class="mobile-menu-btn flex md:hidden flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1" id="mobile-menu-btn" aria-label="Toggle menu">
+        <span class="block w-6 h-[2px] bg-text-1 rounded-[2px] transition-[transform,opacity] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"></span>
+        <span class="block w-6 h-[2px] bg-text-1 rounded-[2px] transition-[transform,opacity] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"></span>
+        <span class="block w-6 h-[2px] bg-text-1 rounded-[2px] transition-[transform,opacity] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"></span>
       </button>
     </div>
-    <nav class="mobile-nav" id="mobile-nav">
-      <a href="#about">About</a>
-      <a href="#college">Campus</a>
-      <a href="#vision">Vision</a>
-      <a href="#contact">Contact</a>
-      <a href="navigation.html" class="nav-cta" id="mobile-launch-btn">Launch AR</a>
+    <nav class="mobile-nav flex flex-col gap-0 bg-[rgba(2,12,22,0.97)] border-t border-border p-0 max-h-0 overflow-hidden transition-[max-height,padding] duration-350 ease" id="mobile-nav">
+      <a href="#about" class="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">About</a>
+      <a href="#college" class="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">Campus</a>
+      <a href="#vision" class="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">Vision</a>
+      <a href="#contact" class="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">Contact</a>
+      <a href="navigation.html" class="nav-cta inline-flex items-center justify-center mx-6 mt-3 bg-gradient-to-br from-primary to-primary-dk text-white! px-5 py-2 rounded-sm font-display text-[0.68rem]! tracking-[0.12em] text-center no-underline hover:shadow-[0_0_20px_rgba(0,180,255,0.4)]! hover:-translate-y-px transition-[box-shadow,transform]! duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]" id="mobile-launch-btn">Launch AR</a>
     </nav>
   </header>
 
-  <main>
+  <main class="relative z-2">
 
     <!-- ═══ HERO ═══ -->
-    <section class="hero" id="hero">
-      <div class="hero-content">
-        <div class="hero-badge reveal">
-          <span class="pulse-dot"></span>
+    <section class="hero min-h-screen flex items-center justify-center gap-16 max-lg:gap-10 max-md:flex-col pt-[120px] pb-20 px-10 max-md:pt-[100px] max-md:pb-[60px] max-md:px-6 max-md:text-center max-md:min-h-auto max-w-[1280px] mx-auto" id="hero">
+      <div class="hero-content flex-1 max-w-[620px] max-md:max-w-full">
+        <div class="hero-badge reveal inline-flex items-center gap-2 font-display text-[0.62rem] tracking-[0.18em] text-primary bg-[rgba(0,180,255,0.08)] border border-[rgba(0,180,255,0.2)] rounded-full px-4 py-1.5 mb-7 max-md:self-center">
+          <span class="pulse-dot w-[7px] h-[7px] bg-primary rounded-full animate-pulse-ring shrink-0"></span>
           LIVE · GPS ENABLED
         </div>
-        <h1 class="hero-title reveal">
+        <h1 class="hero-title reveal font-display text-[clamp(2rem,5vw,3.5rem)] max-[480px]:text-[1.8rem] font-black leading-[1.1] tracking-[-0.01em] mb-6 text-text-1">
           Navigate the<br>
-          <span class="gradient-text">Real World</span><br>
+          <span class="gradient-text bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Real World</span><br>
           in Augmented Reality
         </h1>
-        <p class="hero-desc reveal">
+        <p class="hero-desc reveal text-[1.05rem] text-text-2 leading-[1.75] mb-9 max-w-[520px] max-md:mx-auto max-md:mb-9">
           Overlay digital waypoints, 3D markers, and turn-by-turn directions directly onto your camera feed. Built for KITS Ramtek campus — powered by A-Frame, AR.js &amp; Mapbox.
         </p>
-        <div class="hero-actions reveal">
-          <a href="navigation.html" class="btn-primary" id="turnOnLocationBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <div class="hero-actions reveal flex items-center gap-4 flex-wrap mb-12 max-md:justify-center">
+          <a href="navigation.html" class="btn-primary inline-flex items-center gap-2.5 bg-gradient-to-br from-primary to-primary-dk text-white no-underline font-display text-[0.72rem] font-semibold tracking-[0.1em] px-7 py-3.5 rounded-md border-none cursor-pointer relative overflow-hidden transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,180,255,0.4)] active:translate-y-0 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(255,255,255,0.15)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" id="turnOnLocationBtn">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Launch Navigation
           </a>
-          <a href="#about" class="btn-ghost">
+          <a href="#about" class="btn-ghost inline-flex items-center gap-2 text-text-2 no-underline font-display text-[0.72rem] tracking-[0.1em] py-3.5 hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">
             Learn More
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
           </a>
         </div>
-        <div class="hero-stats reveal">
-          <div class="stat">
-            <span class="stat-num">14+</span>
-            <span class="stat-label">Campus Locations</span>
+        <div class="hero-stats reveal flex items-center gap-6 max-md:justify-center max-[480px]:gap-3.5">
+          <div class="stat text-center">
+            <span class="stat-num block font-display text-2xl max-[480px]:text-[1.1rem] font-black text-primary">14+</span>
+            <span class="stat-label text-[0.65rem] tracking-[0.1em] text-text-3 uppercase">Campus Locations</span>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-num">3D</span>
-            <span class="stat-label">AR Waypoints</span>
+          <div class="stat-divider w-[1px] h-10 bg-border"></div>
+          <div class="stat text-center">
+            <span class="stat-num block font-display text-2xl max-[480px]:text-[1.1rem] font-black text-primary">3D</span>
+            <span class="stat-label text-[0.65rem] tracking-[0.1em] text-text-3 uppercase">AR Waypoints</span>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat">
-            <span class="stat-num">RT</span>
-            <span class="stat-label">Real-Time GPS</span>
+          <div class="stat-divider w-[1px] h-10 bg-border"></div>
+          <div class="stat text-center">
+            <span class="stat-num block font-display text-2xl max-[480px]:text-[1.1rem] font-black text-primary">RT</span>
+            <span class="stat-label text-[0.65rem] tracking-[0.1em] text-text-3 uppercase">Real-Time GPS</span>
           </div>
         </div>
       </div>
-      <div class="hero-visual reveal">
-        <div class="phone-mockup">
-          <div class="phone-frame">
-            <div class="phone-screen">
-              <div class="ar-scene-preview">
-                <div class="ar-grid"></div>
-                <div class="ar-waypoint wp1">
-                  <div class="wp-icon">📍</div>
-                  <div class="wp-label">Library</div>
-                  <div class="wp-dist">42m</div>
+      <div class="hero-visual reveal shrink-0 max-md:order-1">
+        <div class="phone-mockup relative w-[260px] max-md:w-[180px] max-[480px]:w-[160px] mx-auto">
+          <div class="phone-frame bg-gradient-to-br from-[#0a1f35] to-[#020c16] border-2 border-[rgba(0,180,255,0.25)] rounded-[36px] p-3 shadow-deep shadow-[0_0_60px_rgba(0,180,255,0.1)]">
+            <div class="phone-screen bg-bg rounded-[26px] overflow-hidden aspect-[9/16]">
+              <div class="ar-scene-preview relative w-full h-full bg-gradient-to-b from-[#0a2035] via-[#041528] to-[#020c16] overflow-hidden">
+                <div class="ar-grid absolute inset-0 animate-grid-scroll"></div>
+                <div class="ar-waypoint wp1 absolute top-[28%] left-[20%] flex flex-col items-center gap-[3px] animate-wp-pulse">
+                  <div class="wp-icon text-[20px] drop-shadow-[0_0_6px_rgba(0,180,255,0.6)]">📍</div>
+                  <div class="wp-label font-display text-[0.5rem] text-text-1 bg-[rgba(0,180,255,0.2)] border border-border rounded px-[5px] py-[1px] tracking-[0.08em] whitespace-nowrap">Library</div>
+                  <div class="wp-dist font-display text-[0.42rem] text-accent tracking-[0.06em]">42m</div>
                 </div>
-                <div class="ar-waypoint wp2">
-                  <div class="wp-icon">🏛</div>
-                  <div class="wp-label">CS Dept.</div>
-                  <div class="wp-dist">87m</div>
+                <div class="ar-waypoint wp2 absolute top-[42%] right-[15%] [animation-delay:1.2s] flex flex-col items-center gap-[3px] animate-wp-pulse">
+                  <div class="wp-icon text-[20px] drop-shadow-[0_0_6px_rgba(0,180,255,0.6)]">🏛</div>
+                  <div class="wp-label font-display text-[0.5rem] text-text-1 bg-[rgba(0,180,255,0.2)] border border-border rounded px-[5px] py-[1px] tracking-[0.08em] whitespace-nowrap">CS Dept.</div>
+                  <div class="wp-dist font-display text-[0.42rem] text-accent tracking-[0.06em]">87m</div>
                 </div>
-                <div class="ar-trail"></div>
-                <div class="ar-hud-top">
+                <div class="ar-trail absolute bottom-[25%] left-1/2 -translate-x-1/2 w-1 h-[25%] bg-gradient-to-t from-primary to-transparent rounded-[2px] animate-trail-grow"></div>
+                <div class="ar-hud-top absolute left-0 right-0 top-0 flex justify-between px-2.5 py-2 font-display text-[0.42rem] text-primary tracking-[0.08em] bg-gradient-to-b from-[rgba(2,12,22,0.7)] to-transparent">
                   <span>▲ N  12°</span>
                   <span>GPS ●</span>
                 </div>
-                <div class="ar-hud-bottom">
+                <div class="ar-hud-bottom absolute left-0 right-0 bottom-0 flex justify-between px-2.5 py-2 font-display text-[0.42rem] text-primary tracking-[0.08em] bg-gradient-to-t from-[rgba(2,12,22,0.7)] to-transparent">
                   <span>HEAD: 042°</span>
                   <span>ALT: 312m</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="phone-glow"></div>
+          <div class="phone-glow absolute -bottom-[30px] left-1/2 -translate-x-1/2 w-[180px] h-[60px] pointer-events-none bg-[radial-gradient(ellipse,rgba(0,180,255,0.25),transparent_70%)]"></div>
         </div>
       </div>
     </section>
 
     <!-- ═══ TECH STACK TICKER ═══ -->
-    <div class="tech-ticker">
-      <div class="ticker-track">
-        <span>A-FRAME</span><span class="sep">◆</span>
-        <span>AR.JS</span><span class="sep">◆</span>
-        <span>MAPBOX GL JS</span><span class="sep">◆</span>
-        <span>WEBGL</span><span class="sep">◆</span>
-        <span>THREE.JS</span><span class="sep">◆</span>
-        <span>GPS GEOLOCATION</span><span class="sep">◆</span>
-        <span>DEVICE ORIENTATION API</span><span class="sep">◆</span>
-        <span>A-FRAME</span><span class="sep">◆</span>
-        <span>AR.JS</span><span class="sep">◆</span>
-        <span>MAPBOX GL JS</span><span class="sep">◆</span>
-        <span>WEBGL</span><span class="sep">◆</span>
-        <span>THREE.JS</span><span class="sep">◆</span>
-        <span>GPS GEOLOCATION</span><span class="sep">◆</span>
-        <span>DEVICE ORIENTATION API</span><span class="sep">◆</span>
+    <div class="tech-ticker relative z-2 overflow-hidden py-3.5 bg-[rgba(0,180,255,0.04)] border-y border-border">
+      <div class="ticker-track flex gap-5 whitespace-nowrap animate-ticker">
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">A-FRAME</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">AR.JS</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">MAPBOX GL JS</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">WEBGL</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">THREE.JS</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">GPS GEOLOCATION</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">DEVICE ORIENTATION API</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">A-FRAME</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">AR.JS</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">MAPBOX GL JS</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">WEBGL</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">THREE.JS</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">GPS GEOLOCATION</span><span class="sep text-primary opacity-50">◆</span>
+        <span class="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">DEVICE ORIENTATION API</span><span class="sep text-primary opacity-50">◆</span>
       </div>
     </div>
 
     <!-- ═══ ABOUT ═══ -->
-    <section class="content-section" id="about">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
+    <section class="content-section relative z-2 py-[100px] px-10 max-md:py-[72px] max-md:px-6" id="about">
+      <div class="section-inner max-w-[1200px] mx-auto">
+        <div class="section-label reveal flex items-center gap-3.5 font-display text-[0.6rem] tracking-[0.22em] text-primary uppercase mb-5">
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
           ABOUT THE PROJECT
-          <span class="label-line"></span>
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
         </div>
-        <h2 class="section-title reveal">What is <span class="gradient-text">EnRouteAR</span>?</h2>
-        <div class="feature-grid">
-          <div class="feature-card reveal" data-delay="0">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <h2 class="section-title reveal font-display text-[clamp(1.6rem,3.5vw,2.6rem)] font-bold leading-[1.2] text-text-1 mb-[52px]">What is <span class="gradient-text bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">EnRouteAR</span>?</h2>
+        <div class="feature-grid grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:grid-cols-1 gap-5">
+          <div class="feature-card reveal bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px] relative overflow-hidden transition-[border-color,box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-border-hi hover:shadow-glow hover:-translate-y-1 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(0,180,255,0.04)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" data-delay="0">
+            <div class="feature-icon w-12 h-12 bg-[rgba(0,180,255,0.1)] border border-border rounded-md flex items-center justify-center mb-4">
+              <svg class="w-[22px] h-[22px] text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
             </div>
-            <h3>Real-World Navigation</h3>
-            <p>Navigate physical spaces with GPS-accurate positioning. Your live camera feed becomes the map.</p>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.05em] text-text-1 mb-2.5">Real-World Navigation</h3>
+            <p class="text-[0.9rem] text-text-2 leading-[1.7]">Navigate physical spaces with GPS-accurate positioning. Your live camera feed becomes the map.</p>
           </div>
-          <div class="feature-card reveal" data-delay="100">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <div class="feature-card reveal bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px] relative overflow-hidden transition-[border-color,box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-border-hi hover:shadow-glow hover:-translate-y-1 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(0,180,255,0.04)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" data-delay="100">
+            <div class="feature-icon w-12 h-12 bg-[rgba(0,180,255,0.1)] border border-border rounded-md flex items-center justify-center mb-4">
+              <svg class="w-[22px] h-[22px] text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             </div>
-            <h3>3D AR Overlays</h3>
-            <p>Destination markers, route arrows, and 3D models anchored to real-world GPS coordinates.</p>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.05em] text-text-1 mb-2.5">3D AR Overlays</h3>
+            <p class="text-[0.9rem] text-text-2 leading-[1.7]">Destination markers, route arrows, and 3D models anchored to real-world GPS coordinates.</p>
           </div>
-          <div class="feature-card reveal" data-delay="200">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <div class="feature-card reveal bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px] relative overflow-hidden transition-[border-color,box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-border-hi hover:shadow-glow hover:-translate-y-1 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(0,180,255,0.04)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" data-delay="200">
+            <div class="feature-icon w-12 h-12 bg-[rgba(0,180,255,0.1)] border border-border rounded-md flex items-center justify-center mb-4">
+              <svg class="w-[22px] h-[22px] text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
             </div>
-            <h3>Live Route Tracking</h3>
-            <p>Watchs your GPS position in real time and redraws the walking route dynamically as you move.</p>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.05em] text-text-1 mb-2.5">Live Route Tracking</h3>
+            <p class="text-[0.9rem] text-text-2 leading-[1.7]">Watchs your GPS position in real time and redraws the walking route dynamically as you move.</p>
           </div>
-          <div class="feature-card reveal" data-delay="300">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div class="feature-card reveal bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px] relative overflow-hidden transition-[border-color,box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-border-hi hover:shadow-glow hover:-translate-y-1 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(0,180,255,0.04)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" data-delay="300">
+            <div class="feature-icon w-12 h-12 bg-[rgba(0,180,255,0.1)] border border-border rounded-md flex items-center justify-center mb-4">
+              <svg class="w-[22px] h-[22px] text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
-            <h3>Compass-Corrected</h3>
-            <p>Device orientation sensor keeps the AR scene and map bearing locked to your heading automatically.</p>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.05em] text-text-1 mb-2.5">Compass-Corrected</h3>
+            <p class="text-[0.9rem] text-text-2 leading-[1.7]">Device orientation sensor keeps the AR scene and map bearing locked to your heading automatically.</p>
           </div>
-          <div class="feature-card reveal" data-delay="0">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <div class="feature-card reveal bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px] relative overflow-hidden transition-[border-color,box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-border-hi hover:shadow-glow hover:-translate-y-1 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(0,180,255,0.04)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" data-delay="0">
+            <div class="feature-icon w-12 h-12 bg-[rgba(0,180,255,0.1)] border border-border rounded-md flex items-center justify-center mb-4">
+              <svg class="w-[22px] h-[22px] text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
             </div>
-            <h3>Satellite Map View</h3>
-            <p>Embedded Mapbox satellite-streets mini-map keeps context grounded even while you look through the AR lens.</p>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.05em] text-text-1 mb-2.5">Satellite Map View</h3>
+            <p class="text-[0.9rem] text-text-2 leading-[1.7]">Embedded Mapbox satellite-streets mini-map keeps context grounded even while you look through the AR lens.</p>
           </div>
-          <div class="feature-card reveal" data-delay="100">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.1 19.79 19.79 0 01.06 2.42 2 2 0 012.03.5h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.09a16 16 0 006.29 6.29l1.69-1.69a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <div class="feature-card reveal bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px] relative overflow-hidden transition-[border-color,box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-border-hi hover:shadow-glow hover:-translate-y-1 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(0,180,255,0.04)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" data-delay="100">
+            <div class="feature-icon w-12 h-12 bg-[rgba(0,180,255,0.1)] border border-border rounded-md flex items-center justify-center mb-4">
+              <svg class="w-[22px] h-[22px] text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.1 19.79 19.79 0 01.06 2.42 2 2 0 012.03.5h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.09a16 16 0 006.29 6.29l1.69-1.69a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
             </div>
-            <h3>14 Campus Destinations</h3>
-            <p>Pre-mapped locations including departments, hostels, canteen, library, gym and more within KITS campus.</p>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.05em] text-text-1 mb-2.5">14 Campus Destinations</h3>
+            <p class="text-[0.9rem] text-text-2 leading-[1.7]">Pre-mapped locations including departments, hostels, canteen, library, gym and more within KITS campus.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ═══ COLLEGE ═══ -->
-    <section class="content-section alt-bg" id="college">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
+    <section class="content-section alt-bg relative z-2 py-[100px] px-10 max-md:py-[72px] max-md:px-6 bg-gradient-to-b from-bg-alt to-[rgba(4,26,42,0.5)] border-y border-border" id="college">
+      <div class="section-inner max-w-[1200px] mx-auto">
+        <div class="section-label reveal flex items-center gap-3.5 font-display text-[0.6rem] tracking-[0.22em] text-primary uppercase mb-5">
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
           THE CAMPUS
-          <span class="label-line"></span>
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
         </div>
-        <div class="college-layout">
+        <div class="college-layout grid grid-cols-[1fr_380px] max-lg:grid-cols-1 gap-[60px] items-start">
           <div class="college-text">
-            <h2 class="section-title reveal">Kavikulguru Institute of Technology &amp; Science</h2>
-            <p class="reveal">KITS Ramtek is a private un-aided institution run by Vodithala Education Society, Hyderabad. Founded in 1985 with a foundation stone laid by former Prime Minister Late Sri P. V. Narsimha Rao, the institute has grown into a distinguished technical institution serving rural students across Central India.</p>
-            <p class="reveal">Permanently affiliated to RTMNU Nagpur, KITS offers B.E., B.Arch., M.Tech. and Ph.D. programs across its lush 48.96-acre pollution-free campus. Awarded 'A' Grade twice by Maharashtra State Government, accredited by NBA, and NAAC-rated B++.</p>
-            <div class="badge-row reveal">
-              <div class="badge">NAAC B++</div>
-              <div class="badge">NBA Accredited</div>
-              <div class="badge">'A' Grade × 2</div>
-              <div class="badge">RTMNU Affiliated</div>
+            <h2 class="section-title reveal font-display text-[clamp(1.6rem,3.5vw,2.6rem)] font-bold leading-[1.2] text-text-1 mb-[52px]">Kavikulguru Institute of Technology &amp; Science</h2>
+            <p class="reveal text-text-2 mb-4 text-[0.96rem] leading-[1.8]">KITS Ramtek is a private un-aided institution run by Vodithala Education Society, Hyderabad. Founded in 1985 with a foundation stone laid by former Prime Minister Late Sri P. V. Narsimha Rao, the institute has grown into a distinguished technical institution serving rural students across Central India.</p>
+            <p class="reveal text-text-2 mb-4 text-[0.96rem] leading-[1.8]">Permanently affiliated to RTMNU Nagpur, KITS offers B.E., B.Arch., M.Tech. and Ph.D. programs across its lush 48.96-acre pollution-free campus. Awarded 'A' Grade twice by Maharashtra State Government, accredited by NBA, and NAAC-rated B++.</p>
+            <div class="badge-row reveal flex flex-wrap gap-2.5 my-6">
+              <div class="badge font-display text-[0.58rem] tracking-[0.12em] text-accent bg-[rgba(250,207,14,0.08)] border border-[rgba(250,207,14,0.25)] rounded-full px-3.5 py-1.25">NAAC B++</div>
+              <div class="badge font-display text-[0.58rem] tracking-[0.12em] text-accent bg-[rgba(250,207,14,0.08)] border border-[rgba(250,207,14,0.25)] rounded-full px-3.5 py-1.25">NBA Accredited</div>
+              <div class="badge font-display text-[0.58rem] tracking-[0.12em] text-accent bg-[rgba(250,207,14,0.08)] border border-[rgba(250,207,14,0.25)] rounded-full px-3.5 py-1.25">'A' Grade × 2</div>
+              <div class="badge font-display text-[0.58rem] tracking-[0.12em] text-accent bg-[rgba(250,207,14,0.08)] border border-[rgba(250,207,14,0.25)] rounded-full px-3.5 py-1.25">RTMNU Affiliated</div>
             </div>
-            <a href="https://www.kits.edu/" target="_blank" rel="noopener" class="btn-outline reveal">
+            <a href="https://www.kits.edu/" target="_blank" rel="noopener" class="btn-outline reveal inline-flex items-center gap-2 text-primary no-underline font-display text-[0.72rem] tracking-[0.1em] px-6 py-3 border border-border-hi rounded-md hover:bg-[rgba(0,180,255,0.08)] hover:border-primary transition-[background,border-color] duration-250 mt-6">
               Visit kits.edu
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </a>
           </div>
-          <div class="campus-map-card reveal">
-            <div class="map-card-header">
-              <span class="pulse-dot"></span>
+          <div class="campus-map-card reveal bg-surface border border-border rounded-lg overflow-hidden backdrop-blur-[12px] shadow-card max-lg:max-w-[500px]">
+            <div class="map-card-header flex items-center gap-2.5 font-display text-[0.6rem] tracking-[0.15em] text-primary px-5 py-4 bg-[rgba(0,180,255,0.06)] border-b border-border">
+              <span class="pulse-dot w-[7px] h-[7px] bg-primary rounded-full animate-pulse-ring shrink-0"></span>
               KITS CAMPUS · RAMTEK
             </div>
-            <div class="campus-locations">
-              <div class="loc-item"><span class="loc-dot"></span>Administrative Dept.</div>
-              <div class="loc-item"><span class="loc-dot"></span>Architecture Dept.</div>
-              <div class="loc-item"><span class="loc-dot"></span>CS / IT / Electronics</div>
-              <div class="loc-item"><span class="loc-dot"></span>Civil &amp; Mechanical Depts.</div>
-              <div class="loc-item"><span class="loc-dot"></span>Library &amp; Canteen</div>
-              <div class="loc-item"><span class="loc-dot"></span>Gym / Indoor Stadium</div>
-              <div class="loc-item"><span class="loc-dot"></span>Jamuna &amp; Triveni Hostels</div>
-              <div class="loc-item"><span class="loc-dot"></span>Kaveri Girls Hostel</div>
+            <div class="campus-locations py-2">
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>Administrative Dept.</div>
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>Architecture Dept.</div>
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>CS / IT / Electronics</div>
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>Civil &amp; Mechanical Depts.</div>
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>Library &amp; Canteen</div>
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>Gym / Indoor Stadium</div>
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>Jamuna &amp; Triveni Hostels</div>
+              <div class="loc-item flex items-center gap-2.5 px-5 py-2.5 text-[0.88rem] text-text-2 border-b border-[rgba(0,180,255,0.04)] last:border-b-0 hover:bg-surface-hi hover:text-text-1 transition-colors duration-250"><span class="loc-dot w-1.5 h-1.5 bg-primary rounded-full shrink-0 shadow-[0_0_6px_rgba(0,180,255,0.5)]"></span>Kaveri Girls Hostel</div>
             </div>
-            <div class="map-card-footer">21.385°N · 79.306°E</div>
+            <div class="map-card-footer font-display text-[0.58rem] tracking-[0.12em] text-text-3 px-5 py-3 border-t border-border bg-[rgba(0,0,0,0.15)]">21.385°N · 79.306°E</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ═══ VISION ═══ -->
-    <section class="content-section" id="vision">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
+    <section class="content-section relative z-2 py-[100px] px-10 max-md:py-[72px] max-md:px-6" id="vision">
+      <div class="section-inner max-w-[1200px] mx-auto">
+        <div class="section-label reveal flex items-center gap-3.5 font-display text-[0.6rem] tracking-[0.22em] text-primary uppercase mb-5">
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
           PROJECT VISION
-          <span class="label-line"></span>
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
         </div>
-        <h2 class="section-title reveal">Navigation as an <span class="gradient-text">Experience</span></h2>
-        <div class="vision-grid">
-          <div class="vision-block reveal" data-delay="0">
-            <div class="vision-num">01</div>
-            <h3>Redefining Navigation</h3>
-            <p>Navigation should not merely serve as a means to an end but inspire and engage users on their journey. We fuse state-of-the-art AR with real-world utility.</p>
+        <h2 class="section-title reveal font-display text-[clamp(1.6rem,3.5vw,2.6rem)] font-bold leading-[1.2] text-text-1 mb-[52px]">Navigation as an <span class="gradient-text bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Experience</span></h2>
+        <div class="vision-grid grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] max-md:grid-cols-1 gap-[2px] bg-border border border-border rounded-lg overflow-hidden">
+          <div class="vision-block reveal bg-bg px-8 py-10 transition-colors duration-250 hover:bg-bg-alt" data-delay="0">
+            <div class="vision-num font-display text-[2.5rem] font-black text-[rgba(0,180,255,0.15)] leading-none mb-4">01</div>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.06em] text-accent mb-3">Redefining Navigation</h3>
+            <p class="text-[0.92rem] text-text-2 leading-[1.75]">Navigation should not merely serve as a means to an end but inspire and engage users on their journey. We fuse state-of-the-art AR with real-world utility.</p>
           </div>
-          <div class="vision-block reveal" data-delay="150">
-            <div class="vision-num">02</div>
-            <h3>Universal Accessibility</h3>
-            <p>Whether exploring a bustling city or navigating a sprawling campus, EnRouteAR makes every journey unforgettable — for users of all backgrounds and ages.</p>
+          <div class="vision-block reveal bg-bg px-8 py-10 transition-colors duration-250 hover:bg-bg-alt" data-delay="150">
+            <div class="vision-num font-display text-[2.5rem] font-black text-[rgba(0,180,255,0.15)] leading-none mb-4">02</div>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.06em] text-accent mb-3">Universal Accessibility</h3>
+            <p class="text-[0.92rem] text-text-2 leading-[1.75]">Whether exploring a bustling city or navigating a sprawling campus, EnRouteAR makes every journey unforgettable — for users of all backgrounds and ages.</p>
           </div>
-          <div class="vision-block reveal" data-delay="300">
-            <div class="vision-num">03</div>
-            <h3>Future-Forward Design</h3>
-            <p>By combining cutting-edge AR with a user-centric approach, we aim to set new standards — paving the way for a future where exploration knows no bounds.</p>
+          <div class="vision-block reveal bg-bg px-8 py-10 transition-colors duration-250 hover:bg-bg-alt" data-delay="300">
+            <div class="vision-num font-display text-[2.5rem] font-black text-[rgba(0,180,255,0.15)] leading-none mb-4">03</div>
+            <h3 class="font-display text-[0.85rem] font-semibold tracking-[0.06em] text-accent mb-3">Future-Forward Design</h3>
+            <p class="text-[0.92rem] text-text-2 leading-[1.75]">By combining cutting-edge AR with a user-centric approach, we aim to set new standards — paving the way for a future where exploration knows no bounds.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ═══ CTA ═══ -->
-    <section class="cta-section">
-      <div class="cta-inner reveal">
-        <div class="cta-glow"></div>
-        <h2>Ready to navigate in AR?</h2>
-        <p>Point your phone, pick a destination, and walk toward a new era of wayfinding.</p>
-        <a href="navigation.html" class="btn-primary btn-large" id="cta-launch-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <section class="cta-section relative z-2 py-[100px] px-10 max-md:py-[72px] max-md:px-6 overflow-hidden">
+      <div class="cta-inner reveal max-w-[700px] mx-auto text-center relative">
+        <div class="cta-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse,rgba(0,180,255,0.1),transparent_70%)] pointer-events-none"></div>
+        <h2 class="font-display text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-text-1 mb-4">Ready to navigate in AR?</h2>
+        <p class="text-[1.05rem] text-text-2 mb-9">Point your phone, pick a destination, and walk toward a new era of wayfinding.</p>
+        <a href="navigation.html" class="btn-primary btn-large inline-flex items-center gap-2.5 bg-gradient-to-br from-primary to-primary-dk text-white no-underline font-display text-[0.82rem] font-semibold tracking-[0.1em] px-9 py-[18px] rounded-md border-none cursor-pointer relative overflow-hidden transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,180,255,0.4)] active:translate-y-0 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(255,255,255,0.15)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100" id="cta-launch-btn">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Launch EnRouteAR
         </a>
       </div>
     </section>
 
     <!-- ═══ CONTACT ═══ -->
-    <section class="content-section alt-bg" id="contact">
-      <div class="section-inner">
-        <div class="section-label reveal">
-          <span class="label-line"></span>
+    <section class="content-section alt-bg relative z-2 py-[100px] px-10 max-md:py-[72px] max-md:px-6 bg-gradient-to-b from-bg-alt to-[rgba(4,26,42,0.5)] border-y border-border" id="contact">
+      <div class="section-inner max-w-[1200px] mx-auto">
+        <div class="section-label reveal flex items-center gap-3.5 font-display text-[0.6rem] tracking-[0.22em] text-primary uppercase mb-5">
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
           CONTACT US
-          <span class="label-line"></span>
+          <span class="label-line flex-1 h-[1px] bg-gradient-to-r from-primary to-transparent max-w-[80px]"></span>
         </div>
-        <h2 class="section-title reveal">Get in <span class="gradient-text">Touch</span></h2>
-        <div class="contact-layout">
+        <h2 class="section-title reveal font-display text-[clamp(1.6rem,3.5vw,2.6rem)] font-bold leading-[1.2] text-text-1 mb-[52px]">Get in <span class="gradient-text bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Touch</span></h2>
+        <div class="contact-layout grid grid-cols-[1fr_1.4fr] max-lg:grid-cols-1 gap-[60px] items-start">
           <div class="contact-info reveal">
-            <p>Have questions about the project, want to collaborate, or found a bug? Fill out the form and our team will get back to you.</p>
-            <div class="contact-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <p class="text-[0.96rem] text-text-2 leading-[1.8] mb-7">Have questions about the project, want to collaborate, or found a bug? Fill out the form and our team will get back to you.</p>
+            <div class="contact-item flex items-center gap-3 text-[0.88rem] text-text-2 mb-3.5">
+              <svg class="w-[18px] h-[18px] text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               KITS Ramtek, Nagpur, Maharashtra
             </div>
-            <div class="contact-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <div class="contact-item flex items-center gap-3 text-[0.88rem] text-text-2 mb-3.5">
+              <svg class="w-[18px] h-[18px] text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               via kits.edu contact portal
             </div>
           </div>
-          <form class="contact-form reveal" action="https://formspree.io/f/mgegpkeb" method="POST">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" placeholder="Your full name" required>
+          <form class="contact-form reveal bg-surface border border-border rounded-lg p-8 backdrop-blur-[12px]" action="https://formspree.io/f/mgegpkeb" method="POST">
+            <div class="form-group mb-5">
+              <label for="name" class="block font-display text-[0.6rem] tracking-[0.14em] text-text-2 uppercase mb-2">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" required class="w-full bg-[rgba(0,0,0,0.25)] border border-border rounded-md px-4 py-3 font-body text-[0.95rem] text-text-1 outline-none transition-[border-color,box-shadow] duration-250 placeholder:text-text-3 focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,180,255,0.1)]">
             </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            <div class="form-group mb-5">
+              <label for="email" class="block font-display text-[0.6rem] tracking-[0.14em] text-text-2 uppercase mb-2">Email</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required class="w-full bg-[rgba(0,0,0,0.25)] border border-border rounded-md px-4 py-3 font-body text-[0.95rem] text-text-1 outline-none transition-[border-color,box-shadow] duration-250 placeholder:text-text-3 focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,180,255,0.1)]">
             </div>
-            <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="5" placeholder="Tell us what you're thinking…" required></textarea>
+            <div class="form-group mb-5">
+              <label for="message" class="block font-display text-[0.6rem] tracking-[0.14em] text-text-2 uppercase mb-2">Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Tell us what you're thinking…" required class="w-full h-[130px] resize-y bg-[rgba(0,0,0,0.25)] border border-border rounded-md px-4 py-3 font-body text-[0.95rem] text-text-1 outline-none transition-[border-color,box-shadow] duration-250 placeholder:text-text-3 focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,180,255,0.1)]"></textarea>
             </div>
-            <button type="submit" class="btn-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            <button type="submit" class="btn-primary inline-flex items-center gap-2.5 bg-gradient-to-br from-primary to-primary-dk text-white no-underline font-display text-[0.72rem] font-semibold tracking-[0.1em] px-7 py-3.5 rounded-md border-none cursor-pointer relative overflow-hidden transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,180,255,0.4)] active:translate-y-0 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(255,255,255,0.15)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               Send Message
             </button>
           </form>
@@ -337,26 +339,26 @@
 
   </main>
 
-  <footer>
-    <div class="footer-inner">
+  <footer class="relative z-2 bg-bg-alt border-t border-border">
+    <div class="footer-inner max-w-[1200px] mx-auto pt-12 pb-8 px-10 max-md:pt-10 max-md:pb-6 max-md:px-6 flex justify-between items-start gap-10 flex-wrap">
       <div class="footer-brand">
-        <div class="logo-mark sm">
-          <span class="logo-bracket">[</span>
-          <span class="logo-text">EnRoute<span class="logo-accent">AR</span></span>
-          <span class="logo-bracket">]</span>
+        <div class="logo-mark sm font-display font-bold text-[1rem] tracking-[0.08em] text-text-1 mb-2">
+          <span class="logo-bracket text-primary">[</span>
+          <span class="logo-text">EnRoute<span class="logo-accent text-accent">AR</span></span>
+          <span class="logo-bracket text-primary">]</span>
         </div>
-        <p>Augmented Reality Navigation for KITS Ramtek Campus.</p>
+        <p class="text-[0.82rem] text-text-3 max-w-[260px]">Augmented Reality Navigation for KITS Ramtek Campus.</p>
       </div>
-      <div class="footer-links">
-        <a href="#about">About</a>
-        <a href="#college">Campus</a>
-        <a href="#vision">Vision</a>
-        <a href="#contact">Contact</a>
-        <a href="https://www.kits.edu/" target="_blank" rel="noopener">kits.edu</a>
+      <div class="footer-links flex flex-wrap gap-x-6 gap-y-2">
+        <a href="#about" class="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250">About</a>
+        <a href="#college" class="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250">Campus</a>
+        <a href="#vision" class="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250">Vision</a>
+        <a href="#contact" class="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250">Contact</a>
+        <a href="https://www.kits.edu/" target="_blank" rel="noopener" class="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250">kits.edu</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 EnRouteAR — All rights reserved.</p>
+    <div class="footer-bottom border-t border-[rgba(0,180,255,0.06)] px-10 py-4 max-md:px-6 max-md:py-3.5 max-w-[1200px] mx-auto">
+      <p class="font-display text-[0.58rem] tracking-[0.12em] text-text-3 text-center">&copy; 2024 EnRouteAR — All rights reserved.</p>
     </div>
   </footer>
 

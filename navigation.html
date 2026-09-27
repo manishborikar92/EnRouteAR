@@ -36,16 +36,16 @@
 
     <link rel="stylesheet" href="styles/navigation.css">
 </head>
-<body style="margin: 0; overflow: hidden;">
+<body class="m-0 p-0 border-0 font-body overflow-hidden antialiased">
 
-    <div class="container">
+    <div class="flex flex-col h-screen w-full">
 
         <!-- Destination selector -->
-        <div id="destination-select-container">
-            <select id="select-destination">
+        <div id="destination-select-container" class="absolute top-[2%] left-[1%] right-[1%] flex justify-between items-center gap-2 px-2.5 py-2 bg-[rgba(4,26,42,0.93)] border border-border rounded-[18px] text-text-1 shadow-[0_8px_32px_rgba(0,0,0,0.55)] z-5">
+            <select id="select-destination" class="w-[calc(100%-130px)] px-3 py-2 bg-[rgba(0,0,0,0.40)] border border-border rounded-[8px] text-text-1 font-body text-[0.9rem] appearance-none cursor-pointer outline-none overflow-hidden text-ellipsis whitespace-nowrap transition-[border-color,box-shadow] duration-[220ms] ease-custom focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,180,255,0.15)] z-5">
                 <option value="example">Select Destination</option>
             </select>
-            <button id="get-direction-button">Navigate</button>
+            <button id="get-direction-button" class="w-[120px] py-[9px] shrink-0 bg-gradient-to-br from-primary to-primary-dk border-none rounded-[8px] text-white font-display text-[0.62rem] font-bold tracking-[0.1em] text-center cursor-pointer transition-[box-shadow,transform] duration-[220ms] ease-custom hover:shadow-[0_0_20px_rgba(0,180,255,0.5)] hover:-translate-y-px active:translate-y-0 z-5">Navigate</button>
         </div>
 
         <!-- AR scene -->
@@ -69,14 +69,14 @@
         <div id="compass-container"></div>
 
         <!-- 2D map -->
-        <div id="map-container">
-            <div id="map"></div>
+        <div id="map-container" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full h-[180px] border-t border-border shadow-[0_-8px_32px_rgba(0,0,0,0.5)] z-2">
+            <div id="map" class="w-full h-full"></div>
         </div>
 
         <!-- Multifunction button -->
-        <div id="multifunction-container">
-            <button id="multifunction-button" class="multifunction-button">
-                <img id="centeredImage" alt="Multifunction Icon">
+        <div id="multifunction-container" class="absolute bottom-[190px] right-3 w-[46px] h-[46px] rounded-full origin-center z-3">
+            <button id="multifunction-button" class="multifunction-button w-full h-full flex justify-center items-center p-0 bg-[rgba(4,26,42,0.93)] border border-border rounded-full cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.4)] transition-[border-color,box-shadow,transform] duration-[220ms] ease-custom hover:border-border-hi hover:shadow-[0_0_18px_rgba(0,180,255,0.25)] hover:scale-[1.06] active:scale-[0.97]">
+                <img id="centeredImage" alt="Multifunction Icon" class="w-[62%] h-[62%] object-contain brightness-[1.15]">
             </button>
         </div>
 
