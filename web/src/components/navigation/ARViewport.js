@@ -6,7 +6,6 @@ import { generateIntermediaryPoints } from "@/lib/geo";
 const LOCAL_AR_SCRIPTS = [
   "/vendor/aframe.min.js",
   "/vendor/aframe-look-at-component.min.js",
-  "/vendor/ar-threex-location-only.js",
   "/vendor/aframe-ar.js",
 ];
 
@@ -133,6 +132,49 @@ export default function ARViewport({
     }
   }, [directionsData, destination, scriptsLoaded]);
 
+  // Enforce full-screen video styling over AR.js inline style overrides
+  useEffect(() => {
+    if (!scriptsLoaded) return;
+
+    const enforceVideoStyles = () => {
+      const videos = document.querySelectorAll("video");
+      videos.forEach((video) => {
+        video.style.setProperty("position", "fixed", "important");
+        video.style.setProperty("top", "0px", "important");
+        video.style.setProperty("left", "0px", "important");
+        video.style.setProperty("width", "100vw", "important");
+        video.style.setProperty("height", "100dvh", "important");
+        video.style.setProperty("min-width", "100vw", "important");
+        video.style.setProperty("min-height", "100dvh", "important");
+        video.style.setProperty("max-width", "none", "important");
+        video.style.setProperty("max-height", "none", "important");
+        video.style.setProperty("margin", "0px", "important");
+        video.style.setProperty("margin-left", "0px", "important");
+        video.style.setProperty("margin-top", "0px", "important");
+        video.style.setProperty("object-fit", "cover", "important");
+        video.style.setProperty("z-index", "0", "important");
+        video.style.setProperty("pointer-events", "none", "important");
+        video.style.setProperty("display", "block", "important");
+      });
+    };
+
+    enforceVideoStyles();
+    window.addEventListener("arjs-video-loaded", enforceVideoStyles);
+    window.addEventListener("resize", enforceVideoStyles);
+    window.addEventListener("orientationchange", enforceVideoStyles);
+
+    const interval = setInterval(enforceVideoStyles, 400);
+    const timeout = setTimeout(() => clearInterval(interval), 6000);
+
+    return () => {
+      window.removeEventListener("arjs-video-loaded", enforceVideoStyles);
+      window.removeEventListener("resize", enforceVideoStyles);
+      window.removeEventListener("orientationchange", enforceVideoStyles);
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [scriptsLoaded]);
+
   // Notify parent when scene mounts
   useEffect(() => {
     if (scriptsLoaded && sceneRef.current) {
@@ -180,7 +222,7 @@ export default function ARViewport({
       raycaster="objects: [gps-new-entity-place];"
       vr-mode-ui="enabled: false"
       embedded
-      arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: false;"
+      arjs="sourceType: webcam; debugUIEnabled: false;"
     >
       <a-camera gps-new-camera="minDistance: 10;" rotation-reader />
     </a-scene>

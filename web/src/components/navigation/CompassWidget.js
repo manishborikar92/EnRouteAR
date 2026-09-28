@@ -5,7 +5,7 @@ export default function CompassWidget({ heading = 0 }) {
   const rotationDegrees = (360 - ((360 - heading) % 360)) % 360;
 
   return (
-    <div id="compass-container" aria-hidden="true">
+    <div id="compass-container" aria-hidden="true" className="pointer-events-auto">
       <div
         className="compass"
         style={{

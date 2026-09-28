@@ -180,26 +180,52 @@ body {
    Navigation HUD & AR Viewport Styles
    ───────────────────────────────────────────────────────────── */
 
-/* Camera video feed background for AR.js */
+/* Camera video feed background for AR.js - full mobile viewport coverage */
+video#arjs-video,
+body > video,
 video {
-  object-fit: cover;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-/* Transparent A-Frame scene overlay */
-canvas.a-canvas {
-  z-index: 1 !important;
-  background: transparent !important;
-  width: 100% !important;
-  height: 100% !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-width: 100vw !important;
+  min-height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: cover !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+/* Transparent A-Frame scene overlay */
+a-scene {
+  background: transparent !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+canvas.a-canvas {
+  z-index: 1 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Mapbox control styling */
@@ -262,10 +288,14 @@ html:has(#destination-select-container),
 body:has(#destination-select-container) {
   overflow: hidden !important;
   height: 100% !important;
+  height: 100dvh !important;
   width: 100% !important;
+  width: 100vw !important;
   position: fixed !important;
   inset: 0 !important;
   touch-action: none;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* Explicit HUD stacking layers matching vanilla navigation */

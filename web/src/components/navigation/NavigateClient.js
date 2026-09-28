@@ -163,7 +163,7 @@ export default function NavigateClient() {
   }, []);
 
   return (
-    <div className="flex flex-col h-[100dvh] w-screen fixed inset-0 overflow-hidden bg-transparent select-none">
+    <div className="flex flex-col h-[100dvh] w-full fixed inset-0 overflow-hidden bg-transparent select-none pointer-events-none z-10">
       {/* 1. Top Destination Selector HUD */}
       <DestinationBar
         selectedDestination={selectedDestinationName}

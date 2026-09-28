@@ -13,7 +13,7 @@ export default function DestinationBar({
   return (
     <div
       id="destination-select-container"
-      className="absolute top-[2%] left-[1%] right-[1%] flex justify-between items-center gap-2 px-2.5 py-2 bg-[rgba(4,26,42,0.93)] border border-border rounded-[18px] text-text-1 shadow-[0_8px_32px_rgba(0,0,0,0.55)] z-5"
+      className="absolute top-[2%] left-[1%] right-[1%] flex justify-between items-center gap-2 px-2.5 py-2 bg-[rgba(4,26,42,0.93)] border border-border rounded-[18px] text-text-1 shadow-[0_8px_32px_rgba(0,0,0,0.55)] z-5 pointer-events-auto"
     >
       <Link
         href="/"
