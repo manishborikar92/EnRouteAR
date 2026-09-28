@@ -18,6 +18,15 @@
   --font-display: var(--font-orbitron), "Orbitron", monospace;
   --font-body: var(--font-outfit), "Outfit", sans-serif;
 
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+
+  --shadow-glow: 0 0 40px rgba(0, 180, 255, 0.12);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-deep: 0 24px 64px rgba(0, 0, 0, 0.6);
+
   --animate-pulse-ring: pulse-ring 2s ease infinite;
   --animate-grid-scroll: grid-scroll 8s linear infinite;
   --animate-wp-pulse: wp-pulse 3s ease-in-out infinite;
@@ -90,6 +99,13 @@
   --text-1: #e8f4ff;
   --text-2: #7ab8d9;
   --text-3: #3d7a9b;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --shadow-glow: 0 0 40px #00b4ff1f;
+  --shadow-card: 0 8px 32px #00000073;
+  --shadow-deep: 0 24px 64px #0009;
 }
 
 html {
