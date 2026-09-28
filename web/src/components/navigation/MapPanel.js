@@ -30,11 +30,14 @@ export default function MapPanel({
     callbacksRef.current = { onUserInteraction, onMapBearingChange };
   }, [onUserInteraction, onMapBearingChange]);
 
-  // Initial user location ref to center initial map without re-creating map
+  // Initial center and zoom matching vanilla [78, 20] zoom 0 globe view
   const initialCenterRef = useRef(
     userLocation?.latitude && userLocation?.longitude
       ? [userLocation.longitude, userLocation.latitude]
-      : [79.30562, 21.38541] // KITS Ramtek campus default center
+      : [78, 20]
+  );
+  const initialZoomRef = useRef(
+    userLocation?.latitude && userLocation?.longitude ? DEFAULT_ZOOM : 0
   );
 
   // Initialize Mapbox map instance
@@ -51,7 +54,7 @@ export default function MapPanel({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/satellite-streets-v12",
       center: initialCenterRef.current,
-      zoom: 16,
+      zoom: initialZoomRef.current,
       bearing: 0,
       pitch: 0,
       projection: "globe",
@@ -149,6 +152,8 @@ export default function MapPanel({
 
     if (isMapCentered && isBearing) {
       map.setBearing(compassRotation);
+    } else if (!isBearing && map.getBearing() !== 0) {
+      map.setBearing(0);
     }
 
     if (currentLocationMarkerRef.current) {

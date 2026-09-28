@@ -174,6 +174,7 @@ export default function NavigateClient() {
 
       {/* 2. AR Viewport with camera feed background */}
       <ARViewport
+        userLocation={userLocation}
         directionsData={directionsData}
         destination={destination}
       />

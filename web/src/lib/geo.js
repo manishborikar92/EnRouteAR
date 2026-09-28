@@ -68,6 +68,9 @@ export function interpolateRouteCoordinates(routeCoordinates, stepMeters = DEFAU
   return allPoints;
 }
 
+export const DEFAULT_MAPBOX_TOKEN =
+  "pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw";
+
 /**
  * Fetches walking route directions from Mapbox Directions API.
  * @param {{ latitude: number, longitude: number }} origin
@@ -75,12 +78,13 @@ export function interpolateRouteCoordinates(routeCoordinates, stepMeters = DEFAU
  * @param {string} [accessToken]
  * @returns {Promise<Object>} Mapbox directions GeoJSON response
  */
-export async function getWalkingDirections(origin, dest, accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN) {
+export async function getWalkingDirections(origin, dest, accessToken) {
   if (!origin?.latitude || !origin?.longitude || !dest?.latitude || !dest?.longitude) {
     throw new Error('Valid origin and destination coordinates are required.');
   }
 
-  if (!accessToken) {
+  const token = accessToken || process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || DEFAULT_MAPBOX_TOKEN;
+  if (!token) {
     throw new Error('Mapbox access token is not configured.');
   }
 
@@ -89,7 +93,7 @@ export async function getWalkingDirections(origin, dest, accessToken = process.e
     `${origin.longitude},${origin.latitude}`,
     ';',
     `${dest.longitude},${dest.latitude}`,
-    `?access_token=${encodeURIComponent(accessToken)}&geometries=geojson`,
+    `?access_token=${encodeURIComponent(token)}&geometries=geojson`,
   ].join('');
 
   const response = await fetch(url);

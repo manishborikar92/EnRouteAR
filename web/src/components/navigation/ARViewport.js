@@ -12,6 +12,7 @@ const LOCAL_AR_SCRIPTS = [
 const ROUTE_STEP_METERS = 2;
 
 export default function ARViewport({
+  userLocation = null,
   directionsData = null,
   destination = null,
   onSceneReady,
@@ -132,6 +133,20 @@ export default function ARViewport({
     }
   }, [directionsData, destination, scriptsLoaded]);
 
+  // Synchronize userLocation with AR.js ThreeLoc if GPS hasn't emitted position yet
+  useEffect(() => {
+    if (!scriptsLoaded || !userLocation?.latitude || !userLocation?.longitude) return;
+    const camera = sceneRef.current?.querySelector("[gps-new-camera]");
+    const threeLoc = camera?.components?.["gps-new-camera"]?.threeLoc;
+    if (threeLoc && !threeLoc.initialPosition) {
+      try {
+        threeLoc.fakeGps(userLocation.longitude, userLocation.latitude);
+      } catch (err) {
+        console.warn("GPS sync warning:", err);
+      }
+    }
+  }, [userLocation, scriptsLoaded]);
+
   // Enforce full-screen video styling over AR.js inline style overrides
   useEffect(() => {
     if (!scriptsLoaded) return;
@@ -222,7 +237,7 @@ export default function ARViewport({
       raycaster="objects: [gps-new-entity-place];"
       vr-mode-ui="enabled: false"
       embedded
-      arjs="sourceType: webcam; debugUIEnabled: false;"
+      arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: false;"
     >
       <a-camera gps-new-camera="minDistance: 10;" rotation-reader />
     </a-scene>
