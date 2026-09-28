@@ -257,3 +257,24 @@ canvas.a-canvas {
   }
 }
 
+/* Prevent viewport bounce, scroll, and horizontal overflow on navigation page */
+html:has(#destination-select-container),
+body:has(#destination-select-container) {
+  overflow: hidden !important;
+  height: 100% !important;
+  width: 100% !important;
+  position: fixed !important;
+  inset: 0 !important;
+  touch-action: none;
+}
+
+/* Explicit HUD stacking layers matching vanilla navigation */
+.z-0 { z-index: 0; }
+.z-1 { z-index: 1; }
+.z-2 { z-index: 2; }
+.z-3 { z-index: 3; }
+.z-5 { z-index: 5; }
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+
+

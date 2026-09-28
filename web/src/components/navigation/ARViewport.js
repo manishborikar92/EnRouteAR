@@ -1,17 +1,20 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { generateIntermediaryPoints } from "@/lib/geo";
 
-const AR_SCRIPTS = [
-  "https://aframe.io/releases/1.3.0/aframe.min.js",
-  "https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js",
-  "https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js",
-  "https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js",
+const LOCAL_AR_SCRIPTS = [
+  "/vendor/aframe.min.js",
+  "/vendor/aframe-look-at-component.min.js",
+  "/vendor/ar-threex-location-only.js",
+  "/vendor/aframe-ar.js",
 ];
 
+const ROUTE_STEP_METERS = 2;
+
 export default function ARViewport({
-  waypoints = [],
-  destinationCoord = null,
+  directionsData = null,
+  destination = null,
   onSceneReady,
 }) {
   const [scriptsLoaded, setScriptsLoaded] = useState(
@@ -20,24 +23,21 @@ export default function ARViewport({
   const [loadError, setLoadError] = useState(null);
   const sceneRef = useRef(null);
 
-  // Sequential loading of A-Frame and AR.js scripts
+  // Sequential loading of local vendor scripts
   useEffect(() => {
     let isMounted = true;
 
-    // If AFRAME is already loaded, nothing to do
     if (typeof window !== "undefined" && window.AFRAME) {
       return;
     }
 
     const loadScriptSequentially = (index) => {
-      if (index >= AR_SCRIPTS.length) {
+      if (index >= LOCAL_AR_SCRIPTS.length) {
         if (isMounted) setScriptsLoaded(true);
         return;
       }
 
-      const src = AR_SCRIPTS[index];
-
-      // Check if script tag already exists in DOM
+      const src = LOCAL_AR_SCRIPTS[index];
       const existing = document.querySelector(`script[src="${src}"]`);
       if (existing) {
         loadScriptSequentially(index + 1);
@@ -46,7 +46,7 @@ export default function ARViewport({
 
       const script = document.createElement("script");
       script.src = src;
-      script.async = false; // Preserve execution order
+      script.async = false;
 
       script.onload = () => {
         if (isMounted) {
@@ -56,8 +56,8 @@ export default function ARViewport({
 
       script.onerror = () => {
         if (isMounted) {
-          console.error(`Failed to load AR script: ${src}`);
-          setLoadError(`Failed to load AR script: ${src}`);
+          console.error(`Failed to load local vendor script: ${src}`);
+          setLoadError(`Failed to load script: ${src}`);
         }
       };
 
@@ -81,7 +81,59 @@ export default function ARViewport({
     };
   }, []);
 
-  // Notify parent when scene is ready
+  // Update AR Waypoint Cylinders & 3D GLB Marker
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene || !scriptsLoaded) return;
+
+    // Remove existing AR route entities (preserving camera)
+    const existingEntities = scene.querySelectorAll("[gps-new-entity-place]");
+    existingEntities.forEach((el) => {
+      if (el.tagName.toLowerCase() !== "a-camera") {
+        el.remove();
+      }
+    });
+
+    if (!directionsData?.routes?.length) {
+      return;
+    }
+
+    const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    if (!routeCoordinates || routeCoordinates.length < 2) return;
+
+    // 1. Place cylinder markers along every route segment
+    for (let i = 0; i < routeCoordinates.length - 1; i++) {
+      const points = generateIntermediaryPoints(
+        routeCoordinates[i],
+        routeCoordinates[i + 1],
+        ROUTE_STEP_METERS
+      );
+
+      points.forEach(([lng, lat]) => {
+        const cylinder = document.createElement("a-cylinder");
+        cylinder.setAttribute("gps-new-entity-place", `latitude: ${lat}; longitude: ${lng};`);
+        cylinder.setAttribute("radius", "0.5");
+        cylinder.setAttribute("height", "0.15");
+        cylinder.setAttribute("color", "#3882f6");
+        cylinder.setAttribute("opacity", "1");
+        scene.appendChild(cylinder);
+      });
+    }
+
+    // 2. Place 3D GLB pointer marker at the final destination coordinate
+    const lastCoord = routeCoordinates[routeCoordinates.length - 1];
+    if (lastCoord) {
+      const [destLng, destLat] = lastCoord;
+      const marker = document.createElement("a-entity");
+      marker.setAttribute("gps-new-entity-place", `latitude: ${destLat}; longitude: ${destLng};`);
+      marker.setAttribute("gltf-model", "/models/map_pointer_3d_icon.glb");
+      marker.setAttribute("scale", "0.5 0.5 0.5");
+      marker.setAttribute("position", "0 1 0");
+      scene.appendChild(marker);
+    }
+  }, [directionsData, destination, scriptsLoaded]);
+
+  // Notify parent when scene mounts
   useEffect(() => {
     if (scriptsLoaded && sceneRef.current) {
       onSceneReady?.(sceneRef.current);
@@ -90,7 +142,7 @@ export default function ARViewport({
 
   if (loadError) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-bg text-text-1 z-1 px-6 text-center">
+      <div className="absolute inset-0 flex items-center justify-center bg-bg/90 text-text-1 z-1 px-6 text-center">
         <div className="p-6 bg-surface border border-border rounded-lg max-w-[420px]">
           <div className="text-accent font-display text-sm mb-2">AR ENGINE ERROR</div>
           <p className="text-xs text-text-2 mb-4">{loadError}</p>
@@ -131,28 +183,6 @@ export default function ARViewport({
       arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: false;"
     >
       <a-camera gps-new-camera="minDistance: 10;" rotation-reader />
-
-      {/* Render cylinder waypoints along the route */}
-      {waypoints.map(([lng, lat], idx) => (
-        <a-cylinder
-          key={`wp-${idx}-${lng}-${lat}`}
-          gps-new-entity-place={`latitude: ${lat}; longitude: ${lng};`}
-          radius="0.5"
-          height="0.15"
-          color="#3882f6"
-          opacity="1"
-        />
-      ))}
-
-      {/* Render 3D GLB pointer marker at destination */}
-      {destinationCoord && (
-        <a-entity
-          gps-new-entity-place={`latitude: ${destinationCoord.latitude}; longitude: ${destinationCoord.longitude};`}
-          gltf-model="/models/map_pointer_3d_icon.glb"
-          scale="0.5 0.5 0.5"
-          position="0 1 0"
-        />
-      )}
     </a-scene>
   );
 }

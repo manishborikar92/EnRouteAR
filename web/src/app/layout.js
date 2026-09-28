@@ -81,7 +81,14 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-screen flex flex-col bg-bg text-text-1 font-body">
         {children}
-        <Toaster richColors position="top-right" theme="dark" />
+        <Toaster
+          richColors
+          position="top-center"
+          theme="dark"
+          toastOptions={{
+            style: { marginTop: "68px" },
+          }}
+        />
       </body>
     </html>
   );

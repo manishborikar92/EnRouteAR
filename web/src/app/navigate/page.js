@@ -1,7 +1,7 @@
 import NavigateClient from "@/components/navigation/NavigateClient";
 
 export const metadata = {
-  title: "Navigate in AR | EnRouteAR",
+  title: "Navigate in AR",
   description:
     "Real-world Augmented Reality navigation and interactive satellite wayfinding across KITS Ramtek campus.",
   keywords: [

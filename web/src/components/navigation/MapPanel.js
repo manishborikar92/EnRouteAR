@@ -66,6 +66,7 @@ export default function MapPanel({
       } catch (err) {
         console.warn("Mapbox setFog warning:", err);
       }
+      map.resize();
     });
 
     map.on("rotate", (e) => {
@@ -82,8 +83,14 @@ export default function MapPanel({
     map.on("touchstart", handleInteraction);
     map.on("dragstart", handleInteraction);
 
+    const handleWindowResize = () => {
+      map.resize();
+    };
+    window.addEventListener("resize", handleWindowResize);
+
     return () => {
       isLoadedRef.current = false;
+      window.removeEventListener("resize", handleWindowResize);
       map.off("touchstart", handleInteraction);
       map.off("dragstart", handleInteraction);
       if (currentLocationMarkerRef.current) {
@@ -244,7 +251,7 @@ export default function MapPanel({
   return (
     <div
       id="map-container"
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full h-[180px] border-t border-border shadow-[0_-8px_32px_rgba(0,0,0,0.5)] z-2"
+      className="fixed bottom-0 left-0 right-0 w-full h-[180px] border-t border-border shadow-[0_-8px_32px_rgba(0,0,0,0.5)] z-2"
     >
       <div ref={mapContainerRef} id="map" className="w-full h-full" />
     </div>

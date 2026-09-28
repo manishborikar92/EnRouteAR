@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { places, findPlaceByName } from "@/lib/places";
-import { getWalkingDirections, interpolateRouteCoordinates } from "@/lib/geo";
+import { getWalkingDirections } from "@/lib/geo";
 import DestinationBar from "./DestinationBar";
 import CompassWidget from "./CompassWidget";
 import MapPanel from "./MapPanel";
@@ -17,7 +15,6 @@ export default function NavigateClient() {
   const [destination, setDestination] = useState(null);
   const [userLocation, setUserLocation] = useState({ latitude: 0, longitude: 0 });
   const [directionsData, setDirectionsData] = useState(null);
-  const [waypoints, setWaypoints] = useState([]);
   const [isNavigating, setIsNavigating] = useState(false);
 
   // Map & Orientation State Machine
@@ -26,7 +23,7 @@ export default function NavigateClient() {
   const [isMapCentered, setIsMapCentered] = useState(true);
   const [isBearing, setIsBearing] = useState(false);
 
-  // Compute Multifunction Button State
+  // Compute Multifunction Button State matching vanilla priority
   const multifunctionMode = useMemo(() => {
     if (destination && isMapCentered && isBearing) {
       return "reset-all";
@@ -100,7 +97,6 @@ export default function NavigateClient() {
       setDestination(null);
       setSelectedDestinationName("");
       setDirectionsData(null);
-      setWaypoints([]);
       setIsBearing(false);
       setIsMapCentered(true);
       setIsUserInteraction(false);
@@ -144,10 +140,6 @@ export default function NavigateClient() {
       setDestination(targetPlace);
       setDirectionsData(data);
 
-      const routeCoords = data.routes[0].geometry.coordinates;
-      const interpolated = interpolateRouteCoordinates(routeCoords, 2);
-      setWaypoints(interpolated);
-
       // Align map state with active route
       setIsUserInteraction(false);
       setIsMapCentered(true);
@@ -171,40 +163,25 @@ export default function NavigateClient() {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-full relative overflow-hidden bg-bg">
-      {/* Return to Home link */}
-      <Link
-        href="/"
-        className="absolute top-[2%] left-3 z-10 flex items-center justify-center w-9 h-9 rounded-full bg-[rgba(4,26,42,0.93)] border border-border text-primary hover:text-white hover:border-primary transition-colors shadow-md md:hidden"
-        title="Return to Home"
-        aria-label="Return to Home"
-      >
-        <ArrowLeft className="w-4 h-4" />
-      </Link>
+    <div className="flex flex-col h-[100dvh] w-screen fixed inset-0 overflow-hidden bg-transparent select-none">
+      {/* 1. Top Destination Selector HUD */}
+      <DestinationBar
+        selectedDestination={selectedDestinationName}
+        onDestinationChange={setSelectedDestinationName}
+        onNavigate={handleNavigate}
+        isNavigating={isNavigating}
+      />
 
-      {/* Top Destination Selector HUD */}
-      <div className="relative z-5">
-        <DestinationBar
-          selectedDestination={selectedDestinationName}
-          onDestinationChange={setSelectedDestinationName}
-          onNavigate={handleNavigate}
-          isNavigating={isNavigating}
-          places={places}
-        />
-      </div>
+      {/* 2. AR Viewport with camera feed background */}
+      <ARViewport
+        directionsData={directionsData}
+        destination={destination}
+      />
 
-      {/* AR Viewport */}
-      <div className="absolute inset-0 z-0">
-        <ARViewport
-          waypoints={waypoints}
-          destinationCoord={destination}
-        />
-      </div>
-
-      {/* Dynamic HUD Compass */}
+      {/* 3. Dynamic HUD Compass */}
       <CompassWidget heading={compassRotation} />
 
-      {/* 2D Satellite Mini-Map */}
+      {/* 4. 2D Satellite Mini-Map */}
       <MapPanel
         userLocation={userLocation}
         destination={destination}
@@ -215,7 +192,7 @@ export default function NavigateClient() {
         onUserInteraction={handleUserMapInteraction}
       />
 
-      {/* 4-State Multifunction Control */}
+      {/* 5. 4-State Multifunction Control */}
       <MultifunctionButton
         mode={multifunctionMode}
         onClick={handleMultifunctionClick}
