@@ -18,7 +18,6 @@ export default function NavigateClient() {
   const [isNavigating, setIsNavigating] = useState(false);
 
   // Map & Orientation State Machine
-  const [compassRotation, setCompassRotation] = useState(0);
   const [isUserInteraction, setIsUserInteraction] = useState(false);
   const [isMapCentered, setIsMapCentered] = useState(true);
   const [isBearing, setIsBearing] = useState(false);
@@ -40,53 +39,58 @@ export default function NavigateClient() {
     return "centered";
   }, [destination, isMapCentered, isBearing, isUserInteraction]);
 
-  // Handle Geolocation Tracking
+  // Handle Geolocation Tracking with fast-start first fix
   useEffect(() => {
     if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
       toast.error("Geolocation is not supported by your browser.");
       return;
     }
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setUserLocation({ latitude, longitude });
-      },
-      (error) => {
-        switch (error.code) {
-          case 1:
-            toast.error("Location permission denied. Please allow location access to navigate.");
-            break;
-          case 2:
-            toast.error("Position information is unavailable. Please check your GPS signal.");
-            break;
-          case 3:
-            toast.error("Location request timed out. Retrying...");
-            break;
-          default:
-            console.error("Geolocation error:", error.message);
+    const handlePosition = (position) => {
+      const { latitude, longitude } = position.coords;
+      setUserLocation((prev) => {
+        if (
+          Math.abs(prev.latitude - latitude) < 0.000001 &&
+          Math.abs(prev.longitude - longitude) < 0.000001
+        ) {
+          return prev;
         }
-      },
+        return { latitude, longitude };
+      });
+    };
+
+    const handleError = (error) => {
+      switch (error.code) {
+        case 1:
+          toast.error("Location permission denied. Please allow location access to navigate.");
+          break;
+        case 2:
+          toast.error("Position information is unavailable. Please check your GPS signal.");
+          break;
+        case 3:
+          toast.error("Location request timed out. Retrying...");
+          break;
+        default:
+          console.error("Geolocation error:", error.message);
+      }
+    };
+
+    // 1. Immediate one-shot query to acquire initial fix as fast as possible
+    navigator.geolocation.getCurrentPosition(
+      handlePosition,
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 }
+    );
+
+    // 2. Continuous watch for high-accuracy movement updates
+    const watchId = navigator.geolocation.watchPosition(
+      handlePosition,
+      handleError,
       { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
     );
 
     return () => {
       navigator.geolocation.clearWatch(watchId);
-    };
-  }, []);
-
-  // Handle Device Orientation / Compass
-  useEffect(() => {
-    const handleOrientation = (event) => {
-      if (typeof event.alpha === "number" && !isNaN(event.alpha)) {
-        const rotation = (360 - event.alpha) % 360;
-        setCompassRotation(rotation);
-      }
-    };
-
-    window.addEventListener("deviceorientation", handleOrientation);
-    return () => {
-      window.removeEventListener("deviceorientation", handleOrientation);
     };
   }, []);
 
@@ -180,7 +184,7 @@ export default function NavigateClient() {
       />
 
       {/* 3. Dynamic HUD Compass */}
-      <CompassWidget heading={compassRotation} />
+      <CompassWidget />
 
       {/* 4. 2D Satellite Mini-Map */}
       <MapPanel
@@ -189,7 +193,6 @@ export default function NavigateClient() {
         directionsData={directionsData}
         isMapCentered={isMapCentered}
         isBearing={isBearing}
-        compassRotation={compassRotation}
         onUserInteraction={handleUserMapInteraction}
       />
 

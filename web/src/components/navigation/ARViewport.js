@@ -6,6 +6,7 @@ import { generateIntermediaryPoints } from "@/lib/geo";
 const LOCAL_AR_SCRIPTS = [
   "/vendor/aframe.min.js",
   "/vendor/aframe-look-at-component.min.js",
+  "/vendor/ar-threex-location-only.js",
   "/vendor/aframe-ar.js",
 ];
 
@@ -18,7 +19,7 @@ export default function ARViewport({
   onSceneReady,
 }) {
   const [scriptsLoaded, setScriptsLoaded] = useState(
-    () => typeof window !== "undefined" && Boolean(window.AFRAME)
+    () => typeof window !== "undefined" && Boolean(window.AFRAME && window.THREEx)
   );
   const [loadError, setLoadError] = useState(null);
   const sceneRef = useRef(null);
@@ -27,7 +28,7 @@ export default function ARViewport({
   useEffect(() => {
     let isMounted = true;
 
-    if (typeof window !== "undefined" && window.AFRAME) {
+    if (typeof window !== "undefined" && window.AFRAME && window.THREEx) {
       return;
     }
 
