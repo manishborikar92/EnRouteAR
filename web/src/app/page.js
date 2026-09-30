@@ -10,6 +10,12 @@ import CtaSection from "@/components/landing/CtaSection";
 import ContactSection from "@/components/landing/ContactSection";
 import Footer from "@/components/landing/Footer";
 
+export const metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
+
 export default function HomePage() {
   return (
     <>

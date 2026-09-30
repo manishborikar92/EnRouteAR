@@ -1,5 +1,6 @@
 import { Orbitron, Outfit } from "next/font/google";
 import { Toaster } from "sonner";
+import { WebAppJsonLd, CollegeJsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 const orbitron = Orbitron({
@@ -80,6 +81,8 @@ export default function RootLayout({ children }) {
       className={`${orbitron.variable} ${outfit.variable} scroll-smooth antialiased`}
     >
       <body className="min-h-screen flex flex-col bg-bg text-text-1 font-body">
+        <WebAppJsonLd />
+        <CollegeJsonLd />
         {children}
         <Toaster
           richColors
