@@ -18,30 +18,30 @@ export default function Footer() {
         </div>
 
         <div className="footer-links flex flex-wrap gap-x-6 gap-y-2">
-          <a
-            href="#about"
+          <Link
+            href="/#about"
             className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
           >
             About
-          </a>
-          <a
-            href="#college"
+          </Link>
+          <Link
+            href="/#college"
             className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
           >
             Campus
-          </a>
-          <a
-            href="#vision"
+          </Link>
+          <Link
+            href="/#vision"
             className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
           >
             Vision
-          </a>
-          <a
-            href="#contact"
+          </Link>
+          <Link
+            href="/#contact"
             className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
           >
             Contact
-          </a>
+          </Link>
           <a
             href="https://www.kits.edu/"
             target="_blank"

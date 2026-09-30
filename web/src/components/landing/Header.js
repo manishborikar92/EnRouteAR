@@ -64,30 +64,30 @@ export default function Header() {
 
         {/* Desktop Nav */}
         <nav className="site-nav hidden md:flex items-center gap-8" aria-label="Main Navigation">
-          <a
-            href="#about"
+          <Link
+            href="/#about"
             className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             About
-          </a>
-          <a
-            href="#college"
+          </Link>
+          <Link
+            href="/#college"
             className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             Campus
-          </a>
-          <a
-            href="#vision"
+          </Link>
+          <Link
+            href="/#vision"
             className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             Vision
-          </a>
-          <a
-            href="#contact"
+          </Link>
+          <Link
+            href="/#contact"
             className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             Contact
-          </a>
+          </Link>
           <button
             onClick={handleLaunchAR}
             className="nav-cta inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-dk text-white px-5 py-2 rounded-sm font-display text-[0.68rem] tracking-[0.12em] no-underline hover:shadow-[0_0_20px_rgba(0,180,255,0.4)] hover:-translate-y-px transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer border-none"
@@ -121,34 +121,34 @@ export default function Header() {
         id="mobile-nav"
         aria-label="Mobile Navigation"
       >
-        <a
-          href="#about"
+        <Link
+          href="/#about"
           onClick={closeMobile}
           className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
         >
           About
-        </a>
-        <a
-          href="#college"
+        </Link>
+        <Link
+          href="/#college"
           onClick={closeMobile}
           className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
         >
           Campus
-        </a>
-        <a
-          href="#vision"
+        </Link>
+        <Link
+          href="/#vision"
           onClick={closeMobile}
           className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
         >
           Vision
-        </a>
-        <a
-          href="#contact"
+        </Link>
+        <Link
+          href="/#contact"
           onClick={closeMobile}
           className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
         >
           Contact
-        </a>
+        </Link>
         <button
           onClick={handleLaunchAR}
           className="nav-cta inline-flex items-center justify-center mx-6 mt-3 bg-gradient-to-br from-primary to-primary-dk text-white px-5 py-2 rounded-sm font-display text-[0.68rem] tracking-[0.12em] text-center no-underline hover:shadow-[0_0_20px_rgba(0,180,255,0.4)] hover:-translate-y-px transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] border-none cursor-pointer"
