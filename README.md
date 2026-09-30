@@ -108,8 +108,6 @@ enroutear/
 │   └── postcss.config.mjs              # PostCSS / Tailwind v4 plugin
 │
 ├── docs/                               # Architectural plans & migration specs
-├── design/                             # UI mockups & color palette references
-├── logos/                              # Master brand logos
 └── README.md
 ```
 
