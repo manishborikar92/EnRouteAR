@@ -1,187 +1,91 @@
-# EnRouteAR — System Architecture
+# EnRouteAR — Architecture
 
-This document describes the architectural design, component hierarchy, spatial computing pipeline, and state machine powering EnRouteAR.
+## Rendering and component boundaries
 
----
+The Next.js 16 App Router application lives in `web/` and uses JavaScript with React 19. Keep content and page shells as Server Components; isolate hooks, DOM access, permissions, and sensors in Client Components.
 
-## 1. High-Level System Architecture
+| Route | Structure |
+| --- | --- |
+| `/` | Product introduction with shared header/footer, original route illustration, and client launch action |
+| `/about` | Product explanation and practical limitations within a server page shell |
+| `/contact` | Server page shell with the client-side `ContactForm` |
+| `/navigate` | Server page shell containing the client-side `NavigateClient` subsystem |
 
-```mermaid
-flowchart TD
-    subgraph Browser ["Client Browser Viewport"]
-        direction TB
-        Sensors["Device Sensors\n(GPS Geolocation, Camera Stream, DeviceOrientation)"]
-        
-        subgraph AppRouter ["Next.js 16 App Router"]
-            RootLayout["Root Layout\n(Fonts, Global CSS, Schema.org JSON-LD, Toaster)"]
-            
-            subgraph Pages ["Application Routes"]
-                LandingPage["/ (Home Landing Page)\n[Static Pre-rendered]"]
-                AboutPage["/about (Architecture Specs)\n[Static Pre-rendered]"]
-                ContactPage["/contact (Dispatch & FAQ)\n[Static Pre-rendered]"]
-                NavPage["/navigate (Spatial Computing Viewport)\n[Client Boundary Isolated]"]
-            end
-        end
-        
-        subgraph NavSubsystem ["/navigate AR & HUD Subsystem"]
-            NavClient["NavigateClient (State Orchestrator)"]
-            ARView["ARViewport\n(A-Frame 1.3.0 + AR.js 3.4.8 + WebGL)"]
-            MapHUD["MapPanel\n(Mapbox GL JS v3 Satellite Map)"]
-            DestBar["DestinationBar\n(Campus Destination Selector)"]
-            Compass["CompassWidget\n(Hardware Orientation HUD)"]
-            MFB["MultifunctionButton\n(4-Mode State Machine Controller)"]
-        end
-        
-        subgraph ExternalAPIs ["External Cloud Services"]
-            MapboxAPI["Mapbox Directions API\n(Walking Routes GeoJSON)"]
-            FormspreeAPI["Formspree Contact API\n(Direct Dispatch)"]
-        end
-    end
+`layout.js` owns fonts, metadata, and toast infrastructure. Route `loading.js` and `error.js` boundaries share loading/error presentation. Metadata helpers, `robots.js`, `sitemap.js`, and the manifest describe the app; they do not supply offline functionality. Browser behavior is not determined by whether a page shell is prerendered.
 
-    Sensors --> NavClient
-    RootLayout --> Pages
-    NavPage --> NavClient
-    NavClient --> ARView
-    NavClient --> MapHUD
-    NavClient --> DestBar
-    NavClient --> Compass
-    NavClient --> MFB
-    NavClient --> MapboxAPI
-    ContactPage --> FormspreeAPI
+## UI layer
+
+- `src/app/globals.css` contains the Tailwind v4 import and `@theme`/`@theme inline` tokens, not a global component stylesheet.
+- `components/ui/Primitives.js` centralizes common containers, headings, link treatments, and button presentation.
+- `LoadingState` and `ErrorState` provide consistent route-boundary feedback.
+- `components/common/LaunchButton.js` preserves the location-check-then-route flow, including entry after denied/timed-out location requests.
+- Landing illustrations are original inline SVGs; no animation dependency or external image service is introduced.
+- The responsive navigation HUD presents existing location/request/route state without changing routing or the controller state machine.
+
+See [Design decisions](REDESIGN-PLAN.md#design-decisions) for tokens and interaction rationale.
+
+## Navigation data flow
+
+```text
+Existing destination selection + current browser GPS position
+    → findPlaceByName in lib/places.js
+    → getWalkingDirections in lib/geo.js
+    → Mapbox Directions v5 / mapbox/walking
+    → first route's geometry, distance, and duration
+        ├─ MapPanel: satellite map, markers, and route line
+        ├─ ARViewport: interpolated GPS entities + destination GLB
+        └─ HUD: route summary derived from the existing response
 ```
 
----
+`NavigateClient` owns selected/active destination, position, directions response, request-in-progress state, and the map controller flags. Geolocation uses an initial request plus a continuous watch; unmount clears the watch. Position updates do **not** automatically fetch a new route.
 
-## 2. Server & Client Component Boundaries
+`lib/places.js` remains the fixed set of **15 records**. Original names are internal selection/lookup values; latitude/longitude values and duplicate coordinates remain untouched. `lib/place-labels.js` maps those values to neutral display labels for UI surfaces. Labels must not be passed back as replacement lookup keys or used to imply wider destination coverage.
 
-Next.js 16 App Router enforces clear separation between server-executed rendering and browser-only interactive runtimes.
+`lib/geo.js` retains the walking API request, Haversine distance, and interpolation helpers. AR route segments use approximately two-meter spacing for visualization, not a positioning-accuracy guarantee. Mapbox coordinate arrays are `[longitude, latitude]`; source records use named `latitude` and `longitude` fields.
 
-| Route | Rendering Mode | Component Type | Responsibility |
-|---|---|---|---|
-| `/` | Static (SSG) | Server Component | High-performance hero, feature grids, campus summary, and footer. Client-only interactivity (canvas, menu) isolated to micro-components. |
-| `/about` | Static (SSG) | Server Component | Structural specifications, architectural pillar cards, institutional history, and breadcrumb JSON-LD. |
-| `/contact` | Static (SSG) | Server Component | Institutional headquarters info, FAQ accordions, and breadcrumb JSON-LD. Isolated client boundary for `ContactForm.js`. |
-| `/navigate` | Dynamic Client | Client Component (`NavigateClient`) | Full browser-only spatial computing environment accessing `navigator.geolocation`, `navigator.mediaDevices`, `window.DeviceOrientationEvent`, and WebGL canvases. |
-| `/robots.txt` | Metadata Route | Server Route Handler (`robots.js`) | Search crawler rules and dynamic sitemap indexing reference. |
-| `/sitemap.xml` | Metadata Route | Server Route Handler (`sitemap.js`) | Dynamic XML sitemap indexing all application routes with change frequencies. |
+## Existing multifunction controller
 
----
+Mode selection has ordered precedence in `NavigateClient`:
 
-## 3. AR Navigation Subsystem Architecture
+| Condition, in order | Mode |
+| --- | --- |
+| Active destination, map centered, bearing enabled | `reset-all` |
+| Map centered, bearing disabled | `centered` |
+| User map interaction active | `recenter` |
+| Bearing enabled | `bearing` |
+| Otherwise | `centered` |
 
-The `/navigate` route is orchestrated by [`web/src/components/navigation/NavigateClient.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/components/navigation/NavigateClient.js), which acts as the central coordinator between five focused child components:
+The click handler is similarly state-based:
 
-```mermaid
-graph TD
-    NC[NavigateClient.js\nCentral State Orchestrator] --> DB[DestinationBar.js\nDropdown & Navigate Trigger]
-    NC --> CW[CompassWidget.js\nHeading Needle Rotation]
-    NC --> MFB[MultifunctionButton.js\n4-Mode State Controller]
-    NC --> MP[MapPanel.js\nMapbox GL JS v3 Satellite HUD]
-    NC --> ARV[ARViewport.js\nA-Frame & AR.js Spatial Viewport]
+- An active destination with centered/bearing flags clears the destination, selection, route response, bearing, and interaction state.
+- Otherwise, a centered map toggles bearing.
+- Otherwise, the control recenters and clears the manual-interaction flag.
 
-    NC --> Geo[lib/geo.js\nHaversine & Mapbox Directions API]
-    NC --> Places[lib/places.js\nPredefined Destination Coordinates]
-```
+A touch/drag interaction decouples map following and disables bearing. A successful route request recenters and enables bearing. Presentation changes must not reinterpret these transitions as a new navigation workflow.
 
-### 1. `ARViewport.js` (3D Spatial Computing Engine)
-- **Lifecycle & Script Loading**: Loads A-Frame 1.3.0, AR.js 3.4.8, and Three.js extensions dynamically from local static vendor files ([`web/public/vendor/`](file:///c:/Users/manis/Projects/EnRouteAR/web/public/vendor)).
-- **Camera Initialization**: Solicits user permission for the environment (rear) camera stream via `navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })`.
-- **Scene Construction**: Injects an `<a-scene>` element with `embedded`, `vr-mode-ui="enabled: false"`, and `arjs="sourceType: webcam; debugUIEnabled: false;"`.
-- **Geospatial Anchoring**: Uses `gps-new-camera` to track real-world GPS coordinates and lock AR entities using physical latitude/longitude attributes.
-- **Waypoint Rendering**:
-  - Interpolated route segments are rendered as glowing 3D cylinders (`<a-cylinder color="#00B4FF" radius="0.25" height="1.2">`).
-  - The destination is rendered using the custom GLB mesh (`/models/map_pointer_3d_icon.glb`) with an animated scale pulse.
+## AR and map lifecycle
 
-### 2. `MapPanel.js` (Interactive Satellite HUD)
-- **Mapbox Initialization**: Instantiates Mapbox GL JS v3 with the `mapbox://styles/mapbox/satellite-streets-v12` tileset.
-- **User Location Tracking**: Adds a custom pulsed radar marker at the user's coordinates.
-- **Polyline Rendering**: Injects GeoJSON vector sources (`route`) with outer glow (`route-casing`) and solid cyan walking paths.
-- **Gestural Decoupling**: Detects touchstart / pan drag gestures on the map canvas to automatically decouple tracking and transition the state machine into manual `recenter` mode.
+`ARViewport` loads these local files sequentially:
 
-### 3. `MultifunctionButton.js` (Tactile 4-Mode Controller)
-The multifunction button coordinates the viewport camera lock, compass heading follow, and route reset operations.
+1. `/vendor/aframe.min.js`
+2. `/vendor/aframe-look-at-component.min.js`
+3. `/vendor/ar-threex-location-only.js`
+4. `/vendor/aframe-ar.js`
 
-```mermaid
-stateDiagram-v2
-    [*] --> Centered: User launches navigation / GPS fix acquired
-    
-    Centered --> BearingFollow: Tap Multifunction Button
-    BearingFollow --> ResetAll: Route actively calculating / Waypoints active
-    ResetAll --> Centered: Tap ResetAll (Clears Route & Destinations)
-    
-    Centered --> FreePan: User drags / pans Mapbox satellite map manually
-    BearingFollow --> FreePan: User drags / pans Mapbox satellite map manually
-    FreePan --> Centered: Tap Multifunction Button (Recenter map on GPS)
-```
+The A-Frame scene uses a transparent renderer over camera video, `gps-new-camera`, interpolated cylinder entities, and `/models/map_pointer_3d_icon.glb`. It is the existing AR.js location integration, not a new WebXR session implementation.
 
-| State | CSS Class | Icon | Action on Tap |
-|---|---|---|---|
-| **Centered** | `.centered` | `centered.png` | Activates bearing follow mode (`bearing`). |
-| **Bearing Follow** | `.bearing` | `bearing.png` | Aligns map to current device heading. |
-| **Free Pan** | `.recenter` | `recenter.png` | Smoothly flies satellite map back to user location and re-engages `centered` mode. |
-| **Reset Active** | `.reset-all` | `reset-all.png` | Clears active route polylines, removes AR cylinders, and resets destination selector. |
+Preserve the full-screen camera sizing guards: fixed viewport positioning, `100dvh`, `object-fit: cover`, and reapplication after video load, resize, and orientation changes. Earlier AR.js inline sizing could create a clipped video strip. Keep camera video visible beneath the transparent scene rather than hiding it; mobile camera behavior needs device validation.
 
-### 4. `CompassWidget.js` (Hardware Heading HUD)
-- Listens to browser `deviceorientation` events (or WebKit compass headings).
-- Applies hardware-accelerated CSS transforms (`transform: rotate(-heading deg)`) with a linear transition to eliminate jitter.
+`MapPanel` owns Mapbox GL JS, the satellite-streets style, location/destination markers, route source/layer, gestures, and heading updates. Refs avoid recreating the map on every location or controller change. Map gestures must remain isolated from page gestures and must stop GPS updates from forcibly recentering a manually explored map.
 
-### 5. `DestinationBar.js` (Destination Selector)
-- Provides an accessible dropdown containing the 15 pre-mapped KITS Ramtek destinations.
-- Dispatches destination updates to `NavigateClient`, enabling the "Navigate" button.
-- Includes a dedicated "Return to Home" button for clean client-side routing back to `/`.
+Route changes/reset remove old AR entities and map route data. Unmount must stop camera tracks, remove injected video, dispose of the map and markers, and detach sensor/resize listeners and timers. Verify this through repeated client-side entry/exit, not just a full page reload. See [Migration caveats](MIGRATION-PLAN.md).
 
----
+## External data and operational limits
 
-## 4. Geospatial Routing & Interpolation Pipeline
+- Mapbox receives route origin/destination coordinates and serves map resources. Internet access, valid public-token permissions, and provider coverage are required.
+- `ContactForm` posts name, email, and message to the configured Formspree endpoint. Existing fallback behavior remains.
+- There is no application authentication, database, route storage service, search, offline routing, or automatic rerouting.
+- A route distance/time summary is an estimate from the selected response, not live trip progress.
+- Camera/GPS/heading access depends on secure contexts, browser permissions, and real hardware. GPS and compass drift remain possible; no sub-meter or indoor reliability claim is supported.
 
-The routing pipeline bridges the distance between coarse GPS walking segments and fine-grained AR entity placement:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant DB as DestinationBar
-    participant NC as NavigateClient
-    participant Geo as lib/geo.js
-    participant Mapbox as Mapbox Directions API
-    participant AR as ARViewport
-    participant MP as MapPanel
-
-    User->>DB: Select "Library" & click "Navigate"
-    DB->>NC: onSelectDestination({ name: 'Library', lat, lng })
-    NC->>Geo: getWalkingDirections(userLocation, destinationLocation)
-    Geo->>Mapbox: GET /directions/v5/mapbox/walking/{start};{end}
-    Mapbox-->>Geo: GeoJSON LineString coordinates
-    Geo-->>NC: Parsed route geometry [lng, lat][]
-    
-    NC->>Geo: interpolateRouteCoordinates(routeCoords, stepMeters=2)
-    Geo-->>NC: 2-meter interpolated discrete points [lng, lat][]
-    
-    par Update Satellite Map
-        NC->>MP: setRouteCoordinates(routeCoords)
-        MP->>MP: Render GeoJSON polyline layers
-    and Update AR Viewport
-        NC->>AR: setRouteWaypoints(interpolatedPoints)
-        AR->>AR: Inject 3D <a-cylinder> entities & <a-entity gltf-model>
-    end
-```
-
-### Mathematical Formulations
-- **Haversine Distance**: Calculates spherical surface distance across Earth's radius ($R = 6,371,000 \text{ m}$):
-  $$\Delta \sigma = 2 \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta \lambda}{2}\right)} \right)$$
-  $$\text{Distance} = R \cdot \Delta \sigma$$
-- **Linear Step Interpolation**: Slices polyline segments into $2\text{ m}$ discrete intervals so AR waypoints form a continuous path on the user's screen.
-
----
-
-## 5. Technical Decisions & Rationale
-
-1. **Vendor Script Distribution for A-Frame / AR.js**:
-   - *Decision*: A-Frame (`aframe.min.js`) and AR.js (`aframe-ar.js`) are loaded from `web/public/vendor/` rather than imported via npm.
-   - *Rationale*: A-Frame modifies global DOM prototypes and expects `window.THREE` in the global scope. Bundling A-Frame through Turbopack or Webpack causes severe SSR crashes and namespace collisions. Isolating them into static client vendor scripts loaded only inside `ARViewport.js` ensures zero overhead on other pages.
-2. **Mobile Viewport Resilience (`100dvh`)**:
-   - *Decision*: The navigation viewport uses CSS `h-[100dvh]` rather than `100vh`.
-   - *Rationale*: Mobile browser address bars collapse and expand dynamically during orientation changes. Using dynamic viewport height (`100dvh`) prevents UI buttons and Mapbox containers from being pushed off-screen.
-3. **Multi-Touch Map Isolation**:
-   - *Decision*: Map container styles utilize `touch-action: none` with explicit pointer-event controls.
-   - *Rationale*: Prevents whole-page pull-to-refresh gestures from hijacking the 2D satellite map during two-finger rotation or pinch-to-zoom.
+[Public configuration](ENVIRONMENT-VARS.md) · [Technology stack](TECH-STACK.md) · [Final verification](REDESIGN-PLAN.md#final-verification)

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "title": "Audit the complete web application, documentation, content, styling, and existing behavior",
+      "status": "done"
+    },
+    {
+      "title": "Research design/accessibility patterns and define the redesign system",
+      "status": "done"
+    },
+    {
+      "title": "Implement the location-neutral redesign and Tailwind migration",
+      "status": "in-progress"
+    },
+    {
+      "title": "Verify workflows, accessibility, and responsive layouts; refine issues",
+      "status": "pending"
+    },
+    {
+      "title": "Update documentation and summarize verified results",
+      "status": "pending"
+    }
+  ],
+  "updated_at": "2026-10-02T13:48:35.860Z",
+  "session_id": "01a0fcd5-0eb8-70d7-b332-b7dc74b2d729"
+}

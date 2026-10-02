@@ -1,270 +1,35 @@
-import Link from "next/link";
-import {
-  Compass,
-  Layers,
-  Cpu,
-  Smartphone,
-  MapPin,
-  ExternalLink,
-  ShieldCheck,
-  Navigation,
-} from "lucide-react";
+import { Camera, Compass, Map, LocateFixed, ArrowUpRight, Smartphone, Wifi, Footprints } from "lucide-react";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
-import Atmosphere from "@/components/common/Atmosphere";
-import SpotlightTracker from "@/components/common/SpotlightTracker";
-import { PlayIcon } from "@/components/common/Icons";
+import CtaSection from "@/components/landing/CtaSection";
+import { RouteMap } from "@/components/landing/RoutePreview";
+import { Container, Eyebrow, SectionHeading, Breadcrumb, TextLink } from "@/components/ui/Primitives";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata = {
   title: "About",
-  description:
-    "Discover the architecture, WebXR spatial computing, and campus navigation technology powering EnRouteAR at KITS Ramtek.",
-  alternates: {
-    canonical: "/about",
-  },
-  openGraph: {
-    title: "About | EnRouteAR",
-    description:
-      "Explore the spatial computing architecture, WebXR rendering, and real-time GPS tracking behind EnRouteAR.",
-    url: "/about",
-  },
+  description: "A clearer perspective on walking navigation. Learn how EnRouteAR combines camera-based AR, live GPS, and satellite maps, and what’s available today.",
+  alternates: { canonical: "/about" },
+  openGraph: { title: "About | EnRouteAR", description: "The idea, technology, and practical details behind browser-based AR wayfinding.", url: "/about" },
 };
 
-const TECH_PILLARS = [
-  {
-    icon: Smartphone,
-    title: "WebXR & A-Frame 1.3.0",
-    badge: "3D SPATIAL ENGINE",
-    description:
-      "Leverages browser-native WebGL and WebXR APIs through A-Frame to render hardware-accelerated 3D geometries, waypoints, and markers directly inside standard mobile browsers without external native app installs.",
-  },
-  {
-    icon: Compass,
-    title: "AR.js Location-Based Framework",
-    badge: "GEOSPATIAL ANCHORING",
-    description:
-      "Calculates real-world distances and bearings using high-precision Spherical Mercator (EPSG:3857) projections, locking 3D cylinders and GLB destination models to exact physical coordinates on campus.",
-  },
-  {
-    icon: Layers,
-    title: "Mapbox GL JS v3 Satellite Map",
-    badge: "2D SATELLITE HUD",
-    description:
-      "Integrates high-resolution satellite imagery with dynamic vector polyline layers, turn-by-turn walking routing from Mapbox Directions API, and fluid 60fps multi-touch gestures including 2-finger pan, rotate, and pitch.",
-  },
-  {
-    icon: Cpu,
-    title: "Next.js 16 App Router",
-    badge: "CORE PLATFORM",
-    description:
-      "Built on the latest stable Next.js 16 foundation with Turbopack, React 19 Client Component isolation for sensor-heavy views, optimized metadata generation, and zero-overhead static pre-rendering.",
-  },
+const capabilities = [
+  { icon: Camera, title: "See your route in context", text: "A-Frame and AR.js place 3D route markers over your camera feed using GPS coordinates. The result is another way to understand the path ahead." },
+  { icon: Map, title: "Keep your map close", text: "Mapbox provides a satellite-streets map and walking-route geometry. Your position updates as you move; the selected route stays visible in both views." },
+  { icon: Compass, title: "Stay oriented", text: "On supported devices, orientation sensors drive the compass and map heading. Pan to look around, then recenter when you’re ready." },
+  { icon: LocateFixed, title: "Keep things simple", text: "One context-aware control handles heading follow, recentering, and route reset. Your route is calculated when you tap Navigate, not automatically rerouted." },
 ];
-
-const CAPABILITIES = [
-  {
-    number: "01",
-    title: "Real-Time Camera Overlay",
-    summary:
-      "Digital navigation beacons appear seamlessly floating in physical space, guiding visitors and students across paths, quadrangles, and building entrances.",
-  },
-  {
-    number: "02",
-    title: "Sub-Meter Path Interpolation",
-    summary:
-      "Continuous walking routes calculated via the Haversine formula are sliced into 2-meter waypoint intervals, forming a luminous blue visual trail to your destination.",
-  },
-  {
-    number: "03",
-    title: "Dynamic Compass & Bearing Tracking",
-    summary:
-      "Hardware orientation sensors dynamically synchronize the HUD needle and satellite map bearing to keep navigation directions oriented to your true direction of travel.",
-  },
-  {
-    number: "04",
-    title: "Intelligent State Machine",
-    summary:
-      "A 4-mode multifunction controller manages map centering, compass rotation follow, manual pan decoupling, and one-tap route resetting for an intuitive tactile workflow.",
-  },
+const requirements = [
+  { icon: Smartphone, title: "A compatible phone", text: "Use a mobile browser with camera, GPS, WebGL, and orientation support. Device and browser behavior varies." },
+  { icon: Wifi, title: "An internet connection", text: "Map tiles and walking directions need a connection. Camera and location access require HTTPS or localhost." },
+  { icon: Footprints, title: "An outdoor setting", text: "GPS works best with a clear view of the sky. Buildings and weak signals can cause markers to drift." },
 ];
 
 export default function AboutPage() {
-  const breadcrumbs = [
-    { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-  ];
-
-  return (
-    <>
-      <BreadcrumbJsonLd items={breadcrumbs} />
-      <Atmosphere />
-      <SpotlightTracker />
-      <Header />
-
-      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24">
-        <div className="wrap">
-          {/* Breadcrumb Navigation */}
-          <nav aria-label="Breadcrumb" className="mb-8">
-            <ol className="flex items-center gap-2 font-display text-[0.8rem] tracking-[0.04em] text-t3">
-              <li>
-                <Link
-                  href="/"
-                  className="hover:text-t1 transition-colors no-underline text-t3"
-                >
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden="true" className="opacity-40">
-                /
-              </li>
-              <li className="text-route font-semibold">About</li>
-            </ol>
-          </nav>
-
-          {/* Page Hero */}
-          <div className="mb-20 max-w-[840px]">
-            <p className="status mb-6">
-              <span className="dot" />
-              System Specification &amp; Architecture
-            </p>
-            <h1>
-              Pioneering spatial computing for campus navigation
-            </h1>
-            <p className="lead mt-6 text-t2 text-lg">
-              EnRouteAR is an open augmented reality wayfinding platform developed
-              for Kavikulguru Institute of Technology and Science (KITS), Ramtek.
-              By fusing browser-based spatial computing with live satellite mapping,
-              it bridges physical architecture with digital waypoint guidance.
-            </p>
-          </div>
-
-          {/* Core Pillars Grid */}
-          <section className="mb-24">
-            <div className="flex items-center gap-3 font-display text-[0.8rem] tracking-[0.14em] uppercase text-route font-bold mb-3">
-              <span className="w-8 h-[2px] bg-route" />
-              Engineering Foundation
-            </div>
-            <h2 className="mb-10 text-3xl font-bold">
-              Core Architectural Stack
-            </h2>
-
-            <div className="grid grid-cols-2 max-md:grid-cols-1 gap-6">
-              {TECH_PILLARS.map((tech) => {
-                const Icon = tech.icon;
-                return (
-                  <div
-                    key={tech.title}
-                    className="panel glass-spotlight p-8 flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-4 mb-5">
-                        <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-[#A9CBFF] bg-[linear-gradient(145deg,rgba(76,141,255,0.32),rgba(76,141,255,0.08))] border border-[rgba(120,170,255,0.38)] shadow-[0_0_24px_-4px_rgba(76,141,255,0.55)]">
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <span className="chip px-3 py-1 rounded-full text-[0.72rem] font-bold tracking-[0.08em] bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.38)] text-[#FFD978]">
-                          {tech.badge}
-                        </span>
-                      </div>
-                      <h3 className="font-display text-xl font-bold text-t1 mb-3">
-                        {tech.title}
-                      </h3>
-                      <p className="text-t2 text-[0.95rem] leading-[1.7]">
-                        {tech.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Capabilities Breakdown */}
-          <section className="mb-24">
-            <div className="flex items-center gap-3 font-display text-[0.8rem] tracking-[0.14em] uppercase text-route font-bold mb-3">
-              <span className="w-8 h-[2px] bg-route" />
-              Feature Architecture
-            </div>
-            <h2 className="mb-10 text-3xl font-bold">
-              Navigation Capabilities
-            </h2>
-
-            <div className="grid grid-cols-2 max-md:grid-cols-1 gap-6">
-              {CAPABILITIES.map((cap) => (
-                <div
-                  key={cap.number}
-                  className="panel glass-spotlight p-7 flex items-start gap-5"
-                >
-                  <span className="font-display text-3xl font-extrabold text-route/40 shrink-0">
-                    {cap.number}
-                  </span>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-t1 mb-2">
-                      {cap.title}
-                    </h3>
-                    <p className="text-t2 text-[0.92rem] leading-[1.65]">
-                      {cap.summary}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Institutional Campus Focus */}
-          <section className="mb-24 panel p-10 max-md:p-6 border border-line">
-            <div className="flex items-center gap-2 text-signal font-display text-[0.8rem] tracking-[0.14em] uppercase font-bold mb-3">
-              <ShieldCheck className="w-5 h-5 text-signal" />
-              Campus Context
-            </div>
-            <h2 className="text-2xl font-bold mb-4">
-              Kavikulguru Institute of Technology &amp; Science (KITS), Ramtek
-            </h2>
-            <p className="text-t2 text-[0.96rem] leading-[1.8] mb-6 max-w-[800px]">
-              Founded in 1985 and permanently affiliated with RTM Nagpur University,
-              KITS Ramtek encompasses over 48.96 acres of academic complexes, dedicated
-              engineering workshops, administrative halls, hostel zones, and recreational
-              facilities. EnRouteAR was designed specifically to provide frictionless
-              navigation across this expansive campus without requiring expensive physical
-              signage or proprietary hardware.
-            </p>
-            <div className="flex items-center gap-6 flex-wrap text-t3 text-sm">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-route" />
-                <span>Ramtek, Nagpur, Maharashtra, India</span>
-              </div>
-              <a
-                href="https://www.kits.edu"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-route hover:text-white transition-colors no-underline font-semibold"
-              >
-                <span>Visit kits.edu</span>
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
-          </section>
-
-          {/* Call to Action Banner */}
-          <section className="sec cta on-ink p-0">
-            <div className="wrap">
-              <div>
-                <h2>Ready to navigate in AR?</h2>
-                <p>
-                  Launch the live AR experience directly in your browser. Grant location
-                  and camera permissions to begin real-time navigation.
-                </p>
-              </div>
-              <Link href="/navigate" className="btn signal">
-                <PlayIcon className="i" />
-                Launch navigation
-              </Link>
-            </div>
-          </section>
-        </div>
-      </main>
-
-      <Footer />
-    </>
-  );
+  return <><BreadcrumbJsonLd items={[{ name: "Home", path: "/" }, { name: "About", path: "/about" }]} /><Header /><main id="main" tabIndex={-1}>
+    <Container className="pb-16 pt-6 lg:pb-20"><Breadcrumb current="About" /><div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]"><div><Eyebrow>About EnRouteAR</Eyebrow><h1 className="max-w-2xl text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">A more natural<br />sense of direction.</h1><p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">Maps show you where to go. We’re exploring how augmented reality can help you see the way there.</p><p className="mt-5 max-w-xl leading-relaxed text-muted">EnRouteAR brings camera-based wayfinding and satellite mapping together in your browser. No installation, no account, and no need to switch between separate apps to understand your route.</p></div><div className="relative overflow-hidden rounded-3xl bg-forest text-white"><RouteMap className="w-full" /><p className="absolute inset-x-0 bottom-0 flex items-center justify-between border-t border-white/15 bg-ink/95 px-6 py-4 text-sm">Built around your perspective<ArrowUpRight className="size-5 text-lime" aria-hidden="true" /></p></div></div></Container>
+    <section className="border-y border-line bg-white/50 py-16 lg:py-20" aria-labelledby="inside-h"><Container><Eyebrow>Behind the experience</Eyebrow><SectionHeading id="inside-h">Two views, working together.</SectionHeading><div className="mt-10 grid gap-8 sm:grid-cols-2 lg:gap-12">{capabilities.map(({ icon: Icon, title, text }) => <article key={title} className="flex items-start gap-4"><span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-line bg-paper"><Icon className="size-5" aria-hidden="true" /></span><div><h3 className="font-display text-xl font-bold">{title}</h3><p className="mt-3 max-w-lg text-sm leading-relaxed text-muted">{text}</p></div></article>)}</div></Container></section>
+    <section id="availability" className="py-16 lg:py-20" aria-labelledby="availability-h"><Container><div className="grid gap-8 md:grid-cols-2 md:gap-16"><div><Eyebrow>A clear starting point</Eyebrow><SectionHeading id="availability-h">A broader vision.<br />An honest starting point.</SectionHeading></div><div className="space-y-5 leading-relaxed text-muted"><p>Our long-term direction is location-independent wayfinding: a useful companion wherever your journey takes you.</p><p>Today, navigation is limited to a fixed list of predefined destinations. You can view that list in the navigation screen. Worldwide location search is not available in this version.</p><p>AR markers are guides, not precision measurements. Accuracy depends on your GPS signal, device sensors, and map data. The experience is not designed for indoor positioning.</p><TextLink href="/navigate" className="text-ink">See available destinations</TextLink></div></div><div className="mt-12 grid gap-4 md:grid-cols-3">{requirements.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-line p-6"><Icon className="mb-5 size-5 text-forest" aria-hidden="true" /><h3 className="font-display text-lg font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted">{text}</p></article>)}</div><p className="mt-6 text-sm leading-relaxed text-muted">Walk with awareness. Stop somewhere safe to check directions, respect access restrictions, and put your phone down when you know where to go.</p></Container></section>
+    <CtaSection />
+  </main><Footer /></>;
 }

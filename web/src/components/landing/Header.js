@@ -1,205 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { BrandMark, MenuIcon, CloseIcon } from "@/components/common/Icons";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import Brand from "@/components/common/Brand";
+import LaunchButton from "@/components/common/LaunchButton";
+import { Container } from "@/components/ui/Primitives";
+
+const links = [{ href: "/#how", label: "How it works" }, { href: "/about", label: "About" }, { href: "/contact", label: "Contact" }];
 
 export default function Header() {
-  const [isStuck, setIsStuck] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
-  const [isLaunching, setIsLaunching] = useState(false);
-  const router = useRouter();
+  const pathname = usePathname();
+  const toggle = useRef(null);
+  const header = useRef(null);
 
-  // Scroll listener for sticky header background
   useEffect(() => {
-    const onScroll = () => {
-      setIsStuck(window.scrollY > 24);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const media = window.matchMedia("(min-width: 768px)");
+    const close = () => setIsMenuOpen(false);
+    media.addEventListener("change", close);
+    return () => media.removeEventListener("change", close);
   }, []);
 
-  // Section observer for highlighting active nav link
-  useEffect(() => {
-    const sectionIds = ["how", "about", "college", "vision", "contact"];
-    const sections = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter(Boolean);
-
-    if (!sections.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -50% 0px" }
-    );
-
-    sections.forEach((sec) => observer.observe(sec));
-    return () => observer.disconnect();
-  }, []);
-
-  // Body scroll lock on mobile menu toggle
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.classList.add("menu-open");
-    } else {
-      document.body.classList.remove("menu-open");
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape" && isMenuOpen) {
+      setIsMenuOpen(false);
+      toggle.current?.focus();
     }
-    return () => {
-      document.body.classList.remove("menu-open");
-    };
-  }, [isMenuOpen]);
-
-  // Close on Escape key
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === "Escape" && isMenuOpen) {
-        setIsMenuOpen(false);
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isMenuOpen]);
-
-  // Handle AR launch with geolocation request feedback
-  const handleLaunchAR = (e) => {
-    e.preventDefault();
-    if (isLaunching) return;
-
-    const navigateToApp = () => {
-      router.push("/navigate");
-    };
-
-    if (typeof navigator !== "undefined" && "geolocation" in navigator) {
-      setIsLaunching(true);
-      navigator.geolocation.getCurrentPosition(
-        () => {
-          setIsLaunching(false);
-          navigateToApp();
-        },
-        (err) => {
-          console.warn("Geolocation warning:", err.message);
-          setIsLaunching(false);
-          navigateToApp();
-        },
-        { enableHighAccuracy: false, timeout: 8000 }
-      );
-    } else {
-      navigateToApp();
-    }
-    setIsMenuOpen(false);
   };
 
   return (
-    <>
-      <a className="skip" href="#main">
-        Skip to content
-      </a>
-
-      <header className={`top ${isStuck ? "stuck" : ""}`} id="top">
-        <div className="wrap bar">
-          <Link href="/" className="brand" aria-label="EnRouteAR, home">
-            <BrandMark className="mk" />
-            <span>
-              EnRoute<b>AR</b>
-              <small>Augmented reality navigation</small>
-            </span>
-          </Link>
-
-          <nav className="nav" aria-label="Primary">
-            <Link
-              href="/#how"
-              aria-current={activeSection === "how" ? "true" : undefined}
-            >
-              How it works
-            </Link>
-            <Link
-              href="/#about"
-              aria-current={activeSection === "about" ? "true" : undefined}
-            >
-              About
-            </Link>
-            <Link
-              href="/#college"
-              aria-current={activeSection === "college" ? "true" : undefined}
-            >
-              Campus
-            </Link>
-            <Link
-              href="/#vision"
-              aria-current={activeSection === "vision" ? "true" : undefined}
-            >
-              Vision
-            </Link>
-            <Link
-              href="/#contact"
-              aria-current={activeSection === "contact" ? "true" : undefined}
-            >
-              Contact
-            </Link>
-            <button
-              onClick={handleLaunchAR}
-              className="btn sm"
-              id="nav-launch-btn"
-              aria-busy={isLaunching}
-            >
-              Launch AR
-            </button>
-          </nav>
-
-          <button
-            className="burger"
-            id="mobile-menu-btn"
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-nav"
-            aria-label="Menu"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-          >
-            <MenuIcon className="i m" />
-            <CloseIcon className="i x" />
-          </button>
+    <header ref={header} onKeyDown={handleKeyDown} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setIsMenuOpen(false); }} className="sticky top-0 z-50 border-b border-line/80 bg-paper/95 backdrop-blur-xl" id="top">
+      <Container className="flex h-20 items-center justify-between gap-4">
+        <Brand />
+        <nav aria-label="Primary" className="hidden items-center gap-1 md:flex lg:gap-5">
+          {links.map(({ href, label }) => <Link key={href} href={href} aria-current={pathname === href ? "page" : undefined} className="inline-flex min-h-11 items-center rounded-full px-4 text-sm text-muted transition-colors hover:bg-ink/5 hover:text-ink aria-[current=page]:bg-ink/5 aria-[current=page]:text-ink">{label}</Link>)}
+        </nav>
+        <div className="flex items-center gap-2">
+          <LaunchButton className="hidden sm:inline-flex" id="nav-launch-btn">Launch AR</LaunchButton>
+          <button ref={toggle} type="button" id="mobile-menu-btn" aria-expanded={isMenuOpen} aria-controls="mobile-nav" aria-label={isMenuOpen ? "Close menu" : "Open menu"} onClick={() => setIsMenuOpen((open) => !open)} className="grid size-11 place-items-center rounded-full border border-line text-ink transition-colors hover:bg-white md:hidden">{isMenuOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}</button>
         </div>
-      </header>
-
-      {/* Mobile Fullscreen Drawer */}
-      <nav
-        className="mnav"
-        id="mobile-nav"
-        aria-label="Mobile"
-        hidden={!isMenuOpen}
-      >
-        <Link href="/#how" onClick={() => setIsMenuOpen(false)}>
-          How it works
-        </Link>
-        <Link href="/#about" onClick={() => setIsMenuOpen(false)}>
-          About
-        </Link>
-        <Link href="/#college" onClick={() => setIsMenuOpen(false)}>
-          Campus
-        </Link>
-        <Link href="/#vision" onClick={() => setIsMenuOpen(false)}>
-          Vision
-        </Link>
-        <Link href="/#contact" onClick={() => setIsMenuOpen(false)}>
-          Contact
-        </Link>
-        <button
-          onClick={handleLaunchAR}
-          className="btn"
-          id="mobile-launch-btn"
-          aria-busy={isLaunching}
-        >
-          Launch AR
-        </button>
+      </Container>
+      <nav id="mobile-nav" aria-label="Mobile" hidden={!isMenuOpen} className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-line bg-paper px-5 pb-6 pt-3 shadow-panel md:hidden">
+        {links.map(({ href, label }) => <Link key={href} href={href} onClick={() => setIsMenuOpen(false)} aria-current={pathname === href ? "page" : undefined} className="flex min-h-14 items-center border-b border-line font-display text-xl hover:text-muted">{label}</Link>)}
+        <LaunchButton className="mt-5 w-full" onLaunch={() => setIsMenuOpen(false)} id="mobile-launch-btn" />
       </nav>
-    </>
+    </header>
   );
 }

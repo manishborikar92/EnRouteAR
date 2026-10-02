@@ -1,98 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { PlayIcon } from "@/components/common/Icons";
+import LaunchButton from "@/components/common/LaunchButton";
 
 export default function MobileDock() {
   const [showDock, setShowDock] = useState(false);
-  const [isLaunching, setIsLaunching] = useState(false);
-  const router = useRouter();
-
   useEffect(() => {
-    const heroBtn = document.getElementById("turnOnLocationBtn");
-    if (!heroBtn) return;
-
-    const seenBottom = new Set();
-    let isHeroVisible = true;
-
-    const updateVisibility = () => {
-      setShowDock(!isHeroVisible && seenBottom.size === 0);
-    };
-
-    const heroObserver = new IntersectionObserver(
-      ([entry]) => {
-        isHeroVisible = entry.isIntersecting;
-        updateVisibility();
-      },
-      { threshold: 0.1 }
-    );
-
-    heroObserver.observe(heroBtn);
-
-    const bottomElements = document.querySelectorAll(
-      ".cta, #contact, footer"
-    );
-    const bottomObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            seenBottom.add(entry.target);
-          } else {
-            seenBottom.delete(entry.target);
-          }
-        });
-        updateVisibility();
-      },
-      { threshold: 0.05 }
-    );
-
-    bottomElements.forEach((el) => bottomObserver.observe(el));
-
-    return () => {
-      heroObserver.disconnect();
-      bottomObserver.disconnect();
-    };
+    const hero = document.getElementById("turnOnLocationBtn");
+    if (!hero) return;
+    let aboveHero = true;
+    const visibleBottom = new Set();
+    const update = () => setShowDock(!aboveHero && visibleBottom.size === 0);
+    const heroObserver = new IntersectionObserver(([entry]) => {
+      aboveHero = entry.isIntersecting || entry.boundingClientRect.top > 0;
+      update();
+    });
+    const bottomObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.isIntersecting ? visibleBottom.add(entry.target) : visibleBottom.delete(entry.target));
+      update();
+    });
+    heroObserver.observe(hero);
+    document.querySelectorAll("#start, #contact, footer").forEach((element) => bottomObserver.observe(element));
+    return () => { heroObserver.disconnect(); bottomObserver.disconnect(); };
   }, []);
 
-  const handleLaunch = (e) => {
-    e.preventDefault();
-    if (isLaunching) return;
-
-    const navigateToApp = () => {
-      router.push("/navigate");
-    };
-
-    if (typeof navigator !== "undefined" && "geolocation" in navigator) {
-      setIsLaunching(true);
-      navigator.geolocation.getCurrentPosition(
-        () => {
-          setIsLaunching(false);
-          navigateToApp();
-        },
-        (err) => {
-          console.warn("Geolocation warning:", err.message);
-          setIsLaunching(false);
-          navigateToApp();
-        },
-        { enableHighAccuracy: false, timeout: 8000 }
-      );
-    } else {
-      navigateToApp();
-    }
-  };
-
-  return (
-    <div className={`dock ${showDock ? "show" : ""}`} id="dock">
-      <button
-        onClick={handleLaunch}
-        className="btn"
-        id="dock-launch-btn"
-        aria-busy={isLaunching}
-      >
-        <PlayIcon className="i" />
-        Launch AR
-      </button>
-    </div>
-  );
+  return <div id="dock" inert={!showDock} aria-hidden={!showDock} className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/95 px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-xl transition-transform duration-200 md:hidden ${showDock ? "visible translate-y-0" : "invisible translate-y-full"}`}><LaunchButton className="w-full" id="dock-launch-btn" /></div>;
 }

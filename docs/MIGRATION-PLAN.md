@@ -1,158 +1,41 @@
-# EnRouteAR — Migration History & Architecture Plan
+# EnRouteAR — Migration notes and integration caveats
 
-This document records the complete migration history of EnRouteAR from its original vanilla HTML/JS prototype (`vanilla/`) to the production Next.js 16 App Router application (`web/`), detailing the execution phases, critical bugs resolved, and technical decisions.
+The earlier static implementation remains in `vanilla/`. The Next.js application is already in `web/`; the current work redesigns its presentation and documentation, not its framework or navigation engine. Neither directory is declared the currently configured deployment target here.
 
----
+Older phase-by-phase proposals, screenshots/results, and implementation history are recoverable with `git log -- docs/MIGRATION-PLAN.md` and the corresponding revisions. Historical test claims are not evidence for the current redesign.
 
-## 1. Migration Background & Objectives
+## Retained architecture
 
-The original EnRouteAR project was developed as a static prototype inside the `vanilla/` directory:
-- `vanilla/index.html`: A static marketing landing page with embedded canvas stars and CSS styles.
-- `vanilla/navigation.html`: A monolithic browser AR viewport with inline scripts, coupled Mapbox and A-Frame calls, and manual DOM mutations.
-- `vanilla/scripts/script.js` & `vanilla/scripts/places.js`: Tightly coupled procedural logic handling GPS, camera, Mapbox, compass, and UI state.
+- Next.js 16 App Router, React 19, JavaScript, Tailwind CSS v4, and the four routes `/`, `/about`, `/contact`, `/navigate`.
+- Client navigation orchestration split across `NavigateClient`, `ARViewport`, `MapPanel`, `DestinationBar`, `CompassWidget`, and `MultifunctionButton`.
+- Existing camera/location/orientation behavior, local A-Frame/AR.js scripts, Mapbox walking requests, SVG control assets, and destination GLB.
+- All 15 original `places.js` records and `geo.js` routing behavior. Neutral `place-labels.js` strings are presentation-only.
+- Existing Formspree endpoint and environment fallbacks. No new service or backend.
 
-### Core Migration Objectives
-1. **Modern App Router Foundation**: Migrate to Next.js 16 with Turbopack, React 19, and Tailwind CSS v4.
-2. **Behavioral & Functional Parity**: Preserve 100% of the original AR positioning, Mapbox navigation, 4-mode multifunction controller, and compass behavior.
-3. **Component Modularity**: Decompose monolithic procedural scripts into maintainable, reusable React components with clean Server/Client boundaries.
-4. **Production SEO & Web Standards**: Implement dynamic metadata routes (`robots.js`, `sitemap.js`), OpenGraph cards, PWA manifest, and Schema.org JSON-LD.
-5. **Rigorous Verification**: Validate with headless Chromium browser automation (CDP) under real-world simulated sensor conditions.
+## Lessons that still matter
 
----
+### Full-screen camera sizing
 
-## 2. Execution Phases
+AR.js injects video with inline dimensions that can be calculated before a mobile viewport settles. Earlier integration problems produced a narrow camera strip or clipping beneath other stacking contexts. Preserve the runtime full-screen guards: fixed positioning, `100dvh`, `object-fit: cover`, transparent scene rendering, and resize/orientation/video-ready handling.
 
-### Phase 1 — Foundation & Next.js Setup
-- **Work Performed**:
-  - Initialized Next.js 16 App Router inside `web/` with `@tailwindcss/postcss` and Tailwind CSS v4.
-  - Configured Google Fonts (`Orbitron` for display headers and `Outfit` for body text) using Next.js font optimization.
-  - Rebuilt root metadata in [`web/src/app/layout.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/layout.js) following current Next.js 16 standards: `metadataBase`, `viewport` export, `openGraph`, `twitter`, and `manifest.json`.
-  - Configured theme color (`#020c16`) and color scheme (`dark`).
-  - Added global dark-themed toast notifications via `sonner`.
+Keep camera video visible underneath the scene. Hiding or incorrectly covering it can interact badly with mobile browser camera behavior. Do not “simplify” the imperative sizing guards just because a desktop preview looks correct. Test address-bar changes, rotation, and repeated navigation on real devices.
 
-### Phase 2 — Landing Page Migration
-- **Work Performed**:
-  - Migrated `vanilla/index.html` into semantic, modular React components located in [`web/src/components/landing/`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/components/landing):
-    - `Header.js`: Fixed blurred navigation bar with mobile drawer toggle.
-    - `HeroSection.js`: Luminous title, GPS status badge, action buttons, stats counters, and interactive 3D phone mockup.
-    - `TechTicker.js`: Continuous marquee showcasing underlying technology protocols.
-    - `AboutSection.js`: Feature grid highlighting camera AR, 3D overlays, and live route tracking.
-    - `CampusSection.js`: KITS Ramtek narrative, accreditation badges, and interactive campus destination list.
-    - `VisionSection.js`: Core philosophical pillars.
-    - `CtaSection.js` & `ContactSection.js`: Launch AR trigger and Formspree contact form.
-    - `StarfieldCanvas.js`: High-performance background particle canvas with scanlines.
-    - `ScrollReveal.js`: Lightweight IntersectionObserver triggering fade-and-slide reveals.
-  - **Fidelity Audit**: Conducted an exhaustive corner radius audit across cards (`rounded-lg`), badges (`rounded-full`), inputs (`rounded-md`), and buttons (`rounded-sm` / `rounded-md`) to ensure 100% visual parity with vanilla tokens.
+### Gesture decoupling
 
-### Phase 3 — AR Navigation Migration (`/navigate`)
-- **Work Performed**:
-  - Re-architected `vanilla/navigation.html` and `vanilla/scripts/script.js` into a coordinated React client subsystem:
-    - `NavigateClient.js`: Central orchestrator managing destination state, active routes, and sensor feeds.
-    - `ARViewport.js`: Dynamic vendor script loader (`aframe.min.js`, `aframe-ar.js`), WebXR camera manager, and 3D waypoint injector.
-    - `MapPanel.js`: Embedded Mapbox GL JS v3 satellite HUD, turn-by-turn polyline layers, and gestural decoupling.
-    - `DestinationBar.js`: 15-location dropdown selector with home navigation and direction triggers.
-    - `CompassWidget.js`: Hardware heading tracker rotating the HUD dial via GPU-accelerated CSS transforms.
-    - `MultifunctionButton.js`: 4-mode tactile navigation state machine.
-  - Extracted math formulas (Haversine, waypoint interpolation, Mapbox client) into [`web/src/lib/geo.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/lib/geo.js).
-  - Extracted campus destination coordinates into [`web/src/lib/places.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/lib/places.js).
+Manual map touch/drag must disable automatic following and bearing, exposing recenter behavior. GPS updates must not immediately pull a manually explored map back to the user. Preserve Mapbox gesture handlers, pointer-event boundaries, latest-state refs, and controlled recenter behavior. Test pinch/rotate as well as a mouse drag.
 
-### Phase 4 — Supporting Pages, SEO & Technical Requirements
-- **Work Performed**:
-  - Created dedicated route [`/about`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/about) with technical architecture cards, campus context, and AR launch CTA.
-  - Created dedicated route [`/contact`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/contact) with institutional headquarters info, FAQs, and functional Formspree contact dispatch.
-  - Added Orbitron-themed loading screens (`loading.js`) and client error boundaries (`error.js`) for all routes.
-  - Created [`robots.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/robots.js) and [`sitemap.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/sitemap.js) metadata routes.
-  - Created [`web/src/components/seo/JsonLd.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/components/seo/JsonLd.js) generating Schema.org `WebApplication`, `CollegeOrUniversity`, and `BreadcrumbList` structured data.
+### Route and resource cleanup
 
-### Phase 5 — End-to-End Testing & Verification
-- **Work Performed**:
-  - Implemented automated static asset audit verifying all 18 public assets and vendor scripts.
-  - Built an internal link crawler verifying all 26 route and anchor references.
-  - Created an HTTP test suite asserting 200/404 responses, metadata tags, and JSON-LD schemas across 25 endpoints.
-  - Developed an automated Chrome DevTools Protocol (CDP) test suite driving real headless Chrome to verify desktop viewports, mobile drawer toggling, geolocation emulation, Mapbox canvas instantiation, and multifunction state transitions.
-  - Verified 100% coordinate parity against `vanilla/scripts/places.js`.
-  - Executed final `npm run lint` and `npm run build` checks with zero errors and zero warnings.
+Replacing or clearing a route must remove old AR entities and Mapbox route sources/layers rather than stacking duplicate routes. Keep the AR camera entity while replacing route entities. Clearing navigation also resets the selected destination and controller flags.
 
-### Phase 6 — Documentation
-- **Work Performed**:
-  - Produced comprehensive, maintainable technical documentation in `docs/`: `PROJECT-OVERVIEW.md`, `ARCHITECTURE.md`, `TECH-STACK.md`, `MIGRATION-PLAN.md`, `ENVIRONMENT-VARS.md`, and `CONTRIBUTING.md`.
+Leaving `/navigate` must release camera tracks, injected video, geolocation watches, orientation/resize listeners, timers, Mapbox markers, and the map instance. A successful first visit does not prove safe client-side re-entry; test multiple enter/exit cycles and slow-loading vendor scripts.
 
----
+### Cross-route links and assets
 
-## 3. Critical Runtime Issues Resolved
+Use root-relative app routes or `/#section` links when a destination is on the home page; a bare hash from a subpage can target the wrong document. Keep map attribution/controls reachable and check local vendor/model/icon URLs. Existing manifest assets do not imply a service worker or offline support.
 
-During migration, extensive mobile device testing and screen recording analyses uncovered several subtle runtime bugs that were thoroughly investigated and resolved:
+## Current presentation change
 
-### 1. Mobile Camera Viewport Clipping & Narrow Strip
-- **Symptom**: On real mobile devices, the AR camera feed rendered only as a narrow vertical strip on the left edge, with the rest of the screen black.
-- **Root Cause**: AR.js injected a `<video>` element with hardcoded inline pixel dimensions calculated before the mobile orientation or address bar settled. Additionally, conflicting stacking contexts between the Next.js root layout, Tailwind containers, and A-Frame canvas caused the video to be clipped.
-- **Resolution**: Implemented dynamic viewport units (`100dvh`), explicit absolute positioning (`inset: 0`), `object-fit: cover`, and forced video/canvas resize recalculations upon camera initialization in `ARViewport.js`.
+The redesign adopts warm ivory, forest, and lime; retains Bricolage Grotesque/Public Sans; centralizes utility-styled primitives and launch/loading/error presentation; uses original inline SVG routes; and makes existing navigation state more readable in a responsive HUD. It does not add search, destinations, authentication, storage, offline navigation, automatic rerouting, or improved sensor precision.
 
-### 2. Mapbox Interaction Decoupling & GPS Update Lag
-- **Symptom**: Touching or panning the Mapbox satellite map caused tracking conflicts or map disappearance. Initial GPS update was noticeably slower than in vanilla.
-- **Root Cause**: The vanilla version immediately decoupled camera follow upon user touch events (`touchstart`, `mousedown`), switching the multifunction button to `recenter`. In Next.js, state re-renders were re-centering the map on every GPS tick.
-- **Resolution**: Injected event listeners into the Mapbox canvas to intercept user drag gestures and cleanly transition the state machine to `recenter`. Implemented smooth `flyTo` transitions matching vanilla velocity.
-
-### 3. Subpage Anchor Trapping
-- **Symptom**: When navigating to `/about` or `/contact`, clicking header or footer links (e.g. `About` or `Contact`) kept the user trapped on the subpage (e.g. `/about#about`).
-- **Root Cause**: Anchor links were hardcoded as relative hashes (`#about`, `#contact`).
-- **Resolution**: Updated all navigation links to use Next.js `<Link href="/#about">`, enabling smooth scrolling on `/` while seamlessly routing back to homepage sections from subpages.
-
----
-
----
-
-## 4. Phase 7 — Control Icons & State Representation Strategy (Post-Migration Optimization)
-
-### Strategy Selection: Option B — Consolidated SVG Sprite / Symbols
-In Phase 7, the navigation HUD iconography and map markers were optimized to eliminate 7 legacy raster PNGs and transition to high-performance, resolution-independent vector graphics while preserving 100% visual fidelity to the original design.
-
-### 1. Multifunction Navigation Control Icons (`/icons/nav-controls.svg`)
-- **Format**: Consolidated SVG sprite with `<defs>` containing 4 `<symbol>` definitions with `viewBox="0 0 500 500"`.
-- **Symbols**:
-  - `icon-centered`: Cyan reticle with filled center dot ($r=49$), outer ring ($r=94$, stroke 15px), and 4 crosshair tick marks at 0°, 90°, 180°, and 270°.
-  - `icon-bearing`: Cyan circular disc ($r=101$) with a white directional needle rotated at $-60^\circ$ and a cyan center hole ($r=15$).
-  - `icon-recenter`: Dark gray (`#5e5e5e`) hollow reticle matching the centered geometry without the center dot.
-  - `icon-reset-all`: Red circular ring ($r=95$, stroke 12px) with two 180° rotationally symmetric curved cycle arrows.
-- **Component Integration**: Updated `MultifunctionButton.js` to render `<svg id="centeredImage"><use href={`/icons/nav-controls.svg#icon-${currentMode}`} /></svg>`. Eliminates `next/image` runtime overhead and reduces 4 network requests to 1 cached SVG fetch.
-
-### 2. Compass Needle Widget (`/icons/compass.svg`)
-- **Format**: Clean standalone vector SVG with `viewBox="0 0 500 500"`.
-- **Visual Design**: Preserves the 4-faceted diamond needle artwork on a white circular base disc:
-  - North Needle: Bright red (`#ff0000`) left facet, dark red (`#c90000`) right facet.
-  - South Needle: Light silver (`#d1d1d1`) left facet, medium gray (`#e8e8e8`) right facet.
-  - Center circular cutout ($r=35$) with white fill.
-- **Component Integration**: Applied via CSS `background-image: url(/icons/compass.svg)` in `globals.css` (`.compass`). Smooth 360° device orientation rotation with zero pixel shimmering or blur.
-
-### 3. Current-Location Map Marker (`/icons/current.svg`)
-- **Format**: Lightweight vector SVG with `viewBox="0 0 2560 2560"`.
-- **Visual Design**:
-  - Outer accuracy halo circle ($r=1280$, `#3e8cf9` at 40% opacity).
-  - Seamless teardrop white puck outline with rounded top pointer tip ($y=95$) tangent to the circle base ($r=708$).
-  - Inner location circle puck ($r=620$, `#3e8cf9`).
-  - Top directional cone triangle ($y=225$, `#3e8cf9`) separated by the circular white ring arc.
-- **Component Integration**: Instantiated in `MapPanel.js` via `mapboxgl.Marker` with `background-image: url(/icons/current.svg)` and `marker.setRotation(compassHeading - mapBearing)`.
-
-### 4. Asset Audit & Payload Savings
-| Asset Path | Original Format & Size | Phase 7 Format & Size | Payload Reduction | Status |
-|---|---|---|---|---|
-| `web/public/models/centered.png` | PNG (23.7 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
-| `web/public/models/bearing.png` | PNG (22.3 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
-| `web/public/models/recenter.png` | PNG (22.6 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
-| `web/public/models/reset-all.png` | PNG (24.8 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
-| **Consolidated Sprite** | **4 PNGs (93.4 KB)** | **`nav-controls.svg` (2.6 KB)** | **-97.2%** | **Created** |
-| `web/public/models/compass.png` | PNG (24.8 KB) | `compass.svg` (0.6 KB) | **-97.6%** | **Replaced** |
-| `web/public/models/current.png` | PNG (290.3 KB) | `current.svg` (0.7 KB) | **-99.8%** | **Replaced** |
-| `web/public/models/current2.png` | PNG (32.1 KB) | N/A (Unused variant) | **-100.0%** | **Removed** |
-| `web/public/models/map_pointer_3d_icon.glb` | GLB (127.7 KB) | GLB (127.7 KB) | 0% (Retained) | **Retained** |
-| **Total HUD Assets** | **470.6 KB** | **3.9 KB (+ 127.7 KB GLB)** | **-99.2%** | **Optimized** |
-
----
-
-## 5. Verification & Parity Confirmation
-All Phase 7 assets were tested across:
-1. **ESLint (`npm run lint`)**: 0 errors, 0 warnings.
-2. **Production Build (`npm run build`)**: 13/13 static routes generated successfully.
-3. **End-to-End Server Suite**: All routes, SVG sprite symbols, compass rotation, Mapbox marker orientation, and 404 responses for deleted PNGs verified.
-4. **Visual Parity**: Vector SVG artwork verified pixel-perfect against original PNGs via CairoSVG test renders and mobile viewport testing.
-
+[Architecture](ARCHITECTURE.md) · [Design decisions and research](REDESIGN-PLAN.md) · [Required verification](REDESIGN-PLAN.md#final-verification)

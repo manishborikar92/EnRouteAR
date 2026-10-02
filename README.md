@@ -1,321 +1,73 @@
 # EnRouteAR
 
-**Augmented Reality campus navigation for smartphones — powered by Next.js, Tailwind CSS, A-Frame, AR.js, and Mapbox.**
+**Browser-based AR walking wayfinding, with a map for context.**
 
-EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto your live camera feed, letting you navigate Kavikulguru Institute of Technology and Science (KITS), Ramtek without ever looking down at a traditional map.
+EnRouteAR combines a live camera view, GPS-anchored route markers, and a satellite map to help people orient themselves on foot. Open it in a compatible mobile browser, choose an available destination, and request a walking route. No account or native app installation is required.
 
-🌐 **Live demo:** [enroutear.vercel.app](https://enroutear.vercel.app/)
+The product and interface are location-independent; the current destination coverage is not. This version retains **15 fixed destination records**. Neutral display labels do not add places or change their coordinates.
 
----
+## What is here
 
-## Table of Contents
+- Four routes: `/`, `/about`, `/contact`, and `/navigate`.
+- Next.js 16 App Router, React 19, JavaScript, and Tailwind CSS v4 in [`web/`](web/README.md).
+- Local A-Frame/AR.js vendor scripts for the camera scene and GPS-anchored markers.
+- Mapbox GL JS satellite-streets map and the Mapbox Directions API's walking profile.
+- Live browser location updates, device-heading feedback, and the existing center/bearing/recenter/reset controls.
+- A contact form using the existing Formspree endpoint, with configurable public environment values and preserved fallbacks.
 
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-  - [Vanilla Site (`vanilla/`)](#1-vanilla-site-vanilla---active-production-app)
-  - [Next.js Application (`web/`)](#2-nextjs-application-web---in-development)
-- [Campus Locations](#campus-locations)
-- [How It Works](#how-it-works)
-- [Device Requirements](#device-requirements)
-- [Known Limitations](#known-limitations)
-- [Contributing](#contributing)
-- [License](#license)
+There is **no destination search, destination editor, authentication, database, saved-route service, offline navigation, or automatic rerouting**. GPS updates move the position marker; a route request is still an explicit action. A manifest is not evidence of offline support.
 
----
+## Run locally
 
-## Overview
+Use **Node.js >=20.9**; the current verification environment is **Node.js 22.23.3**. Run app commands from `web/`:
 
-EnRouteAR is a mobile-first web application that fuses augmented reality with real-time GPS navigation. When a user selects a destination on campus, the app fetches a walking route from the Mapbox Directions API and visualises it in two ways simultaneously:
-
-- **AR view** — blue cylinder markers trace the walking path on the ground in 3D space, with a GLB pointer model at the destination, all anchored to real-world GPS coordinates via AR.js
-- **2D satellite map** — an embedded Mapbox satellite-streets panel shows the same route as a polyline overlay, with live position and bearing tracking
-
-A device-orientation compass keeps both the AR scene and the map bearing locked to the user's heading as they walk.
-
-The repository contains two clean, decoupled implementations:
-1. **`vanilla/`** — Active production deployment: Self-contained, zero-dependency **HTML5 + Tailwind CSS v4 + Vanilla JS** application.
-2. **`web/`** — Under development: Future **Next.js 16 + React 19 + Tailwind CSS v4** progressive web application.
-
----
-
-## Features
-
-| Feature | Description |
-|---|---|
-| **GPS-anchored AR waypoints** | 3D route cylinders and a destination pointer model placed at real-world coordinates |
-| **Live walking route** | Walking directions fetched from Mapbox Directions API and rendered in both AR and 2D |
-| **Real-time GPS tracking** | User position updated continuously via the Geolocation API |
-| **Compass-corrected bearing** | Device orientation sensor rotates the AR scene and map to match the user's heading |
-| **Satellite mini-map** | Mapbox satellite-streets panel with live position marker and route polyline |
-| **Multifunction button** | Context-aware button that cycles through: centre map → enable bearing → reset route |
-| **14 campus destinations** | Pre-mapped locations covering all departments, hostels, canteen, library, and gym |
-| **Tailwind CSS v4 Styling** | High-performance CSS-first architecture with custom neon HUD aesthetic and glassmorphism |
-| **Responsive landing page** | Animated hero, scroll-reveal sections, mobile navigation, and a contact form |
-
----
-
-## Tech Stack
-
-| Layer | Technology | Version | Notes |
-|---|---|---|---|
-| Web Framework | [Next.js](https://nextjs.org/) | 16.3+ | App Router, Turbopack, React 19 in `web/` |
-| Styling | [Tailwind CSS](https://tailwindcss.com/) | 4.3+ | CSS-first configuration (`@theme`) across all views |
-| AR Framework | [A-Frame](https://aframe.io/) | 1.3.0 | WebGL 3D scene graph |
-| Location-based AR | [AR.js](https://ar-js-org.github.io/AR.js-Docs/) | latest | Location-only build |
-| 3D Engine | Three.js | bundled | Bundled with AR.js |
-| 2D Mapping | [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) | 3.2.0 | Satellite-streets tiles |
-| Walking Directions | [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/) | v5 | GeoJSON route geometry |
-| Fonts | [Google Fonts](https://fonts.google.com/) | — | Orbitron (display) & Outfit (body) |
-| Hosting | [Vercel](https://vercel.com/) | — | Deployed from `vanilla/` root directory |
-
----
-
-## Project Structure
-
-```
-enroutear/
-│
-├── vanilla/                            # Active HTML5/Tailwind v4 app (Vercel Root)
-│   ├── index.html                      # Landing page
-│   ├── navigation.html                 # AR navigation view
-│   ├── styles/
-│   │   ├── index.css                   # Compiled Tailwind v4 landing styles
-│   │   └── navigation.css              # Compiled Tailwind v4 navigation styles
-│   ├── scripts/
-│   │   ├── places.js                   # 14 campus destination coordinates
-│   │   └── script.js                   # Navigation logic (map, AR, GPS, compass)
-│   ├── models/                         # 3D assets & HUD icons
-│   └── favicon/                        # Favicon assets & webmanifest
-│
-├── web/                                # Next.js 16 + React 19 application (In Development)
-│   ├── src/
-│   │   └── app/
-│   │       ├── layout.js               # Root layout with PWA metadata
-│   │       ├── page.js                 # Landing page route
-│   │       └── globals.css             # Tailwind CSS v4 stylesheet
-│   ├── public/                         # Public static assets
-│   │   ├── models/                     # 3D pointer GLB, compass & button state icons
-│   │   ├── favicon/                    # PWA icons & site.webmanifest
-│   │   ├── logos/                      # Brand vector and transparent logos
-│   │   ├── web-app-manifest-192x192.png
-│   │   └── web-app-manifest-512x512.png
-│   ├── .env.local                      # Local environment variables
-│   ├── package.json                    # Next.js & React dependencies
-│   ├── next.config.mjs                 # Next.js configuration
-│   └── postcss.config.mjs              # PostCSS / Tailwind v4 plugin
-│
-├── docs/                               # Architectural plans & migration specs
-└── README.md
+```bash
+cd web
+npm ci
+npm run dev
 ```
 
----
+Open <http://localhost:3000>. For optional public configuration, create `web/.env.local` using the placeholders in [Environment variables](docs/ENVIRONMENT-VARS.md). Do not commit private credentials or copy existing environment files into documentation.
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18.17+ or 20+ (for `web/`)
-- A modern smartphone with a rear-facing camera
-- A browser supporting the [Geolocation API](https://caniuse.com/geolocation), [DeviceOrientation API](https://caniuse.com/deviceorientation), and [WebGL](https://caniuse.com/webgl)
-- Recommended: **Android Chrome** or **iOS Safari 15+**
-- HTTPS is mandatory for camera and GPS access
-
----
-
-### 1. Vanilla Site (`vanilla/`) — Active Production App
-
-The `vanilla/` directory runs directly in the browser with zero build tools:
-
-1. **Serve over HTTPS (Local Development):**
-
-   ```bash
-   # Start a local static file server inside vanilla/
-   npx serve vanilla -l 8080
-
-   # In a separate terminal, tunnel via ngrok to test on a physical smartphone
-   ngrok http 8080
-   ```
-
-2. **Grant permissions on your smartphone:**
-   - **Camera** — required for the AR camera pass-through
-   - **Location** — required for GPS positioning and route calculation
-
----
-
-### 2. Next.js Application (`web/`) — In Development
-
-> **Note:** The Next.js implementation is currently in development and not yet the production target.
-
-1. **Navigate to the web directory and install dependencies:**
-
-   ```bash
-   cd web
-   npm install
-   ```
-
-2. **Configure environment variables:**
-
-   Create or verify `web/.env.local`:
-
-   ```env
-   NEXT_PUBLIC_APP_URL="https://enroutear.vercel.app"
-   NEXT_PUBLIC_FORMSPREE_ENDPOINT="https://formspree.io/f/mgegpkeb"
-   NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="your_mapbox_token_here"
-   ```
-
-3. **Start the local development server:**
-
-   ```bash
-   npm run dev
-   ```
-
-4. **Build:**
-
-   ```bash
-   npm run build
-   ```
-
----
-
-## Campus Locations
-
-The following 14 locations are pre-mapped within KITS Ramtek campus (21.385°N, 79.306°E):
-
-| Location | Latitude | Longitude |
-|---|---|---|
-| Administrative Department | 21.38541 | 79.30562 |
-| Architecture Department | 21.38529 | 79.30656 |
-| Canteen | 21.38641 | 79.30685 |
-| Civil Department | 21.38615 | 79.30640 |
-| Computer Tech. Department | 21.38590 | 79.30618 |
-| Electronics Department | 21.38590 | 79.30618 |
-| Gym / Stadium | 21.38646 | 79.30434 |
-| Information Tech. Department | 21.38590 | 79.30618 |
-| Jamuna Boys Hostel | 21.38681 | 79.30335 |
-| Kaveri Girls Hostel | 21.38440 | 79.30420 |
-| Library | 21.38584 | 79.30689 |
-| Mechanical Department | 21.38493 | 79.30606 |
-| Triveni Boys Hostel | 21.38836 | 79.30370 |
-| Work Shop | 21.38486 | 79.30620 |
-
-### Adding a new location
-
-In `vanilla/scripts/places.js` (or in the Next.js places configuration), append an entry to the `places` array:
-
-```js
-{ name: 'New Building', latitude: 21.38600, longitude: 79.30650 },
+```bash
+npm run lint
+npm run build
+npm run start  # after a successful build
 ```
 
----
+**Verification status:** baseline `npm run lint` was blocked by a pre-existing `node_modules/.bin` shell permission error; direct `node node_modules/eslint/bin/eslint.js .` passed at baseline. This is not a final redesign result. Build, browser, and device validation must be recorded in [Final verification](docs/REDESIGN-PLAN.md#final-verification).
 
-## How It Works
+## Try navigation safely
 
-### AR rendering pipeline
+1. Use HTTPS on a phone, or a browser-recognized secure localhost setup for development. A plain HTTP LAN address is usually insufficient for camera/location access.
+2. Choose **Start navigating**. The launch flow checks location, then opens `/navigate` even when that check fails; entering the page does not mean permission was granted.
+3. Allow camera and location access. Heading permissions and sensor availability vary by browser.
+4. Select a destination from the existing list and request directions. The AR markers and satellite route share the returned walking geometry; distance and time are route estimates, not live remaining-trip measurements.
+5. Pan the map to explore, recenter with the existing control, or clear the active route.
 
-```
-getUserMedia() → <video> element (visible in DOM)
-                        ↓
-           AR.js reads video as camera feed
-                        ↓
-     A-Frame WebGL canvas (alpha: true, transparent)
-     draws 3D entities anchored to GPS coordinates
-                        ↓
-     Canvas sits on top of the video — AR objects
-     appear to float over the real world
-```
+Accuracy depends on GPS reception, compass calibration, hardware, browser behavior, and mapping data. **Sub-meter accuracy is not guaranteed.** Indoors and obstructed areas can be unreliable. Stop in a safe place to check directions, then lower the phone and watch your surroundings. This is not obstacle detection or a substitute for signs and safe walking judgment.
 
-Using `renderer="alpha: true"` keeps the `<video>` element visible in the DOM at all times. This prevents Android Chrome's power manager from suspending the camera stream.
+Physical-device validation on Android Chrome and iOS Safari is still required. Desktop sensor emulation cannot establish camera sizing, real heading alignment, or GPS accuracy.
 
-### Route rendering
+## Repository and design
 
-When the user taps **Navigate**:
+- `web/`: the Next.js application being redesigned.
+- `vanilla/`: the earlier static implementation, left unchanged by this redesign.
+- `docs/`: current product, implementation, and verification notes. Superseded plans remain recoverable in Git history.
 
-1. The current GPS position and selected destination are sent to the **Mapbox Directions API** (walking profile)
-2. The returned GeoJSON route coordinates are interpolated at **2-metre intervals** using the Haversine formula
-3. An `<a-cylinder>` element is placed at each interpolated point, gps-anchored via AR.js
-4. An `<a-entity>` with the GLB pointer model is placed at the final coordinate
-5. The same route is drawn as a blue polyline on the **Mapbox 2D mini-map**
+The visual system uses warm ivory `#f5f4ee`, forest ink `#172d29`, muted green `#52645e`, and lime `#d7ef85`; Bricolage Grotesque and Public Sans remain loaded through `next/font`. Shared UI primitives, original inline SVG route illustrations, and a responsive navigation HUD keep the presentation consistent without an animation dependency.
 
-### Multifunction button states
+No hosting provider, active deployment root, or production rollout is asserted by these docs. Confirm those separately before deployment; a canonical URL fallback does not establish deployment status.
 
-The button in the bottom-right corner changes function based on navigation state:
+## Documentation
 
-| Icon | State | Tap action |
-|---|---|---|
-| `centered` | Map following user, bearing off | Enable compass bearing |
-| `bearing` | Bearing on, no destination | Disable bearing |
-| `recenter` | User panned the map manually | Re-centre map on user |
-| `reset-all` | Active route, centred, bearing on | Clear route and reset everything |
-
----
-
-## Device Requirements
-
-| Requirement | Notes |
-|---|---|
-| **HTTPS** | Mandatory — camera and GPS APIs are blocked on HTTP |
-| **Camera permission** | Rear-facing camera used for AR view |
-| **Location permission** | Required for GPS positioning and routing |
-| **DeviceOrientation API** | Used for compass bearing; gracefully absent if unavailable |
-| **WebGL support** | Required by A-Frame for 3D rendering |
-| **Recommended OS** | Android 9+ or iOS 15+ |
-| **Recommended browser** | Chrome for Android, Safari for iOS |
-
----
-
-## Known Limitations
-
-- **GPS accuracy** — outdoor GPS accuracy on consumer smartphones is typically ±3–5 metres, which may cause minor drift in AR waypoint positioning
-- **Indoor use** — AR.js location-only mode requires GPS signal; the app will not function correctly indoors or in areas with poor satellite visibility
-- **iOS DeviceOrientation** — Safari on iOS 13+ requires a user gesture before granting `DeviceOrientationEvent` permission; compass bearing may not activate automatically on first load
-- **AR.js version** — the project uses the `raw.githack.com` CDN build of AR.js; pinning to a specific release tag is recommended for production deployments
-- **Same-building destinations** — Computer Tech., Electronics, and Information Tech. departments share identical coordinates as they are co-located; route cylinders will overlap for these three destinations
-
----
-
-## Contributing
-
-Contributions are welcome. To propose a change:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/): `git commit -m "feat: describe your change"`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Open a Pull Request
-
----
+- [Project overview and documentation index](docs/PROJECT-OVERVIEW.md)
+- [Architecture and navigation state](docs/ARCHITECTURE.md)
+- [Design decisions, research, and verification](docs/REDESIGN-PLAN.md)
+- [Technology stack](docs/TECH-STACK.md)
+- [Contribution and device-testing guide](docs/CONTRIBUTING.md)
+- [Migration notes and sensor caveats](docs/MIGRATION-PLAN.md)
 
 ## License
 
-This project is licensed under the **MIT License**.
-
-```
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
----
-
-<p align="center">
-  Built for KITS Ramtek Campus &nbsp;·&nbsp; Powered by Next.js, Tailwind CSS, A-Frame, AR.js &amp; Mapbox
-</p>
+[MIT](LICENSE). Vendored dependencies retain their own license terms.

@@ -1,34 +1,6 @@
-export default function VisionSection() {
-  const visions = [
-    {
-      title: "Redefining navigation",
-      desc: "Navigation should not merely serve as a means to an end but inspire and engage users on their journey. We fuse state-of-the-art AR with real-world utility.",
-    },
-    {
-      title: "Universal accessibility",
-      desc: "Whether exploring a bustling city or navigating a sprawling campus, EnRouteAR makes every journey unforgettable — for users of all backgrounds and ages.",
-    },
-    {
-      title: "Future-forward design",
-      desc: "By combining cutting-edge AR with a user-centric approach, we aim to set new standards — paving the way for a future where exploration knows no bounds.",
-    },
-  ];
+import { Globe2, ArrowUpRight } from "lucide-react";
+import { Container, Eyebrow, SectionHeading, TextLink } from "@/components/ui/Primitives";
 
-  return (
-    <section className="sec white" id="vision" aria-labelledby="vision-h">
-      <div className="wrap">
-        <h2 id="vision-h" style={{ maxWidth: "18ch" }}>
-          Navigation as an experience
-        </h2>
-        <div className="vision">
-          {visions.map((item, idx) => (
-            <article key={idx}>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+export default function VisionSection() {
+  return <section id="vision" aria-labelledby="vision-h" className="py-16 lg:py-20"><Container><div className="grid gap-8 md:grid-cols-[1.2fr_1fr] md:gap-16"><div><Eyebrow>03 / A wider perspective</Eyebrow><SectionHeading id="vision-h">Good wayfinding<br />belongs everywhere.</SectionHeading><p className="mt-6 max-w-lg leading-relaxed text-muted">A new neighborhood. An unfamiliar path. The last stretch of a journey. We’re building toward a world where finding your way feels more natural, wherever you are.</p><TextLink href="/about#availability" className="mt-4">What’s available today</TextLink></div><div className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-line bg-[#e9eddf] p-7 sm:p-8"><Globe2 className="mb-8 size-10 text-forest" strokeWidth={1.25} aria-hidden="true" /><div><p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">The experience today</p><h3 className="font-display text-2xl font-bold tracking-tight">Start with the available places.</h3><p className="mt-4 text-sm leading-relaxed text-muted">This version uses a fixed destination list. Worldwide location search isn’t available yet. Check the list before planning your walk.</p></div><ArrowUpRight className="absolute right-8 top-8 size-6 text-muted" aria-hidden="true" /></div></div></Container></section>;
 }

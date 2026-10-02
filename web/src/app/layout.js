@@ -1,104 +1,36 @@
 import { Bricolage_Grotesque, Public_Sans } from "next/font/google";
 import { Toaster } from "sonner";
-import { WebAppJsonLd, CollegeJsonLd } from "@/components/seo/JsonLd";
+import { WebAppJsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["500", "700", "800"],
-});
-
-const publicSans = Public_Sans({
-  variable: "--font-public-sans",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600"],
-});
-
+const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"], display: "swap", weight: ["500", "700", "800"] });
+const publicSans = Public_Sans({ variable: "--font-public-sans", subsets: ["latin"], display: "swap", weight: ["400", "500", "600"] });
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://enroutear.vercel.app";
+const description = "A clearer way to find your bearings. EnRouteAR combines camera-based AR route markers, live GPS, and satellite maps for walking navigation.";
 
-export const viewport = {
-  themeColor: "#07111E",
-  colorScheme: "dark",
-  width: "device-width",
-  initialScale: 1,
-};
-
+export const viewport = { themeColor: "#f5f4ee", colorScheme: "light", width: "device-width", initialScale: 1, viewportFit: "cover" };
 export const metadata = {
   metadataBase: new URL(APP_URL),
-  title: {
-    default: "EnRouteAR — Augmented Reality Navigation",
-    template: "%s | EnRouteAR",
-  },
-  description:
-    "Web-based augmented reality campus navigation for KITS Ramtek. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
+  title: { default: "EnRouteAR — A clearer way forward", template: "%s | EnRouteAR" },
+  description,
   applicationName: "EnRouteAR",
-  keywords: [
-    "EnRouteAR",
-    "augmented reality navigation",
-    "campus AR",
-    "KITS Ramtek",
-    "A-Frame",
-    "AR.js",
-    "Mapbox",
-    "WebXR",
-    "indoor outdoor navigation",
-  ],
+  keywords: ["EnRouteAR", "augmented reality navigation", "walking navigation", "browser-based wayfinding", "A-Frame", "AR.js", "Mapbox", "outdoor navigation"],
   authors: [{ name: "EnRouteAR Team" }],
   creator: "Manish Borikar",
-  openGraph: {
-    title: "EnRouteAR — Augmented Reality Navigation",
-    description:
-      "Web-based augmented reality campus navigation for KITS Ramtek. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
-    url: APP_URL,
-    siteName: "EnRouteAR",
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: "/logo-transparent-png.png",
-        width: 1200,
-        height: 630,
-        alt: "EnRouteAR — Augmented Reality Navigation",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "EnRouteAR — Augmented Reality Navigation",
-    description:
-      "Overlay digital waypoints, 3D markers, and turn-by-turn directions directly onto your camera feed.",
-    images: ["/logo-transparent-png.png"],
-  },
+  openGraph: { title: "EnRouteAR — A clearer way forward", description, url: APP_URL, siteName: "EnRouteAR", locale: "en_US", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "EnRouteAR — The real world. A clearer way." }] },
+  twitter: { card: "summary_large_image", title: "EnRouteAR — A clearer way forward", description, images: ["/opengraph-image"] },
 };
 
 export default function RootLayout({ children }) {
-  return (
-    <html
-      lang="en"
-      className={`${bricolage.variable} ${publicSans.variable} scroll-smooth antialiased`}
-    >
-      <body className="min-h-screen flex flex-col bg-bg text-t1 font-body">
-        <WebAppJsonLd />
-        <CollegeJsonLd />
-        {children}
-        <Toaster
-          richColors
-          position="bottom-center"
-          theme="dark"
-          toastOptions={{
-            style: {
-              background: "rgba(18, 32, 54, 0.92)",
-              backdropFilter: "blur(14px)",
-              border: "1px solid rgba(150, 185, 235, 0.34)",
-              color: "#EAF0F8",
-              fontFamily: "var(--font-public-sans), sans-serif",
-            },
-          }}
-        />
-      </body>
-    </html>
-  );
+  return <html lang="en" className={`${bricolage.variable} ${publicSans.variable} scroll-pt-28 motion-safe:scroll-smooth antialiased has-[#navigation-app]:fixed! has-[#navigation-app]:inset-0! has-[#navigation-app]:h-dvh! has-[#navigation-app]:overflow-hidden!`}>
+    <body className="min-h-screen bg-paper font-body text-ink selection:bg-lime selection:text-ink [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-4 [&_:focus-visible]:outline-current motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none has-[#navigation-app]:fixed! has-[#navigation-app]:inset-0! has-[#navigation-app]:m-0! has-[#navigation-app]:h-dvh! has-[#navigation-app]:w-full! has-[#navigation-app]:overflow-hidden! has-[#navigation-app]:bg-transparent!">
+      <a href="#main" className="fixed left-4 top-4 z-[10000] -translate-y-24 rounded-xl bg-ink px-5 py-3 font-semibold text-white focus:translate-y-0">Skip to content</a>
+      <WebAppJsonLd />
+      {children}
+      <Toaster position="top-center" offset={160} mobileOffset={160} theme="light" closeButton toastOptions={{ unstyled: true, classNames: {
+        toast: "relative flex w-full items-center gap-3 rounded-2xl border border-line bg-white p-4 font-body text-sm text-ink shadow-panel",
+        content: "flex-1", description: "mt-1 text-muted", closeButton: "absolute -right-2 -top-2 grid size-7 place-items-center rounded-full border border-line bg-white text-ink", success: "border-success/30", error: "border-danger/30",
+      } }} />
+    </body>
+  </html>;
 }

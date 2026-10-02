@@ -1,175 +1,29 @@
-import Link from "next/link";
-import {
-  MapPin,
-  Compass,
-  ExternalLink,
-  HelpCircle,
-  Clock,
-} from "lucide-react";
+import { MessageSquare, Bug, ArrowUpRight, Plus } from "lucide-react";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
-import Atmosphere from "@/components/common/Atmosphere";
-import SpotlightTracker from "@/components/common/SpotlightTracker";
 import ContactForm from "@/components/landing/ContactForm";
+import { Container, Eyebrow, SectionHeading, Breadcrumb } from "@/components/ui/Primitives";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata = {
-  title: "Contact Us",
-  description:
-    "Get in touch with the EnRouteAR team for technical inquiries, campus deployment discussions, or feedback on AR navigation.",
-  alternates: {
-    canonical: "/contact",
-  },
-  openGraph: {
-    title: "Contact Us | EnRouteAR",
-    description:
-      "Reach out to the developers and team behind EnRouteAR campus navigation.",
-    url: "/contact",
-  },
+  title: "Contact",
+  description: "Questions, feedback, or a new idea? Get in touch with the EnRouteAR team about browser-based augmented reality navigation.",
+  alternates: { canonical: "/contact" },
+  openGraph: { title: "Contact | EnRouteAR", description: "Share your feedback or get help with EnRouteAR.", url: "/contact" },
 };
 
-const FAQS = [
-  {
-    q: "Is an app download required to navigate?",
-    a: "No native app download or installation is needed. EnRouteAR runs entirely within modern mobile web browsers via WebXR, A-Frame, and WebGL APIs.",
-  },
-  {
-    q: "Which mobile browsers are supported?",
-    a: "All modern mobile browsers with camera and geolocation permissions enabled, including Chrome for Android, Safari for iOS (v14.5+), and Edge Mobile.",
-  },
-  {
-    q: "How accurate is the AR waypoint alignment?",
-    a: "Positioning combines GPS high-accuracy fixes with sub-meter Haversine path interpolation and continuous device orientation heading synchronization.",
-  },
+const faqs = [
+  { q: "Do I need to download an app?", a: "No. EnRouteAR runs in your mobile browser. You don’t need an account. A compatible device, an internet connection, and camera and location permissions are needed for the full experience." },
+  { q: "Can I navigate to any location?", a: "Not yet. This version has a fixed list of available destinations. The product is being designed with broader wayfinding in mind, but worldwide location search isn’t available today." },
+  { q: "Which devices and browsers can I use?", a: "Use a recent mobile browser with camera, geolocation, WebGL, and device-orientation support. Chrome on Android and Safari on iOS are useful starting points, but compatibility depends on your device and settings. Some browsers ask separately for motion and orientation access." },
+  { q: "Why do the AR markers drift?", a: "GPS and compass accuracy vary with your surroundings and device. Tall buildings, indoor spaces, and weak signals can affect alignment. Move to an open outdoor area, check the satellite map, and treat AR markers as guidance rather than exact measurements." },
+  { q: "What if I’ve blocked camera or location access?", a: "Open your browser’s permissions for this site, allow camera and location access, and reload navigation. Use a secure HTTPS connection. Your device’s location services must also be enabled." },
+  { q: "How is my location used?", a: "Your location positions the map and AR view. When you request a route, the starting and destination coordinates are sent to Mapbox for walking directions. This app has no account system or saved-route database. Mapbox and Formspree have their own data policies." },
 ];
 
 export default function ContactPage() {
-  const breadcrumbs = [
-    { name: "Home", path: "/" },
-    { name: "Contact", path: "/contact" },
-  ];
-
-  return (
-    <>
-      <BreadcrumbJsonLd items={breadcrumbs} />
-      <Atmosphere />
-      <SpotlightTracker />
-      <Header />
-
-      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24">
-        <div className="wrap">
-          {/* Breadcrumb Navigation */}
-          <nav aria-label="Breadcrumb" className="mb-8">
-            <ol className="flex items-center gap-2 font-display text-[0.8rem] tracking-[0.04em] text-t3">
-              <li>
-                <Link
-                  href="/"
-                  className="hover:text-t1 transition-colors no-underline text-t3"
-                >
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden="true" className="opacity-40">
-                /
-              </li>
-              <li className="text-route font-semibold">Contact</li>
-            </ol>
-          </nav>
-
-          {/* Page Hero */}
-          <div className="mb-16 max-w-[800px]">
-            <p className="status mb-6">
-              <span className="dot" />
-              Direct Communication
-            </p>
-            <h1>Get in touch</h1>
-            <p className="lead mt-6 text-t2 text-lg">
-              Have inquiries regarding the AR navigation platform, campus integration,
-              collaborations, or technical feedback? Reach out using the form or institutional
-              channels below.
-            </p>
-          </div>
-
-          {/* Two-Column Section */}
-          <div className="grid grid-cols-[1fr_1.3fr] max-lg:grid-cols-1 gap-12 items-start mb-20">
-            {/* Left Column: Details & FAQs */}
-            <div className="space-y-6">
-              {/* Campus Info Card */}
-              <div className="panel glass-spotlight p-7">
-                <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-4 font-bold">
-                  <MapPin className="w-4 h-4 text-signal" />
-                  Institutional Headquarters
-                </div>
-                <h3 className="font-display text-xl font-bold text-t1 mb-2">
-                  Kavikulguru Institute of Technology &amp; Science
-                </h3>
-                <p className="text-[0.92rem] text-t2 leading-[1.65] mb-4">
-                  Mouda Road, Ramtek, Dist. Nagpur, Maharashtra, India — 441106
-                </p>
-                <div className="flex items-center gap-3 text-[0.84rem] text-t3 font-mono">
-                  <Compass className="w-4 h-4 text-route" />
-                  <span>21.385°N, 79.306°E</span>
-                </div>
-              </div>
-
-              {/* Response Time & Portal Card */}
-              <div className="panel glass-spotlight p-7">
-                <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-3 font-bold">
-                  <Clock className="w-4 h-4 text-signal" />
-                  Response Dispatch
-                </div>
-                <p className="text-[0.92rem] text-t2 leading-[1.65] mb-4">
-                  Submissions via this form are dispatched to the project maintainers.
-                  Official college administration inquiries should be directed through
-                  the kits.edu portal.
-                </p>
-                <div className="pt-3 border-t border-line flex items-center justify-between text-sm">
-                  <span className="text-t3">Official Portal:</span>
-                  <a
-                    href="https://www.kits.edu"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-route hover:text-white transition-colors no-underline font-semibold"
-                  >
-                    <span>kits.edu</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
-
-              {/* Quick Technical FAQ */}
-              <div className="panel glass-spotlight p-7">
-                <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-5 font-bold">
-                  <HelpCircle className="w-4 h-4 text-signal" />
-                  Frequently Asked Questions
-                </div>
-                <div className="space-y-4">
-                  {FAQS.map((faq) => (
-                    <div
-                      key={faq.q}
-                      className="pb-4 border-b border-line last:border-b-0 last:pb-0"
-                    >
-                      <h4 className="font-display text-[0.98rem] font-bold text-t1 mb-1.5">
-                        {faq.q}
-                      </h4>
-                      <p className="text-[0.88rem] text-t2 leading-[1.6]">
-                        {faq.a}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Contact Form */}
-            <div>
-              <ContactForm />
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <Footer />
-    </>
-  );
+  return <><BreadcrumbJsonLd items={[{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }]} /><Header /><main id="main" tabIndex={-1}>
+    <Container className="pb-16 pt-6 lg:pb-20"><Breadcrumb current="Contact" /><div className="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-20"><div><Eyebrow>Let’s talk</Eyebrow><h1 className="text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">Every good route<br />starts with a<br className="hidden lg:block" /> conversation.</h1><p className="mt-6 max-w-md text-lg leading-relaxed text-muted">Questions, ideas, or a little help finding your way? You’re in the right place.</p><div className="mt-9 divide-y divide-line border-y border-line">{[{ icon: MessageSquare, title: "Share a perspective", text: "Product feedback, ideas, and collaboration." }, { icon: Bug, title: "Something not working?", text: "Include your device, browser, and steps to reproduce the issue. Please leave out private location details." }].map(({ icon: Icon, title, text }) => <div key={title} className="flex gap-4 py-5"><Icon className="mt-1 size-5 shrink-0 text-forest" aria-hidden="true" /><div><h2 className="font-display text-lg font-bold">{title}</h2><p className="mt-1 text-sm leading-relaxed text-muted">{text}</p></div></div>)}</div><a href="#faq" className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline decoration-line underline-offset-4">A quick answer might be below<ArrowUpRight className="size-4" aria-hidden="true" /></a></div><ContactForm /></div></Container>
+    <section id="faq" aria-labelledby="faq-h" className="border-t border-line bg-white/50 py-16 lg:py-20"><Container className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20"><div><Eyebrow>A little clarity</Eyebrow><SectionHeading id="faq-h">Before you<br />get going.</SectionHeading><p className="mt-5 max-w-xs text-sm leading-relaxed text-muted">A few practical things to know about the experience.</p></div><div className="border-t border-line">{faqs.map(({ q, a }) => <details key={q} className="group border-b border-line"><summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-5 py-5 text-base font-semibold transition-colors hover:text-muted [&::-webkit-details-marker]:hidden">{q}<Plus className="size-5 shrink-0 transition-transform group-open:rotate-45" aria-hidden="true" /></summary><p className="max-w-2xl pb-6 pr-8 text-sm leading-relaxed text-muted">{a}</p></details>)}</div></Container></section>
+  </main><Footer /></>;
 }

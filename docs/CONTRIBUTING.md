@@ -1,130 +1,60 @@
-# EnRouteAR — Contributing Guidelines
+# EnRouteAR — Contributing
 
-Thank you for your interest in contributing to **EnRouteAR**! This guide outlines our development workflow, coding standards, mobile testing procedures, and submission requirements.
+## Local workflow
 
----
+1. Read the [project overview](PROJECT-OVERVIEW.md) and [current redesign boundaries](REDESIGN-PLAN.md).
+2. Check `git status` and preserve unrelated work. Keep changes scoped; the current redesign does not modify `vanilla/`, routing data, packages, or the navigation state machine.
+3. Use **Node.js >=20.9** and the existing npm lockfile. The current verification environment is **Node.js 22.23.3**.
+4. Run from `web/`:
 
-## 1. Prerequisites
-
-Before setting up the project, ensure you have the following installed:
-
-- **Node.js**: Version `>=18.18.0` (LTS or Node v24.x recommended).
-- **npm**: Version `>=10.0.0` (preferred package manager).
-- **Git**: Version control client.
-- **Hardware / Testing Device**:
-  - A modern mobile phone (Android with Chrome or iOS with Safari) equipped with GPS, a camera, and a gyroscope for physical AR verification.
-  - Or a desktop browser (Google Chrome / Edge) using DevTools **Sensors** emulation (Geolocation & DeviceOrientation).
-
----
-
-## 2. Quick Start & Setup
-
-1. **Clone the repository**:
    ```bash
-   git clone https://github.com/manishborikar92/EnRouteAR.git
-   cd EnRouteAR
-   ```
-
-2. **Navigate to the web project**:
-   ```bash
-   cd web
-   ```
-
-3. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-4. **Start the local development server**:
-   ```bash
+   npm ci
    npm run dev
    ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
----
+5. Configure only the public values you need, using [Environment variables](ENVIRONMENT-VARS.md). Do not share `.env.local` contents or private credentials.
 
-## 3. Available npm Scripts
+For a pull request, explain the user-visible change, affected paths, exact checks run, and remaining gaps. Small descriptive commits such as `docs: clarify sensor requirements` are preferred over unrelated cleanup in the same change.
 
-All commands should be executed from within the `web/` directory:
+## Implementation conventions
 
-| Command | Action |
-|---|---|
-| `npm run dev` | Launches the Next.js development server with hot module replacement (HMR) and Turbopack on `http://localhost:3000`. |
-| `npm run build` | Compiles an optimized production build using Turbopack and pre-renders static HTML pages. |
-| `npm run start` | Serves the compiled production build locally for verification. |
-| `npm run lint` | Runs ESLint to check for syntax errors, React hooks violations, and Next.js App Router rules. |
+- Keep the four existing routes and JavaScript/App Router structure. Prefer Server Components for content and explicit client boundaries for interaction/sensors.
+- Use the existing `@/` alias and `next/link` for internal route links.
+- Keep Tailwind v4 tokens in `src/app/globals.css`; use utilities and shared primitives for component presentation.
+- Reuse `Primitives.js`, `LaunchButton.js`, and loading/error states rather than creating parallel implementations.
+- Preserve Bricolage Grotesque/Public Sans, the ivory/forest/lime palette, and original SVG illustration style. No animation dependency is needed.
+- Keep the 15 original destination records and `geo.js` intact. Neutral display labels belong in `place-labels.js`, not in the routing data or selection values.
+- Preserve local AR script order, sensor effects, gesture decoupling, and resource cleanup. See [Architecture](ARCHITECTURE.md).
+- Prefer semantic HTML, visible focus, labeled controls, at least 44px primary touch targets, and reduced-motion-aware feedback. Do not use an ARIA menu role for ordinary site links.
 
----
+## Command checks
 
-## 4. Mobile Device Testing & Debugging
-
-Because EnRouteAR relies on real-world sensors (**Camera Stream**, **High-Accuracy GPS**, and **DeviceOrientation Gyroscope**), testing on physical mobile hardware is essential.
-
-### Secure Context (HTTPS) Requirement
-Modern web browsers (Chrome, Safari, Edge) strictly enforce that sensor APIs (`navigator.mediaDevices.getUserMedia`, `navigator.geolocation`, and WebXR) are **only accessible in Secure Contexts** (`https://` or `localhost`).
-
-To test on a physical mobile device, choose one of the following methods:
-
-#### Method A: Chrome Remote Debugging over USB (Recommended)
-1. Connect your Android device to your computer using a USB cable.
-2. Enable **USB Debugging** in your phone's Developer Options.
-3. Open `chrome://inspect/#devices` on your desktop Chrome browser.
-4. Under **Port forwarding**, map port `3000` to `localhost:3000`.
-5. On your phone, open Chrome and navigate to `http://localhost:3000`. Because it uses `localhost`, the mobile browser treats it as a secure context, enabling camera and GPS access without SSL certificates!
-
-#### Method B: Local HTTPS Tunneling (ngrok or cloudflared)
-1. Run your dev server: `npm run dev` (port 3000).
-2. In a separate terminal, launch a secure tunnel:
-   ```bash
-   npx ngrok http 3000
-   ```
-3. Open the generated HTTPS URL (e.g. `https://xxxx.ngrok-free.app`) on your mobile browser.
-
----
-
-## 5. Coding Standards & Conventions
-
-### Commit Messages
-We follow the **Conventional Commits** specification. Please format your commit messages as:
-
-```
-<type>(<scope>): <short description>
-
-[optional body]
+```bash
+# From web/
+npm run lint
+npm run build
+npm run start  # only after build succeeds
 ```
 
-- **Common Types**:
-  - `feat`: A new feature or user-facing capability.
-  - `fix`: A bug fix.
-  - `docs`: Documentation updates or additions.
-  - `refactor`: Code refactoring without behavior change.
-  - `test`: Adding or updating test suites.
-  - `chore`: Build scripts, dependencies, or tool configuration.
-- **Example**:
-  ```
-  feat(navigation): add heading smoothing to dynamic compass widget
-  fix(viewport): prevent camera stream clipping on mobile resize
-  docs(architecture): update state machine flow diagram
-  ```
+At baseline, `npm run lint` failed on a pre-existing executable-wrapper permission issue in `node_modules/.bin`. The direct command `node node_modules/eslint/bin/eslint.js .` passed at baseline and can bypass that wrapper if the same issue recurs. Report the wrapper failure and direct result separately; neither is a substitute for a final post-change run.
 
-### Next.js 16 & React 19 Architecture
-- **Server Components First**: Keep components as Server Components by default. Only add `"use client"` when the component requires browser APIs (DOM, event listeners, hooks, local state, or sensors).
-- **Proxy vs Middleware**: In Next.js 16+, `middleware.js` is deprecated and replaced by `proxy.js` if network boundary routing is needed.
-- **Next.js Link Usage**: Always use `<Link>` from `next/link` for internal navigation. Do not use standard `<a>` tags for internal paths.
-- **Tailwind CSS v4 Tokens**: Maintain consistency with the established theme colors in [`globals.css`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/globals.css):
-  - Primary Cyan: `text-primary`, `bg-primary`, `border-primary`
-  - Accent Yellow: `text-accent`, `bg-accent`
-  - Background: `bg-bg`, `bg-bg-alt`, `bg-surface`
-  - Typography: `font-display` (Orbitron), `font-body` (Outfit)
+There is no package `test` script or claimed installed test suite. Name and run any targeted ad hoc checks rather than reporting an unrun `npm test` as successful. Record final results in [Final verification](REDESIGN-PLAN.md#final-verification), including build/network/font-fetch limitations.
 
----
+## Browser and device checklist
 
-## 6. Pre-Submission Checklist
+Use mock responses for ordinary Formspree and routing UI tests; do not send unsolicited live contact submissions or expose real location payloads in reports.
 
-Before submitting a pull request or code changes:
+- [ ] Open `/`, `/about`, `/contact`, `/navigate`, and a missing URL; verify metadata, local assets, route links, loading/error presentation, and recovery controls.
+- [ ] Check 360–390px phones, tablet widths, wide desktop, compact landscape, browser zoom, and reduced-motion settings for clipping/overflow.
+- [ ] Keyboard-test skip navigation, disclosure controls, Escape/close/focus behavior, launch buttons, the destination select, and form fields. Check labels and live feedback with assistive technology.
+- [ ] Exercise launch location grant, denial, timeout, and unavailable API; `/navigate` should still be reachable without implying a granted permission.
+- [ ] Mock contact success, rejected responses, and network failure; check pending state, retained values on failure, and reset on success.
+- [ ] Exercise no GPS fix, no destination, route request pending, route success, empty routes, and fetch failure. Verify UI-only labels resolve to original data.
+- [ ] Confirm centered → bearing, manual map interaction → recenter, successful route → reset-ready, and full reset behavior remain unchanged.
+- [ ] Confirm camera video fills the viewport after initial load, device rotation, and browser address-bar changes. Check camera permission denial separately from AR script loading.
+- [ ] Verify map pan/pinch/rotation do not fight GPS following or trigger unwanted page gestures.
+- [ ] Enter and exit navigation repeatedly through client-side links. Confirm route entities/sources clear and camera tracks, watches, event listeners, timers, map, and markers are cleaned up.
 
-- [ ] Run `npm run lint` inside `web/` and verify **0 errors and 0 warnings**.
-- [ ] Run `npm run build` inside `web/` and verify the project compiles cleanly.
-- [ ] Verify that all asset paths resolve properly with no broken 404s.
-- [ ] Test the responsive layout on desktop, tablet, and mobile screen sizes.
-- [ ] Verify that existing landing page and navigation functionality remains intact.
+Physical **Android Chrome and iOS Safari testing remains required**. Camera/GPS need a secure context: use HTTPS or a browser-recognized localhost setup. A phone visiting a desktop's plain HTTP LAN address is usually not sufficient. Android USB port forwarding can provide phone-localhost access; an HTTPS test URL is another option. Follow local security policy before exposing a development server.
+
+iOS motion/orientation permission may require a user gesture. Real GPS drift, compass calibration, camera behavior, and browser resource cleanup cannot be proven by desktop emulation. Record device/browser versions and actual observations without claiming universal support. Test walking only in a safe place and do not keep watching the camera while moving.

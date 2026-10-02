@@ -1,107 +1,43 @@
-# EnRouteAR — Project Overview
+# EnRouteAR — Project overview
 
-> **Browser-Native Augmented Reality Campus Navigation Platform**  
-> *Developed for Kavikulguru Institute of Technology and Science (KITS), Ramtek*
+EnRouteAR is a location-independent browser AR walking-wayfinding product. The camera view supplies directional context, while a satellite map makes the requested walking route easier to understand. The interface is not tied to a particular venue or organization.
 
----
+**Coverage remains limited to the 15 hardcoded records in `web/src/lib/places.js`.** Their internal names, coordinates, and lookup behavior are preserved. `web/src/lib/place-labels.js` supplies neutral UI labels only; it does not discover places or create new destinations.
 
-## 1. Executive Summary
+## User flow
 
-**EnRouteAR** is a modern, web-based augmented reality (AR) wayfinding and campus exploration application. Built on **Next.js 16** with **React 19**, **A-Frame**, **AR.js**, and **Mapbox GL JS v3**, EnRouteAR enables students, faculty, and campus visitors to navigate physical university grounds with sub-meter accuracy directly inside standard mobile web browsers—eliminating the friction of native app store downloads or proprietary scanning hardware.
+1. Read the introduction at `/` or the explanation at `/about`.
+2. Use the shared launch action to open `/navigate`; a preliminary location request does not prevent entry when denied or timed out.
+3. Grant supported camera/location permissions and wait for a GPS fix.
+4. Select an existing destination and explicitly request a Mapbox walking route.
+5. View that geometry on the map and as GPS-anchored AR markers, with a route estimate and readable status derived from existing state.
+6. Explore the map, recenter, follow heading, or clear the route through the existing controls.
+7. Send feedback at `/contact` through the existing Formspree form.
 
-By fusing real-time device sensor streams (**Camera**, **High-Accuracy GPS Geolocation**, and **DeviceOrientation compass headings**) with interactive satellite cartography and hardware-accelerated WebGL/WebXR rendering, EnRouteAR overlays luminous 3D directional waypoints and animated destination markers onto the physical world.
+The app does not offer search, custom destinations, sign-in, a database, saved routes, offline navigation, or automatic rerouting. It does not detect obstacles. Estimated distance/time is not continuous remaining-distance/ETA tracking.
 
----
+## Implementation and limits
 
-## 2. Core Capabilities
+`web/` uses Next.js 16 App Router, React 19, JavaScript, Tailwind CSS v4, Mapbox GL JS, and locally served A-Frame/AR.js scripts. Four public page routes remain. `vanilla/` is preserved as the earlier static implementation, not changed by the redesign.
 
-### 📍 Real-World AR Waypoint Projection
-- Overlays 3D beacon cylinders and custom GLB destination meshes (`/models/map_pointer_3d_icon.glb`) directly onto live camera video.
-- Real-world geospatial anchoring via high-precision Spherical Mercator (`EPSG:3857`) projections.
-- Continuous distance and elevation calculations relative to user position.
+The interface uses ivory, forest, and lime with Bricolage Grotesque and Public Sans, reusable utility-styled components, and original inline SVG illustrations. Camera/map integration and the navigation state machine remain the behavioral baseline.
 
-### 🗺️ Interactive Satellite HUD Mini-Map
-- Embedded 60 FPS Mapbox GL JS v3 mini-map displaying satellite-streets imagery.
-- Turn-by-turn walking route calculations powered by the Mapbox Directions API.
-- Luminous blue route polyline with continuous GPS position synchronization.
-- Full multi-touch support for pan, zoom, pitch, and bearing manipulation.
+Accuracy depends on GPS, orientation sensors, browser support, and map coverage. Sub-meter accuracy and reliable indoor positioning are not promised. Use a secure context, stop safely to check directions, and keep attention on the surroundings. Real-device validation remains required; no production deployment target is established by these notes.
 
-### 🧭 Dynamic Compass & Heading Synchronization
-- Hardware orientation sensor tracking with sub-degree responsiveness.
-- Rotating HUD compass needle dynamically matching real-world travel direction.
-- Automatic alignment of map bearing to device heading.
+## Documentation index
 
-### 🎛️ 4-Mode Multifunction State Machine
-- **Centered (`centered`)**: Locks satellite view directly to the user's current GPS position.
-- **Compass Follow (`bearing`)**: Rotates map dynamically to follow real-time device orientation.
-- **Free Pan (`recenter`)**: Decouples camera follow when the user touches or pans the map manually, providing a one-tap recenter control.
-- **Active Navigation Reset (`reset-all`)**: Clears active AR waypoints, route polylines, and destination state, returning the system to idle scanning.
+| Guide | Use it for |
+| --- | --- |
+| [Repository README](../README.md) | Product introduction and quick start |
+| [Web README](../web/README.md) | App commands and entry points |
+| [Architecture](ARCHITECTURE.md) | Rendering boundaries, routing flow, controller, and cleanup |
+| [Technology stack](TECH-STACK.md) | Existing packages, browser APIs, and tooling |
+| [Environment variables](ENVIRONMENT-VARS.md) | Public configuration and preserved fallbacks |
+| [Contributing](CONTRIBUTING.md) | Local workflow and manual regression checklist |
+| [Redesign plan](REDESIGN-PLAN.md) | Current design decisions, references, and final verification |
+| [Project structure](Project%20Structure.md) | Short directory map |
+| [Migration notes](MIGRATION-PLAN.md) | Retained integration lessons from the earlier implementation |
+| [Maintenance brief](MIGRATION-PROMPT.MD) | Constraints for continuing this work |
+| [Earlier-plan pointer](EnRouteAR.md) | Where superseded proposals went |
 
-### 🏫 15 Pre-Mapped Campus Destinations
-- Comprehensive coordinate index of academic departments, administrative buildings, laboratories, workshops, library, hostels, and athletic complexes across the 50-acre KITS Ramtek campus.
-
-### 🌐 High-Performance Modern Web Architecture
-- Fully responsive design matching sci-fi HUD aesthetics across mobile, tablet, and desktop viewports.
-- Static pre-rendering (SSG) across landing (`/`), system specifications (`/about`), and contact (`/contact`) pages.
-- Native Next.js 16 metadata routes (`robots.js`, `sitemap.js`, `manifest.json`) and Schema.org JSON-LD structured data.
-
----
-
-## 3. Repository Structure
-
-```
-EnRouteAR/
-├── docs/                           # Technical documentation and guides
-│   ├── ARCHITECTURE.md             # System design, data flow, and state machine
-│   ├── CONTRIBUTING.md             # Contributor guidelines and dev workflow
-│   ├── ENVIRONMENT-VARS.md         # Configuration and environment variables
-│   ├── MIGRATION-PLAN.md           # Migration history and technical decisions
-│   ├── PROJECT-OVERVIEW.md         # High-level overview and summary (this file)
-│   └── TECH-STACK.md               # Technology specifications and dependency audit
-│
-├── vanilla/                        # Original legacy static prototype (source of truth)
-│   ├── index.html                  # Legacy landing page
-│   ├── navigation.html             # Legacy AR navigation viewport
-│   ├── models/                     # Original 3D assets and icons
-│   ├── scripts/                    # Legacy vanilla JavaScript (script.js, places.js)
-│   └── styles/                     # Legacy CSS stylesheets
-│
-└── web/                            # Production Next.js 16 Application
-    ├── public/                     # Static assets served at root
-    │   ├── icons/                  # HUD SVG sprite (nav-controls.svg), compass.svg, current.svg
-    │   ├── models/                 # 3D spatial models (map_pointer_3d_icon.glb)
-    │   ├── vendor/                 # Spatial computing scripts (A-Frame, AR.js)
-    │   └── *.png, *.svg            # App icons, favicon, manifest, and SEO graphics
-    │
-    ├── src/
-    │   ├── app/                    # Next.js 16 App Router
-    │   │   ├── layout.js           # Root layout with fonts, JSON-LD, and Sonner
-    │   │   ├── page.js             # High-fidelity landing page (/)
-    │   │   ├── globals.css         # Tailwind v4 directives and HUD keyframes
-    │   │   ├── robots.js           # Metadata route (/robots.txt)
-    │   │   ├── sitemap.js          # Metadata route (/sitemap.xml)
-    │   │   ├── manifest.json       # Progressive Web App manifest
-    │   │   ├── about/              # System specification page (/about)
-    │   │   ├── contact/            # Communication and FAQ page (/contact)
-    │   │   └── navigate/           # AR navigation viewport page (/navigate)
-    │   │
-    │   ├── components/
-    │   │   ├── landing/            # Modular landing page sections & UI components
-    │   │   ├── navigation/         # AR HUD, Mapbox, Compass, and Viewport components
-    │   │   └── seo/                # Schema.org structured data generators
-    │   │
-    │   └── lib/
-    │       ├── geo.js              # Haversine distance, interpolation, and routing API
-    │       └── places.js           # Predefined campus coordinates index
-    │
-    ├── package.json                # Project dependencies and npm scripts
-    └── next.config.mjs             # Next.js build and Turbopack configuration
-```
-
----
-
-## 4. Key Target Audience & Use Cases
-
-1. **Campus Visitors & Guests**: Self-guided AR tour and navigation from campus entrances to administrative offices, departments, or conference venues.
-2. **New Students**: Seamless discovery of lecture halls, specialized laboratories, library resources, and student hostels without physical maps.
-3. **Campus Facilities & Operations**: Digital reference framework for physical asset tagging and spatial location referencing.
+Use **Node.js >=20.9**; the current verification environment is Node.js 22.23.3. Final build, browser, and device results belong in [Final verification](REDESIGN-PLAN.md#final-verification).
