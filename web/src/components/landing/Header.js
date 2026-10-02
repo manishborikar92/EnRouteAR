@@ -3,160 +3,203 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { BrandMark, MenuIcon, CloseIcon } from "@/components/common/Icons";
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+  const [isLaunching, setIsLaunching] = useState(false);
   const router = useRouter();
 
+  // Scroll listener for sticky header background
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setIsStuck(window.scrollY > 24);
     };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Section observer for highlighting active nav link
+  useEffect(() => {
+    const sectionIds = ["how", "about", "college", "vision", "contact"];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -50% 0px" }
+    );
+
+    sections.forEach((sec) => observer.observe(sec));
+    return () => observer.disconnect();
+  }, []);
+
+  // Body scroll lock on mobile menu toggle
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+    return () => {
+      document.body.classList.remove("menu-open");
+    };
+  }, [isMenuOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === "Escape" && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isMenuOpen]);
+
+  // Handle AR launch with geolocation request feedback
   const handleLaunchAR = (e) => {
     e.preventDefault();
+    if (isLaunching) return;
+
+    const navigateToApp = () => {
+      router.push("/navigate");
+    };
+
     if (typeof navigator !== "undefined" && "geolocation" in navigator) {
+      setIsLaunching(true);
       navigator.geolocation.getCurrentPosition(
         () => {
-          router.push("/navigate");
+          setIsLaunching(false);
+          navigateToApp();
         },
         (err) => {
           console.warn("Geolocation warning:", err.message);
-          router.push("/navigate");
+          setIsLaunching(false);
+          navigateToApp();
         },
         { enableHighAccuracy: false, timeout: 8000 }
       );
     } else {
-      router.push("/navigate");
+      navigateToApp();
     }
-    setIsMobileOpen(false);
-  };
-
-  const closeMobile = () => {
-    setIsMobileOpen(false);
+    setIsMenuOpen(false);
   };
 
   return (
-    <header
-      id="site-header"
-      className={`fixed top-0 left-0 right-0 z-50 transition-[background,padding,border-color,backdrop-filter] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-        isScrolled ? "scrolled" : ""
-      }`}
-    >
-      <div className="header-inner flex items-center justify-between px-10 py-[18px] max-md:px-5 max-md:py-3.5 transition-[padding,background,border-color,backdrop-filter] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]">
-        <Link href="/" className="logo-wrap select-none no-underline">
-          <div className="logo-mark font-display font-bold text-[1.25rem] tracking-[0.08em] text-text-1">
-            <span className="logo-bracket text-primary">[</span>
-            <span className="logo-text">
-              EnRoute<span className="logo-accent text-accent">AR</span>
+    <>
+      <a className="skip" href="#main">
+        Skip to content
+      </a>
+
+      <header className={`top ${isStuck ? "stuck" : ""}`} id="top">
+        <div className="wrap bar">
+          <Link href="/" className="brand" aria-label="EnRouteAR, home">
+            <BrandMark className="mk" />
+            <span>
+              EnRoute<b>AR</b>
+              <small>Augmented reality navigation</small>
             </span>
-            <span className="logo-bracket text-primary">]</span>
-          </div>
-          <div className="logo-sub font-display text-[0.52rem] tracking-[0.2em] text-text-3 mt-[2px]">
-            AUGMENTED REALITY NAVIGATION
-          </div>
-        </Link>
+          </Link>
 
-        {/* Desktop Nav */}
-        <nav className="site-nav hidden md:flex items-center gap-8" aria-label="Main Navigation">
-          <Link
-            href="/#about"
-            className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-          >
-            About
-          </Link>
-          <Link
-            href="/#college"
-            className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-          >
-            Campus
-          </Link>
-          <Link
-            href="/#vision"
-            className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-          >
-            Vision
-          </Link>
-          <Link
-            href="/#contact"
-            className="font-display text-[0.68rem] tracking-[0.12em] text-text-2 uppercase no-underline hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-          >
-            Contact
-          </Link>
+          <nav className="nav" aria-label="Primary">
+            <Link
+              href="/#how"
+              aria-current={activeSection === "how" ? "true" : undefined}
+            >
+              How it works
+            </Link>
+            <Link
+              href="/#about"
+              aria-current={activeSection === "about" ? "true" : undefined}
+            >
+              About
+            </Link>
+            <Link
+              href="/#college"
+              aria-current={activeSection === "college" ? "true" : undefined}
+            >
+              Campus
+            </Link>
+            <Link
+              href="/#vision"
+              aria-current={activeSection === "vision" ? "true" : undefined}
+            >
+              Vision
+            </Link>
+            <Link
+              href="/#contact"
+              aria-current={activeSection === "contact" ? "true" : undefined}
+            >
+              Contact
+            </Link>
+            <button
+              onClick={handleLaunchAR}
+              className="btn sm"
+              id="nav-launch-btn"
+              aria-busy={isLaunching}
+            >
+              Launch AR
+            </button>
+          </nav>
+
           <button
-            onClick={handleLaunchAR}
-            className="nav-cta inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-dk text-white px-5 py-2 rounded-sm font-display text-[0.68rem] tracking-[0.12em] no-underline hover:shadow-[0_0_20px_rgba(0,180,255,0.4)] hover:-translate-y-px transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer border-none"
-            id="nav-launch-btn"
+            className="burger"
+            id="mobile-menu-btn"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-nav"
+            aria-label="Menu"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
           >
-            Launch AR
+            <MenuIcon className="i m" />
+            <CloseIcon className="i x" />
           </button>
-        </nav>
+        </div>
+      </header>
 
-        {/* Mobile Hamburger Button */}
-        <button
-          className={`mobile-menu-btn flex md:hidden flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1 ${
-            isMobileOpen ? "active" : ""
-          }`}
-          id="mobile-menu-btn"
-          aria-label="Toggle menu"
-          aria-expanded={isMobileOpen}
-          onClick={() => setIsMobileOpen((prev) => !prev)}
-        >
-          <span className="block w-6 h-[2px] bg-text-1 rounded-[2px] transition-[transform,opacity] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]" />
-          <span className="block w-6 h-[2px] bg-text-1 rounded-[2px] transition-[transform,opacity] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]" />
-          <span className="block w-6 h-[2px] bg-text-1 rounded-[2px] transition-[transform,opacity] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]" />
-        </button>
-      </div>
-
-      {/* Mobile Drawer */}
+      {/* Mobile Fullscreen Drawer */}
       <nav
-        className={`mobile-nav flex flex-col gap-0 bg-[rgba(2,12,22,0.97)] border-t border-border overflow-hidden transition-[max-height,padding] duration-350 ease ${
-          isMobileOpen ? "max-h-[400px] py-4" : "max-h-0 py-0"
-        }`}
+        className="mnav"
         id="mobile-nav"
-        aria-label="Mobile Navigation"
+        aria-label="Mobile"
+        hidden={!isMenuOpen}
       >
-        <Link
-          href="/#about"
-          onClick={closeMobile}
-          className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-        >
+        <Link href="/#how" onClick={() => setIsMenuOpen(false)}>
+          How it works
+        </Link>
+        <Link href="/#about" onClick={() => setIsMenuOpen(false)}>
           About
         </Link>
-        <Link
-          href="/#college"
-          onClick={closeMobile}
-          className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-        >
+        <Link href="/#college" onClick={() => setIsMenuOpen(false)}>
           Campus
         </Link>
-        <Link
-          href="/#vision"
-          onClick={closeMobile}
-          className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-        >
+        <Link href="/#vision" onClick={() => setIsMenuOpen(false)}>
           Vision
         </Link>
-        <Link
-          href="/#contact"
-          onClick={closeMobile}
-          className="font-display text-[0.75rem] tracking-[0.12em] text-text-2 uppercase no-underline px-6 py-3.5 border-b border-[rgba(0,180,255,0.06)] hover:text-primary hover:bg-surface-hi transition-[color,background] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-        >
+        <Link href="/#contact" onClick={() => setIsMenuOpen(false)}>
           Contact
         </Link>
         <button
           onClick={handleLaunchAR}
-          className="nav-cta inline-flex items-center justify-center mx-6 mt-3 bg-gradient-to-br from-primary to-primary-dk text-white px-5 py-2 rounded-sm font-display text-[0.68rem] tracking-[0.12em] text-center no-underline hover:shadow-[0_0_20px_rgba(0,180,255,0.4)] hover:-translate-y-px transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] border-none cursor-pointer"
+          className="btn"
           id="mobile-launch-btn"
+          aria-busy={isLaunching}
         >
           Launch AR
         </button>
       </nav>
-    </header>
+    </>
   );
 }

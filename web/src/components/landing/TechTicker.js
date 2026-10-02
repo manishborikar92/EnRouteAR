@@ -1,28 +1,53 @@
+"use client";
+
+import { useState } from "react";
+
+const TECHNOLOGIES = [
+  "A-Frame",
+  "AR.js",
+  "Mapbox GL JS",
+  "WebGL",
+  "Three.js",
+  "GPS Geolocation",
+  "Device Orientation API",
+];
+
 export default function TechTicker() {
-  const technologies = [
-    "A-FRAME",
-    "AR.JS",
-    "MAPBOX GL JS",
-    "WEBGL",
-    "THREE.JS",
-    "GPS GEOLOCATION",
-    "DEVICE ORIENTATION API",
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Repeat items for continuous infinite marquee
+  const repeatedTech = [
+    ...TECHNOLOGIES,
+    ...TECHNOLOGIES,
+    ...TECHNOLOGIES,
+    ...TECHNOLOGIES,
   ];
 
-  // Repeat for continuous seamless marquee
-  const tickerItems = [...technologies, ...technologies];
-
   return (
-    <div className="tech-ticker relative z-10 overflow-hidden py-3.5 bg-[rgba(0,180,255,0.04)] border-y border-border" aria-hidden="true">
-      <div className="ticker-track flex gap-5 whitespace-nowrap animate-ticker">
-        {tickerItems.map((tech, idx) => (
-          <span key={idx} className="flex items-center gap-5 shrink-0">
-            <span className="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">
-              {tech}
-            </span>
-            <span className="sep text-primary opacity-50">◆</span>
-          </span>
-        ))}
+    <div
+      className={`stack live ${isPaused ? "paused" : ""}`}
+      id="stack"
+      onClick={() => setIsPaused((prev) => !prev)}
+      title="Click to pause/play marquee"
+    >
+      <div className="wrap stack-row">
+        <div
+          className="lane"
+          role="region"
+          aria-label="Technologies"
+          tabIndex={0}
+        >
+          <ul className="reel" style={{ "--dur": "35s" }}>
+            {repeatedTech.map((tech, idx) => (
+              <li
+                key={idx}
+                aria-hidden={idx >= TECHNOLOGIES.length ? "true" : undefined}
+              >
+                {tech}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

@@ -1,26 +1,26 @@
-import { Orbitron, Outfit } from "next/font/google";
+import { Bricolage_Grotesque, Public_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import { WebAppJsonLd, CollegeJsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
-const orbitron = Orbitron({
-  variable: "--font-orbitron",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "600", "700", "900"],
+  weight: ["500", "700", "800"],
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const publicSans = Public_Sans({
+  variable: "--font-public-sans",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600"],
 });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://enroutear.vercel.app";
 
 export const viewport = {
-  themeColor: "#020c16",
+  themeColor: "#07111E",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -78,18 +78,24 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${outfit.variable} scroll-smooth antialiased`}
+      className={`${bricolage.variable} ${publicSans.variable} scroll-smooth antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-bg text-text-1 font-body">
+      <body className="min-h-screen flex flex-col bg-bg text-t1 font-body">
         <WebAppJsonLd />
         <CollegeJsonLd />
         {children}
         <Toaster
           richColors
-          position="top-center"
+          position="bottom-center"
           theme="dark"
           toastOptions={{
-            style: { marginTop: "68px" },
+            style: {
+              background: "rgba(18, 32, 54, 0.92)",
+              backdropFilter: "blur(14px)",
+              border: "1px solid rgba(150, 185, 235, 0.34)",
+              color: "#EAF0F8",
+              fontFamily: "var(--font-public-sans), sans-serif",
+            },
           }}
         />
       </body>

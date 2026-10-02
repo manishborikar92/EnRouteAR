@@ -1,17 +1,15 @@
 import Link from "next/link";
 import {
   MapPin,
-  Mail,
   Compass,
   ExternalLink,
-  Sparkles,
   HelpCircle,
   Clock,
 } from "lucide-react";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
-import StarfieldCanvas from "@/components/landing/StarfieldCanvas";
-import ScrollReveal from "@/components/landing/ScrollReveal";
+import Atmosphere from "@/components/common/Atmosphere";
+import SpotlightTracker from "@/components/common/SpotlightTracker";
 import ContactForm from "@/components/landing/ContactForm";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
@@ -54,111 +52,119 @@ export default function ContactPage() {
   return (
     <>
       <BreadcrumbJsonLd items={breadcrumbs} />
-      <StarfieldCanvas />
-      <ScrollReveal />
+      <Atmosphere />
+      <SpotlightTracker />
       <Header />
 
-      <main className="relative z-10 pt-[110px] pb-[100px] px-6 max-w-[1200px] mx-auto">
-        {/* Breadcrumb Navigation */}
-        <nav aria-label="Breadcrumb" className="mb-8">
-          <ol className="flex items-center gap-2 font-display text-[0.68rem] tracking-[0.12em] text-text-3 uppercase">
-            <li>
-              <Link href="/" className="hover:text-primary transition-colors no-underline">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li className="text-primary font-semibold">Contact</li>
-          </ol>
-        </nav>
-
-        {/* Page Hero */}
-        <div className="mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[rgba(0,180,255,0.08)] border border-border rounded-full text-primary font-display text-[0.62rem] tracking-[0.2em] uppercase mb-4">
-            <Sparkles className="w-3 h-3 text-accent" />
-            DIRECT COMMUNICATION
-          </div>
-          <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-bold text-text-1 leading-[1.1] mb-6">
-            Get in{" "}
-            <span className="gradient-text bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              Touch
-            </span>
-          </h1>
-          <p className="text-[1.05rem] text-text-2 leading-[1.8] max-w-[760px]">
-            Have inquiries regarding the AR navigation platform, campus integration, research
-            collaboration, or technical questions? Reach out using the direct dispatch form or
-            institutional channels below.
-          </p>
-        </div>
-
-        {/* Two-Column Section */}
-        <div className="grid grid-cols-[1fr_1.3fr] max-lg:grid-cols-1 gap-12 items-start mb-20">
-          {/* Left Column: Details & FAQs */}
-          <div className="space-y-6">
-            {/* Campus Info Card */}
-            <div className="bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px]">
-              <div className="flex items-center gap-2 text-primary font-display text-[0.68rem] tracking-[0.14em] uppercase mb-4 font-bold">
-                <MapPin className="w-4 h-4 text-accent" />
-                INSTITUTIONAL HEADQUARTERS
-              </div>
-              <h3 className="font-display text-[1.1rem] font-bold text-text-1 mb-2">
-                Kavikulguru Institute of Technology & Science
-              </h3>
-              <p className="text-[0.88rem] text-text-2 leading-[1.65] mb-4">
-                Mouda Road, Ramtek, Dist. Nagpur, Maharashtra, India — 441106
-              </p>
-              <div className="flex items-center gap-3 text-[0.78rem] text-text-3 font-display">
-                <Compass className="w-3.5 h-3.5 text-primary" />
-                <span>Coordinates: 21.38541°N, 79.30562°E</span>
-              </div>
-            </div>
-
-            {/* Response Time & Portal Card */}
-            <div className="bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px]">
-              <div className="flex items-center gap-2 text-primary font-display text-[0.68rem] tracking-[0.14em] uppercase mb-3 font-bold">
-                <Clock className="w-4 h-4 text-accent" />
-                RESPONSE DISPATCH
-              </div>
-              <p className="text-[0.88rem] text-text-2 leading-[1.65] mb-4">
-                Submissions via this form are dispatched to the project maintainers. Inquiries
-                regarding college administration should be directed through the official portal.
-              </p>
-              <div className="pt-2 border-t border-[rgba(0,180,255,0.08)] flex items-center justify-between text-[0.78rem]">
-                <span className="text-text-3 font-display">Official Portal:</span>
-                <a
-                  href="https://www.kits.edu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-primary hover:text-white transition-colors no-underline font-display text-[0.75rem]"
+      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24">
+        <div className="wrap">
+          {/* Breadcrumb Navigation */}
+          <nav aria-label="Breadcrumb" className="mb-8">
+            <ol className="flex items-center gap-2 font-display text-[0.8rem] tracking-[0.04em] text-t3">
+              <li>
+                <Link
+                  href="/"
+                  className="hover:text-t1 transition-colors no-underline text-t3"
                 >
-                  <span>kits.edu</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </div>
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true" className="opacity-40">
+                /
+              </li>
+              <li className="text-route font-semibold">Contact</li>
+            </ol>
+          </nav>
 
-            {/* Quick Technical FAQ */}
-            <div className="bg-surface border border-border rounded-lg p-7 backdrop-blur-[12px]">
-              <div className="flex items-center gap-2 text-primary font-display text-[0.68rem] tracking-[0.14em] uppercase mb-4 font-bold">
-                <HelpCircle className="w-4 h-4 text-accent" />
-                FREQUENTLY ASKED QUESTIONS
-              </div>
-              <div className="space-y-4">
-                {FAQS.map((faq) => (
-                  <div key={faq.q} className="pb-3 border-b border-[rgba(0,180,255,0.06)] last:border-b-0 last:pb-0">
-                    <h4 className="font-display text-[0.82rem] font-bold text-text-1 mb-1">
-                      {faq.q}
-                    </h4>
-                    <p className="text-[0.82rem] text-text-2 leading-[1.6]">{faq.a}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Page Hero */}
+          <div className="mb-16 max-w-[800px]">
+            <p className="status mb-6">
+              <span className="dot" />
+              Direct Communication
+            </p>
+            <h1>Get in touch</h1>
+            <p className="lead mt-6 text-t2 text-lg">
+              Have inquiries regarding the AR navigation platform, campus integration,
+              collaborations, or technical feedback? Reach out using the form or institutional
+              channels below.
+            </p>
           </div>
 
-          {/* Right Column: Interactive Contact Form */}
-          <div>
-            <ContactForm />
+          {/* Two-Column Section */}
+          <div className="grid grid-cols-[1fr_1.3fr] max-lg:grid-cols-1 gap-12 items-start mb-20">
+            {/* Left Column: Details & FAQs */}
+            <div className="space-y-6">
+              {/* Campus Info Card */}
+              <div className="panel glass-spotlight p-7">
+                <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-4 font-bold">
+                  <MapPin className="w-4 h-4 text-signal" />
+                  Institutional Headquarters
+                </div>
+                <h3 className="font-display text-xl font-bold text-t1 mb-2">
+                  Kavikulguru Institute of Technology &amp; Science
+                </h3>
+                <p className="text-[0.92rem] text-t2 leading-[1.65] mb-4">
+                  Mouda Road, Ramtek, Dist. Nagpur, Maharashtra, India — 441106
+                </p>
+                <div className="flex items-center gap-3 text-[0.84rem] text-t3 font-mono">
+                  <Compass className="w-4 h-4 text-route" />
+                  <span>21.385°N, 79.306°E</span>
+                </div>
+              </div>
+
+              {/* Response Time & Portal Card */}
+              <div className="panel glass-spotlight p-7">
+                <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-3 font-bold">
+                  <Clock className="w-4 h-4 text-signal" />
+                  Response Dispatch
+                </div>
+                <p className="text-[0.92rem] text-t2 leading-[1.65] mb-4">
+                  Submissions via this form are dispatched to the project maintainers.
+                  Official college administration inquiries should be directed through
+                  the kits.edu portal.
+                </p>
+                <div className="pt-3 border-t border-line flex items-center justify-between text-sm">
+                  <span className="text-t3">Official Portal:</span>
+                  <a
+                    href="https://www.kits.edu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-route hover:text-white transition-colors no-underline font-semibold"
+                  >
+                    <span>kits.edu</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Quick Technical FAQ */}
+              <div className="panel glass-spotlight p-7">
+                <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-5 font-bold">
+                  <HelpCircle className="w-4 h-4 text-signal" />
+                  Frequently Asked Questions
+                </div>
+                <div className="space-y-4">
+                  {FAQS.map((faq) => (
+                    <div
+                      key={faq.q}
+                      className="pb-4 border-b border-line last:border-b-0 last:pb-0"
+                    >
+                      <h4 className="font-display text-[0.98rem] font-bold text-t1 mb-1.5">
+                        {faq.q}
+                      </h4>
+                      <p className="text-[0.88rem] text-t2 leading-[1.6]">
+                        {faq.a}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Contact Form */}
+            <div>
+              <ContactForm />
+            </div>
           </div>
         </div>
       </main>

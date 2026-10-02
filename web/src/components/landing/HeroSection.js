@@ -1,150 +1,233 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Play, ArrowDown } from "lucide-react";
+import { PlayIcon, DownIcon } from "@/components/common/Icons";
 
 export default function HeroSection() {
   const router = useRouter();
+  const [isLaunching, setIsLaunching] = useState(false);
+  const vfFrameRef = useRef(null);
+  const vfContainerRef = useRef(null);
+
+  // Gentle 3D perspective tilt on pointer movement (matching reference script)
+  useEffect(() => {
+    const container = vfContainerRef.current;
+    const frame = vfFrameRef.current;
+    if (!container || !frame) return;
+
+    if (
+      window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)")
+        .matches
+    ) {
+      const handlePointerMove = (e) => {
+        const rect = container.getBoundingClientRect();
+        const rx = -((e.clientY - rect.top) / rect.height - 0.5) * 8;
+        const ry = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+        frame.style.setProperty("--rx", `${rx}deg`);
+        frame.style.setProperty("--ry", `${ry}deg`);
+      };
+
+      const handlePointerLeave = () => {
+        frame.style.setProperty("--rx", "0deg");
+        frame.style.setProperty("--ry", "0deg");
+      };
+
+      container.addEventListener("pointermove", handlePointerMove);
+      container.addEventListener("pointerleave", handlePointerLeave);
+
+      return () => {
+        container.removeEventListener("pointermove", handlePointerMove);
+        container.removeEventListener("pointerleave", handlePointerLeave);
+      };
+    }
+  }, []);
 
   const handleLaunchNavigation = (e) => {
     e.preventDefault();
+    if (isLaunching) return;
+
+    const navigateToApp = () => {
+      router.push("/navigate");
+    };
+
     if (typeof navigator !== "undefined" && "geolocation" in navigator) {
+      setIsLaunching(true);
       navigator.geolocation.getCurrentPosition(
-        () => router.push("/navigate"),
+        () => {
+          setIsLaunching(false);
+          navigateToApp();
+        },
         (err) => {
           console.warn("Geolocation warning:", err.message);
-          router.push("/navigate");
+          setIsLaunching(false);
+          navigateToApp();
         },
         { enableHighAccuracy: false, timeout: 8000 }
       );
     } else {
-      router.push("/navigate");
+      navigateToApp();
     }
   };
 
   return (
-    <section
-      className="hero min-h-screen flex items-center justify-center gap-16 max-lg:gap-10 max-md:flex-col pt-[120px] pb-20 px-10 max-md:pt-[100px] max-md:pb-[60px] max-md:px-6 max-md:text-center max-w-[1280px] mx-auto relative z-10"
-      id="hero"
-    >
-      <div className="hero-content flex-1 max-w-[620px] max-md:max-w-full">
-        {/* Badge */}
-        <div className="hero-badge reveal inline-flex items-center gap-2 font-display text-[0.62rem] tracking-[0.18em] text-primary bg-[rgba(0,180,255,0.08)] border border-[rgba(0,180,255,0.2)] rounded-full px-4 py-1.5 mb-7 max-md:self-center">
-          <span className="pulse-dot w-[7px] h-[7px] bg-primary rounded-full animate-pulse-ring shrink-0" />
-          LIVE · GPS ENABLED
-        </div>
-
-        {/* Title */}
-        <h1 className="hero-title reveal font-display text-[clamp(2rem,5vw,3.5rem)] max-[480px]:text-[1.8rem] font-black leading-[1.1] tracking-[-0.01em] mb-6 text-text-1">
-          Navigate the
-          <br />
-          <span className="gradient-text bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-            Real World
-          </span>
-          <br />
-          in Augmented Reality
-        </h1>
-
-        {/* Description */}
-        <p className="hero-desc reveal text-[1.05rem] text-text-2 leading-[1.75] mb-9 max-w-[520px] max-md:mx-auto max-md:mb-9">
-          Overlay digital waypoints, 3D markers, and turn-by-turn directions directly onto your
-          camera feed. Built for KITS Ramtek campus — powered by A-Frame, AR.js &amp; Mapbox.
+    <div className="wrap hero" id="hero">
+      <div>
+        <p className="status">
+          <span className="dot" />
+          Live GPS enabled
         </p>
-
-        {/* Action Buttons */}
-        <div className="hero-actions reveal flex items-center gap-4 flex-wrap mb-12 max-md:justify-center">
+        <h1>Navigate the real world in augmented reality</h1>
+        <p className="lead">
+          Overlay digital waypoints, 3D markers, and turn-by-turn directions
+          directly onto your camera feed. Built for KITS Ramtek campus — powered
+          by A-Frame, AR.js &amp; Mapbox.
+        </p>
+        <div className="cta-row">
           <button
             onClick={handleLaunchNavigation}
-            className="btn-primary inline-flex items-center gap-2.5 bg-gradient-to-br from-primary to-primary-dk text-white no-underline font-display text-[0.72rem] font-semibold tracking-[0.1em] px-7 py-3.5 rounded-md border-none cursor-pointer relative overflow-hidden transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,180,255,0.4)] active:translate-y-0 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(255,255,255,0.15)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100"
+            className="btn"
             id="turnOnLocationBtn"
+            aria-busy={isLaunching}
           >
-            <Play className="w-4 h-4 shrink-0 fill-current" />
-            Launch Navigation
+            <PlayIcon className="i" />
+            Launch navigation
           </button>
-          <a
-            href="#about"
-            className="btn-ghost inline-flex items-center gap-2 text-text-2 no-underline font-display text-[0.72rem] tracking-[0.1em] py-3.5 hover:text-primary transition-colors duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-          >
-            Learn More
-            <ArrowDown className="w-4 h-4 shrink-0" />
+          <a href="#about" className="link">
+            Learn more
+            <DownIcon className="i" />
           </a>
         </div>
-
-        {/* Stats */}
-        <div className="hero-stats reveal flex items-center gap-6 max-md:justify-center max-[480px]:gap-3.5">
-          <div className="stat text-center">
-            <span className="stat-num block font-display text-2xl max-[480px]:text-[1.1rem] font-black text-primary">
-              14+
-            </span>
-            <span className="stat-label text-[0.65rem] tracking-[0.1em] text-text-3 uppercase">
-              Campus Locations
-            </span>
+        <dl className="facts">
+          <div>
+            <dt>14+</dt>
+            <dd>Campus locations</dd>
           </div>
-          <div className="stat-divider w-[1px] h-10 bg-border" />
-          <div className="stat text-center">
-            <span className="stat-num block font-display text-2xl max-[480px]:text-[1.1rem] font-black text-primary">
-              3D
-            </span>
-            <span className="stat-label text-[0.65rem] tracking-[0.1em] text-text-3 uppercase">
-              AR Waypoints
-            </span>
+          <div>
+            <dt>3D</dt>
+            <dd>AR waypoints</dd>
           </div>
-          <div className="stat-divider w-[1px] h-10 bg-border" />
-          <div className="stat text-center">
-            <span className="stat-num block font-display text-2xl max-[480px]:text-[1.1rem] font-black text-primary">
-              RT
-            </span>
-            <span className="stat-label text-[0.65rem] tracking-[0.1em] text-text-3 uppercase">
-              Real-Time GPS
-            </span>
+          <div>
+            <dt>Live</dt>
+            <dd>Real-time GPS</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
-      {/* Visual Mockup */}
-      <div className="hero-visual reveal shrink-0 max-md:order-1">
-        <div className="phone-mockup relative w-[260px] max-md:w-[180px] max-[480px]:w-[160px] mx-auto">
-          <div className="phone-frame bg-gradient-to-br from-[#0a1f35] to-[#020c16] border-2 border-[rgba(0,180,255,0.25)] rounded-[36px] p-3 shadow-deep shadow-[0_0_60px_rgba(0,180,255,0.1)]">
-            <div className="phone-screen bg-bg rounded-[26px] overflow-hidden aspect-[9/16]">
-              <div className="ar-scene-preview relative w-full h-full bg-gradient-to-b from-[#0a2035] via-[#041528] to-[#020c16] overflow-hidden">
-                <div className="ar-grid absolute inset-0 animate-grid-scroll" />
-                <div className="ar-waypoint wp1 absolute top-[28%] left-[20%] flex flex-col items-center gap-[3px] animate-wp-pulse">
-                  <div className="wp-icon text-[20px] drop-shadow-[0_0_6px_rgba(0,180,255,0.6)]">
-                    📍
-                  </div>
-                  <div className="wp-label font-display text-[0.5rem] text-text-1 bg-[rgba(0,180,255,0.2)] border border-border rounded px-[5px] py-[1px] tracking-[0.08em] whitespace-nowrap">
-                    Library
-                  </div>
-                  <div className="wp-dist font-display text-[0.42rem] text-accent tracking-[0.06em]">
-                    42m
-                  </div>
-                </div>
-                <div className="ar-waypoint wp2 absolute top-[42%] right-[15%] [animation-delay:1.2s] flex flex-col items-center gap-[3px] animate-wp-pulse">
-                  <div className="wp-icon text-[20px] drop-shadow-[0_0_6px_rgba(0,180,255,0.6)]">
-                    🏛
-                  </div>
-                  <div className="wp-label font-display text-[0.5rem] text-text-1 bg-[rgba(0,180,255,0.2)] border border-border rounded px-[5px] py-[1px] tracking-[0.08em] whitespace-nowrap">
-                    CS Dept.
-                  </div>
-                  <div className="wp-dist font-display text-[0.42rem] text-accent tracking-[0.06em]">
-                    87m
-                  </div>
-                </div>
-                <div className="ar-trail absolute bottom-[25%] left-1/2 -translate-x-1/2 w-1 h-[25%] bg-gradient-to-t from-primary to-transparent rounded-[2px] animate-trail-grow" />
-                <div className="ar-hud-top absolute left-0 right-0 top-0 flex justify-between px-2.5 py-2 font-display text-[0.42rem] text-primary tracking-[0.08em] bg-gradient-to-b from-[rgba(2,12,22,0.7)] to-transparent">
-                  <span>▲ N 12°</span>
-                  <span>GPS ●</span>
-                </div>
-                <div className="ar-hud-bottom absolute left-0 right-0 bottom-0 flex justify-between px-2.5 py-2 font-display text-[0.42rem] text-primary tracking-[0.08em] bg-gradient-to-t from-[rgba(2,12,22,0.7)] to-transparent">
-                  <span>HEAD: 042°</span>
-                  <span>ALT: 312m</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="phone-glow absolute -bottom-[30px] left-1/2 -translate-x-1/2 w-[180px] h-[60px] pointer-events-none bg-[radial-gradient(ellipse,rgba(0,180,255,0.25),transparent_70%)]" />
+      <figure className="vf" ref={vfContainerRef}>
+        <div className="vf-frame" ref={vfFrameRef}>
+          <svg
+            viewBox="0 0 360 480"
+            role="img"
+            aria-label="Preview of the AR view: a blue route leads ahead to the Library, 42 metres away, and the CS Department, 87 metres away."
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#1B3A66" />
+                <stop offset="1" stopColor="#F2B67C" />
+              </linearGradient>
+              <linearGradient id="grd" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#3C7A58" />
+                <stop offset="1" stopColor="#1B4333" />
+              </linearGradient>
+            </defs>
+
+            {/* Sky Background */}
+            <rect width="360" height="200" fill="url(#sky)" />
+
+            {/* Distant Campus Building Silhouettes */}
+            <path
+              d="M0 200v-44h44v-26h50v32h36v-16h40v54zM212 200v-52h38v-28h50v34h30v-16h30v62z"
+              fill="#2A4666"
+              opacity="0.92"
+            />
+
+            {/* Campus Lawn Ground */}
+            <rect y="198" width="360" height="282" fill="url(#grd)" />
+
+            {/* Horizon perspective guide rays */}
+            <path d="M104 480 190 198h12l66 282z" fill="#fff" opacity="0.1" />
+
+            {/* Perspective AR Route Ribbon */}
+            <path
+              className="ribbon"
+              d="M128 480h122C236 380 214 280 202 202h-12c0 80-34 180-62 278z"
+              fill="#2F7BFF"
+            />
+
+            {/* Animated Flowing Dashed Route Centerline */}
+            <path
+              className="ribbon flow"
+              d="M190 480c14-100 10-190 4-276"
+              fill="none"
+              stroke="#fff"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            />
+
+            {/* 3D AR Waypoint: Library 42m */}
+            <g transform="translate(50 108)">
+              <g className="tag t1">
+                <path d="M46 44v34" stroke="#fff" strokeWidth="2" />
+                <circle cx="46" cy="80" r="4" fill="#fff" />
+                <rect width="92" height="44" rx="11" fill="#fff" />
+                <text x="12" y="19" fontSize="13" fontWeight="600" fill="#0F1C2E">
+                  Library
+                </text>
+                <text x="12" y="35" fontSize="12" fontWeight="600" fill="#1456F0">
+                  42 m
+                </text>
+              </g>
+            </g>
+
+            {/* 3D AR Waypoint: CS Dept. 87m */}
+            <g transform="translate(224 134)">
+              <g className="tag t2">
+                <path d="M44 44v28" stroke="#fff" strokeWidth="2" />
+                <circle cx="44" cy="74" r="4" fill="#fff" />
+                <rect width="92" height="44" rx="11" fill="#fff" />
+                <text x="12" y="19" fontSize="13" fontWeight="600" fill="#0F1C2E">
+                  CS Dept.
+                </text>
+                <text x="12" y="35" fontSize="12" fontWeight="600" fill="#1456F0">
+                  87 m
+                </text>
+              </g>
+            </g>
+
+            {/* Cyberpunk HUD Bars Overlay */}
+            <g
+              className="hud"
+              fontSize="11"
+              fontWeight="600"
+              fill="#fff"
+              letterSpacing="0.04em"
+            >
+              <rect width="360" height="34" fill="#0F1C2E" opacity="0.6" />
+              <path d="M16 22l5-10 5 10z" />
+              <text x="32" y="22">
+                N 12°
+              </text>
+              <circle cx="318" cy="17" r="4" fill="#5BE0A8" />
+              <text x="288" y="22" textAnchor="end">
+                GPS
+              </text>
+
+              <rect y="446" width="360" height="34" fill="#0F1C2E" opacity="0.6" />
+              <text x="16" y="468">
+                HEAD 042°
+              </text>
+              <text x="344" y="468" textAnchor="end">
+                ALT 312 m
+              </text>
+            </g>
+          </svg>
         </div>
-      </div>
-    </section>
+        <figcaption>
+          Labels show live distance and stay anchored to the place as you walk.
+        </figcaption>
+      </figure>
+    </div>
   );
 }

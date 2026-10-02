@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { AlertTriangle, RotateCcw, Home } from "lucide-react";
+import Atmosphere from "@/components/common/Atmosphere";
 
 export default function AboutError({ error, reset }) {
   useEffect(() => {
@@ -10,32 +11,33 @@ export default function AboutError({ error, reset }) {
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg text-text-1 px-6">
-      <div className="max-w-[480px] w-full p-8 bg-surface border border-border rounded-lg text-center backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.55)]">
-        <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[rgba(250,207,14,0.1)] border border-[rgba(250,207,14,0.3)] flex items-center justify-center text-accent">
-          <AlertTriangle className="w-6 h-6" />
+    <div className="min-h-screen flex items-center justify-center bg-bg text-t1 px-6 relative">
+      <Atmosphere />
+      <div className="panel max-w-[480px] w-full p-8 rounded-2xl text-center relative z-10">
+        <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[rgba(255,197,61,0.12)] border border-[rgba(255,197,61,0.35)] flex items-center justify-center text-signal shadow-[0_0_24px_rgba(255,197,61,0.25)]">
+          <AlertTriangle className="w-7 h-7" />
         </div>
-        <h2 className="font-display font-bold text-[1.2rem] tracking-[0.08em] text-text-1 mb-2">
-          UNABLE TO LOAD ABOUT DATA
+        <h2 className="text-xl font-bold text-t1 mb-2">
+          Unable to Load About Data
         </h2>
-        <p className="text-[0.88rem] text-text-2 mb-6 leading-[1.6]">
-          An unexpected anomaly occurred while loading this section. Please attempt a reload or return to the main interface.
+        <p className="text-[0.92rem] text-t2 mb-6 leading-[1.6]">
+          An unexpected issue occurred while loading this section. Please attempt a reload or return to the home page.
         </p>
         <div className="flex items-center justify-center gap-4 flex-wrap">
           <button
             type="button"
             onClick={() => reset()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-primary to-primary-dk text-white font-display text-[0.68rem] tracking-[0.12em] font-semibold rounded-sm cursor-pointer border-none hover:shadow-[0_0_20px_rgba(0,180,255,0.4)] transition-all"
+            className="btn sm"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            RETRY
+            <RotateCcw className="w-4 h-4" />
+            <span>Retry</span>
           </button>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[rgba(0,0,0,0.4)] border border-border text-text-2 font-display text-[0.68rem] tracking-[0.12em] rounded-sm hover:text-text-1 hover:border-primary transition-all no-underline"
+            className="btn sm ghost"
           >
-            <Home className="w-3.5 h-3.5" />
-            HOME
+            <Home className="w-4 h-4" />
+            <span>Home</span>
           </Link>
         </div>
       </div>

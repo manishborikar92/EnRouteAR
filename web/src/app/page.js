@@ -1,14 +1,16 @@
-import StarfieldCanvas from "@/components/landing/StarfieldCanvas";
-import ScrollReveal from "@/components/landing/ScrollReveal";
+import Atmosphere from "@/components/common/Atmosphere";
+import SpotlightTracker from "@/components/common/SpotlightTracker";
 import Header from "@/components/landing/Header";
 import HeroSection from "@/components/landing/HeroSection";
 import TechTicker from "@/components/landing/TechTicker";
+import HowSection from "@/components/landing/HowSection";
 import AboutSection from "@/components/landing/AboutSection";
 import CampusSection from "@/components/landing/CampusSection";
 import VisionSection from "@/components/landing/VisionSection";
 import CtaSection from "@/components/landing/CtaSection";
 import ContactSection from "@/components/landing/ContactSection";
 import Footer from "@/components/landing/Footer";
+import MobileDock from "@/components/landing/MobileDock";
 
 export const metadata = {
   alternates: {
@@ -19,19 +21,20 @@ export const metadata = {
 export default function HomePage() {
   return (
     <>
-      {/* Animated Starfield and Scanline Overlay */}
-      <StarfieldCanvas />
+      {/* Ambient Atmospheric Glows, Wobbled Contours & Grain Overlay */}
+      <Atmosphere />
 
-      {/* Intersection Observer for Scroll Reveal */}
-      <ScrollReveal />
+      {/* Reactive Cursor Spotlight on Glass Cards */}
+      <SpotlightTracker />
 
-      {/* Header */}
+      {/* Navigation Header */}
       <Header />
 
-      {/* Main Content Sections */}
-      <main className="relative z-10">
+      {/* Main Landmark */}
+      <main id="main">
         <HeroSection />
         <TechTicker />
+        <HowSection />
         <AboutSection />
         <CampusSection />
         <VisionSection />
@@ -41,6 +44,9 @@ export default function HomePage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Mobile Sticky Launch Dock */}
+      <MobileDock />
     </>
   );
 }
