@@ -68,9 +68,10 @@ EnRouteAR/
 │
 └── web/                            # Production Next.js 16 Application
     ├── public/                     # Static assets served at root
-    │   ├── models/                 # HUD icons, compass, and 3D pointer GLB
+    │   ├── icons/                  # HUD SVG sprite (nav-controls.svg), compass.svg, current.svg
+    │   ├── models/                 # 3D spatial models (map_pointer_3d_icon.glb)
     │   ├── vendor/                 # Spatial computing scripts (A-Frame, AR.js)
-    │   └── *.png, *.svg            # Icons, manifests, and social share graphics
+    │   └── *.png, *.svg            # App icons, favicon, manifest, and SEO graphics
     │
     ├── src/
     │   ├── app/                    # Next.js 16 App Router

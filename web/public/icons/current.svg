@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 2560" width="2560" height="2560">
+  <!-- Outer Accuracy Halo -->
+  <circle cx="1280" cy="1280" r="1280" fill="#3e8cf9" fill-opacity="0.4" />
+  
+  <!-- Seamless White Puck Teardrop Base -->
+  <path d="M 1280,140 L 1834.9,840.3 A 708 708 0 1 1 725.1,840.3 Z" 
+        fill="#ffffff" 
+        stroke="#ffffff" 
+        stroke-width="88" 
+        stroke-linejoin="round" 
+        stroke-linecap="round" />
+        
+  <!-- Top Blue Triangle inside pointer cone -->
+  <path d="M 1280,225 L 1590,705 A 660 660 0 0 0 970,705 Z" 
+        fill="#3e8cf9" />
+
+  <!-- Center Blue Location Circle Puck -->
+  <circle cx="1280" cy="1280" r="620" fill="#3e8cf9" />
+</svg>

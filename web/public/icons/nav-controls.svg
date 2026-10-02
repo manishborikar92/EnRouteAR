@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <defs>
+    <!-- Centered Reticle -->
+    <symbol id="icon-centered" viewBox="0 0 500 500">
+      <circle cx="250" cy="250" r="250" fill="#ffffff" />
+      <circle cx="250" cy="250" r="49" fill="#0096ff" />
+      <circle cx="250" cy="250" r="94" fill="none" stroke="#0096ff" stroke-width="15" />
+      <line x1="250" y1="133" x2="250" y2="152" stroke="#0096ff" stroke-width="15" stroke-linecap="square" />
+      <line x1="250" y1="348" x2="250" y2="367" stroke="#0096ff" stroke-width="15" stroke-linecap="square" />
+      <line x1="133" y1="250" x2="152" y2="250" stroke="#0096ff" stroke-width="15" stroke-linecap="square" />
+      <line x1="348" y1="250" x2="367" y2="250" stroke="#0096ff" stroke-width="15" stroke-linecap="square" />
+    </symbol>
+
+    <!-- Bearing Needle Reticle -->
+    <symbol id="icon-bearing" viewBox="0 0 500 500">
+      <circle cx="250" cy="250" r="250" fill="#ffffff" />
+      <circle cx="250" cy="250" r="101" fill="#0096ff" />
+      <polygon points="290,179 283,269 209,320 216,230" fill="#ffffff" />
+      <circle cx="250" cy="250" r="15" fill="#0096ff" />
+    </symbol>
+
+    <!-- Recenter Hollow Reticle -->
+    <symbol id="icon-recenter" viewBox="0 0 500 500">
+      <circle cx="250" cy="250" r="250" fill="#ffffff" />
+      <circle cx="250" cy="250" r="94" fill="none" stroke="#5e5e5e" stroke-width="15" />
+      <line x1="250" y1="133" x2="250" y2="152" stroke="#5e5e5e" stroke-width="15" stroke-linecap="square" />
+      <line x1="250" y1="348" x2="250" y2="367" stroke="#5e5e5e" stroke-width="15" stroke-linecap="square" />
+      <line x1="133" y1="250" x2="152" y2="250" stroke="#5e5e5e" stroke-width="15" stroke-linecap="square" />
+      <line x1="348" y1="250" x2="367" y2="250" stroke="#5e5e5e" stroke-width="15" stroke-linecap="square" />
+    </symbol>
+
+    <!-- Reset All Cycle Arrows -->
+    <symbol id="icon-reset-all" viewBox="0 0 500 500">
+      <circle cx="250" cy="250" r="250" fill="#ffffff" />
+      <circle cx="250" cy="250" r="95" fill="none" stroke="#ff0000" stroke-width="12" />
+      <g fill="#ff0000">
+        <!-- Top arrow -->
+        <path d="M 190,246 L 238,238 L 226,226 C 238,216 253,210 277,209 C 288,212 297,215 302,219 C 293,205 282,197 263,189 C 236,189 216,197 205,208 L 192,197 Z" />
+        <!-- Bottom arrow: rotated 180 around center (250, 250) -->
+        <path transform="rotate(180 250 250)" d="M 190,246 L 238,238 L 226,226 C 238,216 253,210 277,209 C 288,212 297,215 302,219 C 293,205 282,197 263,189 C 236,189 216,197 205,208 L 192,197 Z" />
+      </g>
+    </symbol>
+  </defs>
+</svg>

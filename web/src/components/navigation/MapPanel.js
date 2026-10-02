@@ -56,7 +56,7 @@ export default function MapPanel({
     } else {
       const markerEl = document.createElement("div");
       markerEl.className = "custom-marker";
-      markerEl.style.backgroundImage = "url(/models/current.png)";
+      markerEl.style.backgroundImage = "url(/icons/current.svg)";
       markerEl.style.width = "30px";
       markerEl.style.height = "30px";
 

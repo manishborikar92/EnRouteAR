@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <circle cx="250" cy="250" r="250" fill="#ffffff" />
+  <!-- North needle: bright red left, dark red right -->
+  <polygon points="250,38 148,250 250,250" fill="#ff0000" />
+  <polygon points="250,38 352,250 250,250" fill="#c90000" />
+  <!-- South needle: silver left, medium gray right -->
+  <polygon points="148,250 250,462 250,250" fill="#d1d1d1" />
+  <polygon points="352,250 250,462 250,250" fill="#e8e8e8" />
+  <!-- Center circular hole -->
+  <circle cx="250" cy="250" r="35" fill="#ffffff" />
+</svg>

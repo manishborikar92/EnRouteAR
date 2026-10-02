@@ -239,7 +239,7 @@ canvas.a-canvas {
   border: 1px solid rgba(0, 180, 255, 0.2);
   transform-origin: 50% 50%;
   z-index: 3;
-  background-image: url(/models/compass.png);
+  background-image: url(/icons/compass.svg);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 70%;
@@ -260,20 +260,6 @@ canvas.a-canvas {
 #select-destination option {
   color: #e8f4ff;
   background: #041528;
-}
-
-/* Multifunction Button State Images */
-.multifunction-button.reset-all img {
-  content: url(/models/reset-all.png);
-}
-.multifunction-button.centered img {
-  content: url(/models/centered.png);
-}
-.multifunction-button.recenter img {
-  content: url(/models/recenter.png);
-}
-.multifunction-button.bearing img {
-  content: url(/models/bearing.png);
 }
 
 @media (prefers-reduced-motion: reduce) {

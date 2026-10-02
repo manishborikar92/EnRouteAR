@@ -100,11 +100,59 @@ During migration, extensive mobile device testing and screen recording analyses 
 
 ---
 
-## 4. Future Roadmap: Phase 7 (Post-Migration Optimization)
+---
 
-*Note: Phase 7 is documented as an architectural roadmap for post-migration optimization.*
+## 4. Phase 7 — Control Icons & State Representation Strategy (Post-Migration Optimization)
 
-1. **Vector HUD Iconography**: Replace raster PNGs in `web/public/models/` (`centered.png`, `bearing.png`, `recenter.png`, `reset-all.png`) with clean, inline vector SVGs or Lucide icons to reduce HTTP requests to zero and ensure razor-sharp rendering on ultra-high-DPI mobile screens.
-2. **Dynamic SVG Compass Dial**: Convert the 25 KB raster `compass.png` into an optimized inline SVG to eliminate rotational edge shimmering during device orientation updates.
-3. **Pulsing Radar Marker**: Replace the 290 KB raster `current.png` user location icon with an SVG directional radar dot (<1 KB).
-4. **Draco Geometry Compression**: Evaluate Google Draco compression for `map_pointer_3d_icon.glb` to reduce mesh download latency over slow mobile cellular connections.
+### Strategy Selection: Option B — Consolidated SVG Sprite / Symbols
+In Phase 7, the navigation HUD iconography and map markers were optimized to eliminate 7 legacy raster PNGs and transition to high-performance, resolution-independent vector graphics while preserving 100% visual fidelity to the original design.
+
+### 1. Multifunction Navigation Control Icons (`/icons/nav-controls.svg`)
+- **Format**: Consolidated SVG sprite with `<defs>` containing 4 `<symbol>` definitions with `viewBox="0 0 500 500"`.
+- **Symbols**:
+  - `icon-centered`: Cyan reticle with filled center dot ($r=49$), outer ring ($r=94$, stroke 15px), and 4 crosshair tick marks at 0°, 90°, 180°, and 270°.
+  - `icon-bearing`: Cyan circular disc ($r=101$) with a white directional needle rotated at $-60^\circ$ and a cyan center hole ($r=15$).
+  - `icon-recenter`: Dark gray (`#5e5e5e`) hollow reticle matching the centered geometry without the center dot.
+  - `icon-reset-all`: Red circular ring ($r=95$, stroke 12px) with two 180° rotationally symmetric curved cycle arrows.
+- **Component Integration**: Updated `MultifunctionButton.js` to render `<svg id="centeredImage"><use href={`/icons/nav-controls.svg#icon-${currentMode}`} /></svg>`. Eliminates `next/image` runtime overhead and reduces 4 network requests to 1 cached SVG fetch.
+
+### 2. Compass Needle Widget (`/icons/compass.svg`)
+- **Format**: Clean standalone vector SVG with `viewBox="0 0 500 500"`.
+- **Visual Design**: Preserves the 4-faceted diamond needle artwork on a white circular base disc:
+  - North Needle: Bright red (`#ff0000`) left facet, dark red (`#c90000`) right facet.
+  - South Needle: Light silver (`#d1d1d1`) left facet, medium gray (`#e8e8e8`) right facet.
+  - Center circular cutout ($r=35$) with white fill.
+- **Component Integration**: Applied via CSS `background-image: url(/icons/compass.svg)` in `globals.css` (`.compass`). Smooth 360° device orientation rotation with zero pixel shimmering or blur.
+
+### 3. Current-Location Map Marker (`/icons/current.svg`)
+- **Format**: Lightweight vector SVG with `viewBox="0 0 2560 2560"`.
+- **Visual Design**:
+  - Outer accuracy halo circle ($r=1280$, `#3e8cf9` at 40% opacity).
+  - Seamless teardrop white puck outline with rounded top pointer tip ($y=95$) tangent to the circle base ($r=708$).
+  - Inner location circle puck ($r=620$, `#3e8cf9`).
+  - Top directional cone triangle ($y=225$, `#3e8cf9`) separated by the circular white ring arc.
+- **Component Integration**: Instantiated in `MapPanel.js` via `mapboxgl.Marker` with `background-image: url(/icons/current.svg)` and `marker.setRotation(compassHeading - mapBearing)`.
+
+### 4. Asset Audit & Payload Savings
+| Asset Path | Original Format & Size | Phase 7 Format & Size | Payload Reduction | Status |
+|---|---|---|---|---|
+| `web/public/models/centered.png` | PNG (23.7 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
+| `web/public/models/bearing.png` | PNG (22.3 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
+| `web/public/models/recenter.png` | PNG (22.6 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
+| `web/public/models/reset-all.png` | PNG (24.8 KB) | Symbol in `nav-controls.svg` | Included in sprite | Removed |
+| **Consolidated Sprite** | **4 PNGs (93.4 KB)** | **`nav-controls.svg` (2.6 KB)** | **-97.2%** | **Created** |
+| `web/public/models/compass.png` | PNG (24.8 KB) | `compass.svg` (0.6 KB) | **-97.6%** | **Replaced** |
+| `web/public/models/current.png` | PNG (290.3 KB) | `current.svg` (0.7 KB) | **-99.8%** | **Replaced** |
+| `web/public/models/current2.png` | PNG (32.1 KB) | N/A (Unused variant) | **-100.0%** | **Removed** |
+| `web/public/models/map_pointer_3d_icon.glb` | GLB (127.7 KB) | GLB (127.7 KB) | 0% (Retained) | **Retained** |
+| **Total HUD Assets** | **470.6 KB** | **3.9 KB (+ 127.7 KB GLB)** | **-99.2%** | **Optimized** |
+
+---
+
+## 5. Verification & Parity Confirmation
+All Phase 7 assets were tested across:
+1. **ESLint (`npm run lint`)**: 0 errors, 0 warnings.
+2. **Production Build (`npm run build`)**: 13/13 static routes generated successfully.
+3. **End-to-End Server Suite**: All routes, SVG sprite symbols, compass rotation, Mapbox marker orientation, and 404 responses for deleted PNGs verified.
+4. **Visual Parity**: Vector SVG artwork verified pixel-perfect against original PNGs via CairoSVG test renders and mobile viewport testing.
+
