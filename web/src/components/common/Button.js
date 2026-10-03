@@ -29,7 +29,7 @@ export default function Button({
       "text-t1 bg-white/[0.04] border border-line-bright shadow-none hover:bg-white/10 hover:shadow-none hover:-translate-y-[1px]",
   }[variant] || "";
 
-  const busyStyles = busy ? "pointer-events-none opacity-75 [&>svg]:animate-spin" : "";
+  const busyStyles = busy ? "pointer-events-none opacity-80 cursor-wait" : "";
 
   const combinedClasses = `${baseStyles} ${sizeStyles} ${variantStyles} ${busyStyles} ${className}`.trim();
 
