@@ -27,7 +27,7 @@ flowchart TD
             NavClient["NavigateClient (State Orchestrator)"]
             ARView["ARViewport\n(A-Frame 1.3.0 + AR.js 3.4.8 + WebGL)"]
             MapHUD["MapPanel\n(Mapbox GL JS v3 Satellite Map)"]
-            DestBar["DestinationBar\n(Campus Destination Selector)"]
+            DestBar["DestinationBar\n(Destination Selector)"]
             Compass["CompassWidget\n(Hardware Orientation HUD)"]
             MFB["MultifunctionButton\n(4-Mode State Machine Controller)"]
         end
@@ -58,9 +58,9 @@ Next.js 16 App Router enforces clear separation between server-executed renderin
 
 | Route | Rendering Mode | Component Type | Responsibility |
 |---|---|---|---|
-| `/` | Static (SSG) | Server Component | High-performance hero, feature grids, campus summary, and footer. Client-only interactivity (canvas, menu) isolated to micro-components. |
-| `/about` | Static (SSG) | Server Component | Structural specifications, architectural pillar cards, institutional history, and breadcrumb JSON-LD. |
-| `/contact` | Static (SSG) | Server Component | Institutional headquarters info, FAQ accordions, and breadcrumb JSON-LD. Isolated client boundary for `ContactForm.js`. |
+| `/` | Static (SSG) | Server Component | High-performance hero, feature grids, destinations preview, vision, and footer. Client-only interactivity (canvas, menu) isolated to micro-components. |
+| `/about` | Static (SSG) | Server Component | Structural specifications, architectural pillar cards, spatial computing philosophy, and breadcrumb JSON-LD. |
+| `/contact` | Static (SSG) | Server Component | Platform accessibility info, FAQ accordions, and breadcrumb JSON-LD. Isolated client boundary for `ContactForm.js`. |
 | `/navigate` | Dynamic Client | Client Component (`NavigateClient`) | Full browser-only spatial computing environment accessing `navigator.geolocation`, `navigator.mediaDevices`, `window.DeviceOrientationEvent`, and WebGL canvases. |
 | `/robots.txt` | Metadata Route | Server Route Handler (`robots.js`) | Search crawler rules and dynamic sitemap indexing reference. |
 | `/sitemap.xml` | Metadata Route | Server Route Handler (`sitemap.js`) | Dynamic XML sitemap indexing all application routes with change frequencies. |
@@ -126,7 +126,7 @@ stateDiagram-v2
 - Applies hardware-accelerated CSS transforms (`transform: rotate(-heading deg)`) with a linear transition to eliminate jitter.
 
 ### 5. `DestinationBar.js` (Destination Selector)
-- Provides an accessible dropdown containing the 15 pre-mapped KITS Ramtek destinations.
+- Provides an accessible dropdown containing the 15 pre-mapped destination waypoints.
 - Dispatches destination updates to `NavigateClient`, enabling the "Navigate" button.
 - Includes a dedicated "Return to Home" button for clean client-side routing back to `/`.
 
@@ -185,3 +185,17 @@ sequenceDiagram
 3. **Multi-Touch Map Isolation**:
    - *Decision*: Map container styles utilize `touch-action: none` with explicit pointer-event controls.
    - *Rationale*: Prevents whole-page pull-to-refresh gestures from hijacking the 2D satellite map during two-finger rotation or pinch-to-zoom.
+
+---
+
+## 6. Evolution Roadmap: Global Search Architecture
+
+EnRouteAR is architected for universal, location-independent wayfinding across any physical venue or city worldwide:
+
+1. **Current Sample Test Suite**:
+   - `lib/places.js` provides a pre-calibrated sample destination dataset used to verify GPS tracking, sensor alignment, and walking route accuracy during development.
+2. **Upcoming Search Integration**:
+   - The static dropdown in `DestinationBar.js` will transition to an interactive geocoding search input powered by the **Mapbox Geocoding & Search API**.
+   - Users can query addresses, points of interest, or custom coordinates anywhere globally.
+3. **Seamless Pipeline Hand-off**:
+   - Because the routing (`getWalkingDirections`), sub-meter Haversine interpolation, 3D waypoint rendering (`ARViewport.js`), and 2D satellite HUD (`MapPanel.js`) operate purely on standard `[lng, lat]` tuples, the navigation subsystem is already location-agnostic. Switching to dynamic geocoded targets requires zero modifications to the core AR rendering pipeline.

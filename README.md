@@ -1,8 +1,8 @@
 # EnRouteAR
 
-**Augmented Reality campus navigation for smartphones — powered by Next.js, Tailwind CSS, A-Frame, AR.js, and Mapbox.**
+**Augmented Reality navigation for smartphones — powered by Next.js, Tailwind CSS, A-Frame, AR.js, and Mapbox.**
 
-EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto your live camera feed, letting you navigate Kavikulguru Institute of Technology and Science (KITS), Ramtek without ever looking down at a traditional map.
+EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto your live camera feed, letting you navigate outdoor environments, complexes, and physical venues without ever looking down at a traditional map.
 
 🌐 **Live demo:** [enroutear.vercel.app](https://enroutear.vercel.app/)
 
@@ -17,7 +17,7 @@ EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto yo
 - [Getting Started](#getting-started)
   - [Vanilla Site (`vanilla/`)](#1-vanilla-site-vanilla---active-production-app)
   - [Next.js Application (`web/`)](#2-nextjs-application-web---in-development)
-- [Campus Locations](#campus-locations)
+- [Pre-mapped Destinations](#pre-mapped-destinations)
 - [How It Works](#how-it-works)
 - [Device Requirements](#device-requirements)
 - [Known Limitations](#known-limitations)
@@ -28,7 +28,7 @@ EnRouteAR overlays GPS-accurate 3D waypoints and walking routes directly onto yo
 
 ## Overview
 
-EnRouteAR is a mobile-first web application that fuses augmented reality with real-time GPS navigation. When a user selects a destination on campus, the app fetches a walking route from the Mapbox Directions API and visualises it in two ways simultaneously:
+EnRouteAR is a mobile-first web application that fuses augmented reality with real-time GPS navigation. When a user selects a destination, the app fetches a walking route from the Mapbox Directions API and visualises it in two ways simultaneously:
 
 - **AR view** — blue cylinder markers trace the walking path on the ground in 3D space, with a GLB pointer model at the destination, all anchored to real-world GPS coordinates via AR.js
 - **2D satellite map** — an embedded Mapbox satellite-streets panel shows the same route as a polyline overlay, with live position and bearing tracking
@@ -37,7 +37,7 @@ A device-orientation compass keeps both the AR scene and the map bearing locked 
 
 The repository contains two clean, decoupled implementations:
 1. **`vanilla/`** — Active production deployment: Self-contained, zero-dependency **HTML5 + Tailwind CSS v4 + Vanilla JS** application.
-2. **`web/`** — Under development: Future **Next.js 16 + React 19 + Tailwind CSS v4** progressive web application.
+2. **`web/`** — Modern progressive web application: **Next.js 16 + React 19 + Tailwind CSS v4** featuring responsive layout, dedicated architecture & contact hubs, and high-performance client boundaries.
 
 ---
 
@@ -51,9 +51,9 @@ The repository contains two clean, decoupled implementations:
 | **Compass-corrected bearing** | Device orientation sensor rotates the AR scene and map to match the user's heading |
 | **Satellite mini-map** | Mapbox satellite-streets panel with live position marker and route polyline |
 | **Multifunction button** | Context-aware button that cycles through: centre map → enable bearing → reset route |
-| **14 campus destinations** | Pre-mapped locations covering all departments, hostels, canteen, library, and gym |
+| **Pre-mapped destinations** | Verified coordinates covering facilities, centers, pavilions, and outdoor waypoints |
 | **Tailwind CSS v4 Styling** | High-performance CSS-first architecture with custom neon HUD aesthetic and glassmorphism |
-| **Responsive landing page** | Animated hero, scroll-reveal sections, mobile navigation, and a contact form |
+| **Responsive landing page** | Animated hero, feature grids, dedicated architecture & contact hubs, and mobile dock |
 
 ---
 
@@ -180,33 +180,36 @@ The `vanilla/` directory runs directly in the browser with zero build tools:
 
 ---
 
-## Campus Locations
+## Pre-mapped Destinations
 
-The following 14 locations are pre-mapped within KITS Ramtek campus (21.385°N, 79.306°E):
+EnRouteAR currently includes a pre-calibrated sample destination dataset for outdoor testing and route verification:
 
-| Location | Latitude | Longitude |
+| Destination | Latitude | Longitude |
 |---|---|---|
-| Administrative Department | 21.38541 | 79.30562 |
-| Architecture Department | 21.38529 | 79.30656 |
-| Canteen | 21.38641 | 79.30685 |
-| Civil Department | 21.38615 | 79.30640 |
-| Computer Tech. Department | 21.38590 | 79.30618 |
-| Electronics Department | 21.38590 | 79.30618 |
-| Gym / Stadium | 21.38646 | 79.30434 |
-| Information Tech. Department | 21.38590 | 79.30618 |
-| Jamuna Boys Hostel | 21.38681 | 79.30335 |
-| Kaveri Girls Hostel | 21.38440 | 79.30420 |
-| Library | 21.38584 | 79.30689 |
-| Mechanical Department | 21.38493 | 79.30606 |
-| Triveni Boys Hostel | 21.38836 | 79.30370 |
-| Work Shop | 21.38486 | 79.30620 |
+| Administration Center | 21.38541 | 79.30562 |
+| Design & Architecture Center | 21.38529 | 79.30656 |
+| Dining & Cafeteria | 21.38641 | 79.30685 |
+| East Facility | 21.38615 | 79.30640 |
+| Technology Center | 21.38590 | 79.30618 |
+| Innovation Lab | 21.38590 | 79.30618 |
+| Sports & Recreation Complex | 21.38646 | 79.30434 |
+| Information Center | 21.38590 | 79.30618 |
+| North Wing | 21.38681 | 79.30335 |
+| South Wing | 21.38440 | 79.30420 |
+| Central Library | 21.38584 | 79.30689 |
+| Engineering Center | 21.38493 | 79.30606 |
+| Northeast Annex | 21.38836 | 79.30370 |
+| Operations Workshop | 21.38486 | 79.30620 |
+| Field Location (20°18'32"N, 78°51'00"E) | 20.30903 | 78.85014 |
 
-### Adding a new location
+> **Note:** This pre-mapped dataset serves as a verified test suite for live GPS positioning and walking route calculation, prior to the integration of a search-based location discovery system in a future phase.
 
-In `vanilla/scripts/places.js` (or in the Next.js places configuration), append an entry to the `places` array:
+### Adding a new destination
+
+In `web/src/lib/places.js` (or `vanilla/scripts/places.js`), append an entry to the `places` array:
 
 ```js
-{ name: 'New Building', latitude: 21.38600, longitude: 79.30650 },
+{ name: 'New Facility', latitude: 21.38600, longitude: 79.30650 },
 ```
 
 ---
@@ -317,5 +320,5 @@ SOFTWARE.
 ---
 
 <p align="center">
-  Built for KITS Ramtek Campus &nbsp;·&nbsp; Powered by Next.js, Tailwind CSS, A-Frame, AR.js &amp; Mapbox
+  EnRouteAR &nbsp;·&nbsp; Augmented Reality Navigation for the Real World &nbsp;·&nbsp; Powered by Next.js, Tailwind CSS, A-Frame, AR.js &amp; Mapbox
 </p>
