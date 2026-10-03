@@ -119,6 +119,71 @@ a, button {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Glass Surfaces & Cursor Spotlight Utilities
+   ───────────────────────────────────────────────────────────── */
+
+@utility glass-spotlight {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 24px 48px -28px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.25s, transform 0.35s var(--ease-smooth);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0), rgba(76, 141, 255, 0.22), transparent 65%);
+    transition: opacity 0.3s;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &:hover {
+    border-color: var(--color-line-bright);
+    transform: translateY(-3px);
+  }
+}
+
+@utility glass-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 24px 48px -28px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.25s;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0), rgba(76, 141, 255, 0.22), transparent 65%);
+    transition: opacity 0.3s;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .glass-spotlight:hover {
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

@@ -13,7 +13,7 @@ export default function SpotlightTracker() {
 
     const attachListeners = () => {
       const elements = document.querySelectorAll(
-        "[data-spotlight], .glass-spotlight, .feats li, .panel, .vision article, form"
+        "[data-spotlight], .glass-spotlight, .glass-panel, form"
       );
       elements.forEach((el) => {
         el.removeEventListener("pointermove", handlePointerMove);

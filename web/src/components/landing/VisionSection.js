@@ -31,7 +31,8 @@ export default function VisionSection() {
           {visions.map((item, idx) => (
             <article
               key={idx}
-              className="group relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-3xl p-10 max-md:p-7 transition-[border-color,transform] duration-250 ease-smooth hover:border-line-bright hover:-translate-y-[3px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100 after:content-[''] after:absolute after:left-0 after:top-0 after:h-[3px] after:w-14 after:bg-gradient-to-r after:from-signal after:to-signal/0 after:transition-[width] after:duration-500 after:ease-smooth hover:after:w-full"
+              data-spotlight="true"
+              className="glass-spotlight rounded-3xl p-10 max-md:p-7 after:content-[''] after:absolute after:left-0 after:top-0 after:h-[3px] after:w-14 after:bg-gradient-to-r after:from-signal after:to-signal/0 after:transition-[width] after:duration-500 after:ease-smooth hover:after:w-full"
             >
               <h3 className="font-display text-[1.35rem] font-bold mb-3 text-t1 tracking-[-0.02em]">
                 {item.title}

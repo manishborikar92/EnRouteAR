@@ -13,7 +13,7 @@ export default function ContactError({ error, reset }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg text-t1 px-6 relative">
       <Atmosphere />
-      <div className="relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] max-w-[480px] w-full p-8 rounded-2xl text-center relative z-10">
+      <div className="glass-panel max-w-[480px] w-full p-8 rounded-2xl text-center relative z-10">
         <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[rgba(255,197,61,0.12)] border border-[rgba(255,197,61,0.35)] flex items-center justify-center text-signal shadow-[0_0_24px_rgba(255,197,61,0.25)]">
           <AlertTriangle className="w-7 h-7 shrink-0" />
         </div>

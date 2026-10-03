@@ -49,8 +49,7 @@ export default function ContactPage() {
     { name: "Contact", path: "/contact" },
   ];
 
-  const glassCardClass =
-    "group relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] p-7 transition-[border-color,transform] duration-250 ease-smooth hover:border-line-bright hover:-translate-y-[3px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100";
+  const glassCardClass = "glass-spotlight rounded-[26px] p-7";
 
   return (
     <>
@@ -100,7 +99,7 @@ export default function ContactPage() {
             {/* Left Column: Details & FAQs */}
             <div className="space-y-6">
               {/* Campus Info Card */}
-              <div className={glassCardClass}>
+              <div className={glassCardClass} data-spotlight="true">
                 <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-4 font-bold">
                   <MapPin className="w-4 h-4 text-signal" />
                   Institutional Headquarters
@@ -118,7 +117,7 @@ export default function ContactPage() {
               </div>
 
               {/* Response Time & Portal Card */}
-              <div className={glassCardClass}>
+              <div className={glassCardClass} data-spotlight="true">
                 <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-3 font-bold">
                   <Clock className="w-4 h-4 text-signal" />
                   Response Dispatch
@@ -143,7 +142,7 @@ export default function ContactPage() {
               </div>
 
               {/* Quick Technical FAQ */}
-              <div className={glassCardClass}>
+              <div className={glassCardClass} data-spotlight="true">
                 <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-5 font-bold">
                   <HelpCircle className="w-4 h-4 text-signal" />
                   Frequently Asked Questions

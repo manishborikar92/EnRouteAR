@@ -66,7 +66,7 @@ export default function CampusSection() {
             <span className="sr-only">(opens in a new tab)</span>
           </Button>
         </div>
-        <div className="relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100">
+        <div data-spotlight="true" className="glass-panel rounded-[26px]">
           <h3 className="flex items-center gap-2.5 px-6 py-4.5 font-body font-bold text-base tracking-normal border-b border-line bg-white/[0.04] text-t1 m-0">
             <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_10px_var(--color-green)] animate-[ping-dot_2.4s_infinite]" />
             KITS Campus, Ramtek

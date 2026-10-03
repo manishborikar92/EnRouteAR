@@ -95,8 +95,7 @@ export default function AboutPage() {
     { name: "About", path: "/about" },
   ];
 
-  const glassCardClass =
-    "group relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] transition-[border-color,transform] duration-250 ease-smooth hover:border-line-bright hover:-translate-y-[3px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100";
+  const glassCardClass = "glass-spotlight rounded-[26px]";
 
   return (
     <>
@@ -158,6 +157,7 @@ export default function AboutPage() {
                 return (
                   <div
                     key={tech.title}
+                    data-spotlight="true"
                     className={`${glassCardClass} p-8 flex flex-col justify-between`}
                   >
                     <div>
@@ -196,6 +196,7 @@ export default function AboutPage() {
               {CAPABILITIES.map((cap) => (
                 <div
                   key={cap.number}
+                  data-spotlight="true"
                   className={`${glassCardClass} p-7 flex items-start gap-5`}
                 >
                   <span className="font-display text-3xl font-extrabold text-route/40 shrink-0">
@@ -215,7 +216,7 @@ export default function AboutPage() {
           </section>
 
           {/* Institutional Campus Focus */}
-          <section className="mb-24 relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] p-10 max-md:p-6 before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100">
+          <section data-spotlight="true" className="mb-24 glass-panel rounded-[26px] p-10 max-md:p-6">
             <div className="flex items-center gap-2 text-signal font-display text-[0.8rem] tracking-[0.14em] uppercase font-bold mb-3">
               <ShieldCheck className="w-5 h-5 text-signal" />
               Campus Context

@@ -62,7 +62,8 @@ export default function AboutSection() {
             return (
               <li
                 key={idx}
-                className="group relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[22px] p-7 transition-[border-color,transform] duration-250 ease-smooth hover:border-line-bright hover:-translate-y-[3px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100 sm:[&:nth-child(1)]:col-span-2 sm:[&:nth-child(6)]:col-span-2 min-[60em]:[&:nth-child(1)]:col-span-2 min-[60em]:[&:nth-child(4)]:col-span-2 min-[60em]:[&:nth-child(5)]:col-span-2 min-[60em]:[&:nth-child(6)]:col-auto"
+                data-spotlight="true"
+                className="glass-spotlight rounded-[22px] p-7 sm:[&:nth-child(1)]:col-span-2 sm:[&:nth-child(6)]:col-span-2 min-[60em]:[&:nth-child(1)]:col-span-2 min-[60em]:[&:nth-child(4)]:col-span-2 min-[60em]:[&:nth-child(5)]:col-span-2 min-[60em]:[&:nth-child(6)]:col-auto"
               >
                 <div className="w-12 h-12 p-3 mb-5 rounded-[14px] text-[#A9CBFF] bg-gradient-to-br from-[rgba(76,141,255,0.32)] to-[rgba(76,141,255,0.08)] border border-[rgba(120,170,255,0.38)] shadow-[0_0_28px_-4px_rgba(76,141,255,0.55)] flex items-center justify-center">
                   <Icon className="w-6 h-6 shrink-0" />

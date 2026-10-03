@@ -62,7 +62,8 @@ export default function ContactForm() {
   return (
     <form
       id="contact-form"
-      className="relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] grid gap-5 p-[clamp(22px,4vw,36px)] rounded-[26px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100"
+      data-spotlight="true"
+      className="glass-panel grid gap-5 p-[clamp(22px,4vw,36px)] rounded-[26px]"
       onSubmit={handleSubmit}
     >
       <div className="space-y-2">
