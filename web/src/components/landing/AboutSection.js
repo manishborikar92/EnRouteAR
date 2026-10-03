@@ -36,8 +36,8 @@ export default function AboutSection() {
     },
     {
       icon: FlagIcon,
-      title: "14 campus destinations",
-      desc: "Pre-mapped locations including departments, hostels, canteen, library, gym and more within KITS campus.",
+      title: "Pre-mapped destinations",
+      desc: "Easily navigate to key landmarks, facilities, and points of interest with pre-calibrated GPS coordinates.",
     },
   ];
 

@@ -33,7 +33,7 @@ export default function DestinationBar({
         className="flex-1 min-w-0 pl-3.5 pr-8 py-2.5 bg-[#030a14]/65 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_width=%2216%22_height=%2216%22_viewBox=%220_0_24_24%22_fill=%22none%22_stroke=%22%238EA0B8%22_stroke-width=%222%22_stroke-linecap=%22round%22_stroke-linejoin=%22round%22%3E%3Cpath_d=%22m6_9_6_6_6-6%22/%3E%3C/svg%3E')] bg-[right_10px_center] bg-no-repeat border border-line-bright/60 rounded-xl text-t1 font-body text-base sm:text-[0.92rem] font-medium appearance-none cursor-pointer outline-none overflow-hidden text-ellipsis whitespace-nowrap transition-all focus:border-route focus:ring-4 focus:ring-route/25 z-5"
       >
         <option value="" disabled>
-          Select Campus Destination
+          Select destination
         </option>
         {places.map((place) => (
           <option key={place.name} value={place.name}>

@@ -5,7 +5,7 @@ import HeroSection from "@/components/landing/HeroSection";
 import TechTicker from "@/components/landing/TechTicker";
 import HowSection from "@/components/landing/HowSection";
 import AboutSection from "@/components/landing/AboutSection";
-import CampusSection from "@/components/landing/CampusSection";
+import DestinationsSection from "@/components/landing/DestinationsSection";
 import VisionSection from "@/components/landing/VisionSection";
 import CtaSection from "@/components/landing/CtaSection";
 import ContactSection from "@/components/landing/ContactSection";
@@ -36,7 +36,7 @@ export default function HomePage() {
         <TechTicker />
         <HowSection />
         <AboutSection />
-        <CampusSection />
+        <DestinationsSection />
         <VisionSection />
         <CtaSection />
         <ContactSection />

@@ -6,7 +6,7 @@ import Button from "@/components/common/Button";
 
 export const metadata = {
   title: "404 - Page Not Found",
-  description: "The requested route does not exist within the campus spatial index.",
+  description: "The requested route does not exist within the spatial index.",
 };
 
 export default function NotFound() {
@@ -31,13 +31,13 @@ export default function NotFound() {
 
           <p className="text-t2 text-base md:text-lg mb-8 leading-relaxed max-w-[500px] mx-auto [text-wrap:pretty]">
             The spatial coordinates or page you are attempting to access do not exist
-            within the KITS Ramtek campus index.
+            within the spatial index.
           </p>
 
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Button href="/" className="w-full sm:w-auto">
               <Home className="w-4 h-4 shrink-0" />
-              <span>Return to Campus Home</span>
+              <span>Return to Home</span>
             </Button>
             <Button variant="signal" href="/navigate" className="w-full sm:w-auto">
               <Compass className="w-4 h-4 shrink-0" />

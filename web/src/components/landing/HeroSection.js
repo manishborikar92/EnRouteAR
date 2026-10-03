@@ -86,8 +86,8 @@ export default function HeroSection() {
         </h1>
         <p className="text-t2 text-[1.08rem] max-w-[56ch] mb-7 [text-wrap:pretty] animate-[up_0.8s_0.16s_cubic-bezier(0.2,0.7,0.2,1)_both]">
           Overlay digital waypoints, 3D markers, and turn-by-turn directions
-          directly onto your camera feed. Built for KITS Ramtek campus — powered
-          by A-Frame, AR.js &amp; Mapbox.
+          directly onto your camera feed. Powered by browser-native WebXR,
+          A-Frame, AR.js &amp; Mapbox.
         </p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 animate-[up_0.8s_0.24s_cubic-bezier(0.2,0.7,0.2,1)_both]">
           <Button
@@ -111,7 +111,7 @@ export default function HeroSection() {
             <dt className="font-display font-extrabold text-[clamp(1.5rem,5vw,2rem)] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
               14+
             </dt>
-            <dd className="text-xs sm:text-[0.88rem] text-t3 mt-1.5 leading-tight">Campus locations</dd>
+            <dd className="text-xs sm:text-[0.88rem] text-t3 mt-1.5 leading-tight">Curated destinations</dd>
           </div>
           <div className="flex flex-col">
             <dt className="font-display font-extrabold text-[clamp(1.5rem,5vw,2rem)] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
@@ -141,7 +141,7 @@ export default function HeroSection() {
             className="w-full h-full"
             viewBox="0 0 360 480"
             role="img"
-            aria-label="Preview of the AR view: a blue route leads ahead to the Library, 42 metres away, and the CS Department, 87 metres away."
+            aria-label="Preview of the AR view: a blue route leads ahead to the Main Plaza, 42 metres away, and the North Wing, 87 metres away."
             preserveAspectRatio="xMidYMid slice"
           >
             <defs>
@@ -158,14 +158,14 @@ export default function HeroSection() {
             {/* Sky Background */}
             <rect width="360" height="200" fill="url(#sky)" />
 
-            {/* Distant Campus Building Silhouettes */}
+            {/* Distant Building Silhouettes */}
             <path
               d="M0 200v-44h44v-26h50v32h36v-16h40v54zM212 200v-52h38v-28h50v34h30v-16h30v62z"
               fill="#2A4666"
               opacity="0.92"
             />
 
-            {/* Campus Lawn Ground */}
+            {/* Ground Surface */}
             <rect y="198" width="360" height="282" fill="url(#grd)" />
 
             {/* Horizon perspective guide rays */}
@@ -188,14 +188,14 @@ export default function HeroSection() {
               strokeLinecap="round"
             />
 
-            {/* 3D AR Waypoint: Library 42m */}
+            {/* 3D AR Waypoint: Main Plaza 42m */}
             <g transform="translate(50 108)">
               <g className="animate-[pop_0.6s_1.2s_cubic-bezier(0.2,0.7,0.2,1)_both]">
                 <path d="M46 44v34" stroke="#fff" strokeWidth="2" />
                 <circle cx="46" cy="80" r="4" fill="#fff" />
                 <rect width="92" height="44" rx="11" fill="#fff" />
                 <text x="12" y="19" fontSize="13" fontWeight="600" fill="#0F1C2E">
-                  Library
+                  Main Plaza
                 </text>
                 <text x="12" y="35" fontSize="12" fontWeight="600" fill="#1456F0">
                   42 m
@@ -203,14 +203,14 @@ export default function HeroSection() {
               </g>
             </g>
 
-            {/* 3D AR Waypoint: CS Dept. 87m */}
+            {/* 3D AR Waypoint: North Wing 87m */}
             <g transform="translate(224 134)">
               <g className="animate-[pop_0.6s_1.45s_cubic-bezier(0.2,0.7,0.2,1)_both]">
                 <path d="M44 44v28" stroke="#fff" strokeWidth="2" />
                 <circle cx="44" cy="74" r="4" fill="#fff" />
                 <rect width="92" height="44" rx="11" fill="#fff" />
                 <text x="12" y="19" fontSize="13" fontWeight="600" fill="#0F1C2E">
-                  CS Dept.
+                  North Wing
                 </text>
                 <text x="12" y="35" fontSize="12" fontWeight="600" fill="#1456F0">
                   87 m

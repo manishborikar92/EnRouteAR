@@ -19,7 +19,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 export const metadata = {
   title: "About",
   description:
-    "Discover the architecture, WebXR spatial computing, and campus navigation technology powering EnRouteAR at KITS Ramtek.",
+    "Discover the architecture, WebXR spatial computing, and real-time navigation technology powering EnRouteAR.",
   alternates: {
     canonical: "/about",
   },
@@ -44,7 +44,7 @@ const TECH_PILLARS = [
     title: "AR.js Location-Based Framework",
     badge: "GEOSPATIAL ANCHORING",
     description:
-      "Calculates real-world distances and bearings using high-precision Spherical Mercator (EPSG:3857) projections, locking 3D cylinders and GLB destination models to exact physical coordinates on campus.",
+      "Calculates real-world distances and bearings using high-precision Spherical Mercator (EPSG:3857) projections, locking 3D cylinders and GLB destination models to exact physical coordinates in real-world space.",
   },
   {
     icon: Layers,
@@ -67,7 +67,7 @@ const CAPABILITIES = [
     number: "01",
     title: "Real-Time Camera Overlay",
     summary:
-      "Digital navigation beacons appear seamlessly floating in physical space, guiding visitors and students across paths, quadrangles, and building entrances.",
+      "Digital navigation beacons appear seamlessly floating in physical space, guiding visitors and pedestrians across walkways, open spaces, and building entrances.",
   },
   {
     number: "02",
@@ -131,13 +131,13 @@ export default function AboutPage() {
               System Specification &amp; Architecture
             </p>
             <h1 className="font-display text-[clamp(2.3rem,5.5vw,4.2rem)] font-extrabold leading-[1.05] tracking-[-0.035em] mb-5 bg-gradient-to-b from-white via-white via-35% to-[#9DBBE8] bg-clip-text text-transparent [text-wrap:balance]">
-              Pioneering spatial computing for campus navigation
+              Pioneering spatial computing for real-world navigation
             </h1>
             <p className="text-t2 text-[1.08rem] max-w-[56ch] mt-6 [text-wrap:pretty]">
-              EnRouteAR is an open augmented reality wayfinding platform developed
-              for Kavikulguru Institute of Technology and Science (KITS), Ramtek.
-              By fusing browser-based spatial computing with live satellite mapping,
-              it bridges physical architecture with digital waypoint guidance.
+              EnRouteAR is an open augmented reality wayfinding platform designed
+              to transform how people explore physical environments. By fusing browser-based
+              spatial computing with live satellite mapping, it bridges physical
+              architecture with digital waypoint guidance.
             </p>
           </div>
 
@@ -215,37 +215,31 @@ export default function AboutPage() {
             </div>
           </section>
 
-          {/* Institutional Campus Focus */}
+          {/* Spatial Navigation Philosophy */}
           <section data-spotlight="true" className="mb-24 glass-panel rounded-[26px] p-10 max-md:p-6">
             <div className="flex items-center gap-2 text-signal font-display text-[0.8rem] tracking-[0.14em] uppercase font-bold mb-3">
               <ShieldCheck className="w-5 h-5 text-signal" />
-              Campus Context
+              Navigation Philosophy
             </div>
             <h2 className="font-display text-2xl font-bold mb-4 text-t1">
-              Kavikulguru Institute of Technology &amp; Science (KITS), Ramtek
+              Frictionless Wayfinding Without Proprietary Hardware
             </h2>
             <p className="text-t2 text-[0.96rem] leading-[1.8] mb-6 max-w-[800px]">
-              Founded in 1985 and permanently affiliated with RTM Nagpur University,
-              KITS Ramtek encompasses over 48.96 acres of academic complexes, dedicated
-              engineering workshops, administrative halls, hostel zones, and recreational
-              facilities. EnRouteAR was designed specifically to provide frictionless
-              navigation across this expansive campus without requiring expensive physical
-              signage or proprietary hardware.
+              Navigating complex facilities, unfamiliar venues, and sprawling outdoor
+              environments shouldn&apos;t require downloading heavy proprietary applications
+              or relying on confusing static signage. EnRouteAR brings intuitive,
+              head-up navigation directly to standard mobile browsers using open web
+              standards, instant GPS positioning, and real-time spatial overlays.
             </p>
             <div className="flex items-center gap-6 flex-wrap text-t3 text-sm">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-route" />
-                <span>Ramtek, Nagpur, Maharashtra, India</span>
+                <span>Universal WebXR &amp; GPS Compatibility</span>
               </div>
-              <a
-                href="https://www.kits.edu"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-route hover:text-white transition-colors no-underline font-semibold"
-              >
-                <span>Visit kits.edu</span>
-                <ExternalLink className="w-4 h-4" />
-              </a>
+              <div className="flex items-center gap-2">
+                <Compass className="w-4 h-4 text-route" />
+                <span>Zero-Install Instant Wayfinding</span>
+              </div>
             </div>
           </section>
 

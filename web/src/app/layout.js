@@ -1,6 +1,6 @@
 import { Bricolage_Grotesque, Public_Sans } from "next/font/google";
 import { Toaster } from "sonner";
-import { WebAppJsonLd, CollegeJsonLd } from "@/components/seo/JsonLd";
+import { WebAppJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -34,13 +34,13 @@ export const metadata = {
     template: "%s | EnRouteAR",
   },
   description:
-    "Web-based augmented reality campus navigation for KITS Ramtek. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
+    "Web-based augmented reality navigation platform. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
   applicationName: "EnRouteAR",
   keywords: [
     "EnRouteAR",
     "augmented reality navigation",
-    "campus AR",
-    "KITS Ramtek",
+    "AR navigation",
+    "wayfinding",
     "A-Frame",
     "AR.js",
     "Mapbox",
@@ -52,7 +52,7 @@ export const metadata = {
   openGraph: {
     title: "EnRouteAR — Augmented Reality Navigation",
     description:
-      "Web-based augmented reality campus navigation for KITS Ramtek. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
+      "Web-based augmented reality navigation platform. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
     url: APP_URL,
     siteName: "EnRouteAR",
     locale: "en_US",
@@ -83,7 +83,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-screen flex flex-col bg-bg text-t1 font-body">
         <WebAppJsonLd />
-        <CollegeJsonLd />
+        <OrganizationJsonLd />
         {children}
         <Toaster
           richColors

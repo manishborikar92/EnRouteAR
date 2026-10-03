@@ -16,14 +16,14 @@ import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 export const metadata = {
   title: "Contact Us",
   description:
-    "Get in touch with the EnRouteAR team for technical inquiries, campus deployment discussions, or feedback on AR navigation.",
+    "Get in touch with the EnRouteAR team for technical inquiries, deployment discussions, or feedback on AR navigation.",
   alternates: {
     canonical: "/contact",
   },
   openGraph: {
     title: "Contact Us | EnRouteAR",
     description:
-      "Reach out to the developers and team behind EnRouteAR campus navigation.",
+      "Reach out to the developers and team behind EnRouteAR augmented reality navigation.",
     url: "/contact",
   },
 };
@@ -88,9 +88,8 @@ export default function ContactPage() {
               Get in touch
             </h1>
             <p className="text-t2 text-[1.08rem] max-w-[56ch] mt-6 [text-wrap:pretty]">
-              Have inquiries regarding the AR navigation platform, campus integration,
-              collaborations, or technical feedback? Reach out using the form or institutional
-              channels below.
+              Have inquiries regarding the AR navigation platform, deployment opportunities,
+              collaborations, or technical feedback? Reach out using the form or channels below.
             </p>
           </div>
 
@@ -98,21 +97,22 @@ export default function ContactPage() {
           <div className="grid grid-cols-[1fr_1.3fr] max-lg:grid-cols-1 gap-12 items-start mb-20">
             {/* Left Column: Details & FAQs */}
             <div className="space-y-6">
-              {/* Campus Info Card */}
+              {/* Platform Info Card */}
               <div className={glassCardClass} data-spotlight="true">
                 <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-4 font-bold">
                   <MapPin className="w-4 h-4 text-signal" />
-                  Institutional Headquarters
+                  Platform Accessibility
                 </div>
                 <h3 className="font-display text-xl font-bold text-t1 mb-2">
-                  Kavikulguru Institute of Technology &amp; Science
+                  Worldwide Spatial Navigation
                 </h3>
                 <p className="text-[0.92rem] text-t2 leading-[1.65] mb-4">
-                  Mouda Road, Ramtek, Dist. Nagpur, Maharashtra, India — 441106
+                  EnRouteAR operates across modern mobile browsers equipped with camera,
+                  GPS, and orientation sensors. Accessible anywhere globally without app store dependencies.
                 </p>
                 <div className="flex items-center gap-3 text-[0.84rem] text-t3 font-mono">
                   <Compass className="w-4 h-4 text-route" />
-                  <span>21.385°N, 79.306°E</span>
+                  <span>Open Web Standards // WebGL &amp; WebXR</span>
                 </div>
               </div>
 
@@ -123,21 +123,12 @@ export default function ContactPage() {
                   Response Dispatch
                 </div>
                 <p className="text-[0.92rem] text-t2 leading-[1.65] mb-4">
-                  Submissions via this form are dispatched to the project maintainers.
-                  Official college administration inquiries should be directed through
-                  the kits.edu portal.
+                  Submissions via this form are dispatched directly to the development team.
+                  We actively review technical feedback, deployment inquiries, and collaboration requests.
                 </p>
                 <div className="pt-3 border-t border-line flex items-center justify-between text-sm">
-                  <span className="text-t3">Official Portal:</span>
-                  <a
-                    href="https://www.kits.edu"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 min-h-[36px] py-1 text-route hover:text-white transition-colors no-underline font-semibold"
-                  >
-                    <span>kits.edu</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <span className="text-t3">Communication Channel:</span>
+                  <span className="text-route font-semibold">Direct Developer Dispatch</span>
                 </div>
               </div>
 

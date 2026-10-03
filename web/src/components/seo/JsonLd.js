@@ -20,7 +20,7 @@ export function WebAppJsonLd() {
     operatingSystem: "All (Modern WebXR/Camera/GPS-capable browser)",
     url: baseUrl,
     description:
-      "Web-based augmented reality campus navigation for KITS Ramtek. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
+      "Web-based augmented reality navigation platform. Overlay digital waypoints, 3D markers, and real-time directions onto your live camera feed.",
     author: {
       "@type": "Person",
       name: "Manish Borikar",
@@ -43,26 +43,16 @@ export function WebAppJsonLd() {
   return <JsonLd schema={schema} />;
 }
 
-export function CollegeJsonLd() {
+export function OrganizationJsonLd() {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://enroutear.vercel.app";
+
   const schema = {
     "@context": "https://schema.org",
-    "@type": "CollegeOrUniversity",
-    name: "Kavikulguru Institute of Technology and Science (KITS)",
-    alternateName: "KITS Ramtek",
-    url: "https://www.kits.edu",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Mouda Road, Ramtek",
-      addressLocality: "Ramtek",
-      addressRegion: "Maharashtra",
-      postalCode: "441106",
-      addressCountry: "IN",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 21.38541,
-      longitude: 79.30562,
-    },
+    "@type": "Organization",
+    name: "EnRouteAR",
+    url: baseUrl,
+    logo: `${baseUrl}/logo-transparent-png.png`,
+    description: "Augmented Reality Navigation Platform",
   };
 
   return <JsonLd schema={schema} />;

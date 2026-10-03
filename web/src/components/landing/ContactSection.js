@@ -23,11 +23,11 @@ export default function ContactSection() {
           <ul className="grid gap-3.5 mt-7 list-none p-0">
             <li className="flex gap-3 items-center text-t2 text-base">
               <PinIcon className="w-5 h-5 shrink-0 text-route" />
-              <span>KITS Ramtek, Nagpur, Maharashtra</span>
+              <span>Available worldwide on mobile WebXR</span>
             </li>
             <li className="flex gap-3 items-center text-t2 text-base">
               <MailIcon className="w-5 h-5 shrink-0 text-route" />
-              <span>via kits.edu contact portal</span>
+              <span>Direct project support &amp; inquiries</span>
             </li>
           </ul>
         </div>

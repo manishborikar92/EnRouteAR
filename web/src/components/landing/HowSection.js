@@ -6,7 +6,7 @@ export default function HowSection() {
     },
     {
       title: "Pick a destination",
-      desc: "Choose from 14 pre-mapped places: departments, hostels, canteen, library, gym and more.",
+      desc: "Choose from available destinations or pre-mapped waypoints to plot your route.",
     },
     {
       title: "Walk",

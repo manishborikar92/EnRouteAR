@@ -25,7 +25,7 @@ export default function Header() {
 
   // Section observer for highlighting active nav link
   useEffect(() => {
-    const sectionIds = ["how", "about", "college", "vision", "contact"];
+    const sectionIds = ["how", "about", "destinations", "vision", "contact"];
     const sections = sectionIds
       .map((id) => document.getElementById(id))
       .filter(Boolean);
@@ -157,11 +157,11 @@ export default function Header() {
               About
             </Link>
             <Link
-              href="/#college"
-              className={navLinkClass(activeSection === "college")}
-              aria-current={activeSection === "college" ? "true" : undefined}
+              href="/#destinations"
+              className={navLinkClass(activeSection === "destinations")}
+              aria-current={activeSection === "destinations" ? "true" : undefined}
             >
-              Campus
+              Destinations
             </Link>
             <Link
               href="/#vision"
@@ -225,8 +225,8 @@ export default function Header() {
         <Link href="/#about" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           About
         </Link>
-        <Link href="/#college" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
-          Campus
+        <Link href="/#destinations" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
+          Destinations
         </Link>
         <Link href="/#vision" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           Vision

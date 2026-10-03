@@ -6,7 +6,7 @@ export default function VisionSection() {
     },
     {
       title: "Universal accessibility",
-      desc: "Whether exploring a bustling city or navigating a sprawling campus, EnRouteAR makes every journey unforgettable — for users of all backgrounds and ages.",
+      desc: "Whether exploring a bustling city center or navigating expansive facilities, EnRouteAR makes every journey intuitive — for users of all backgrounds and ages.",
     },
     {
       title: "Future-forward design",

@@ -20,7 +20,7 @@ export default function Footer() {
             </span>
           </Link>
           <p className="text-t3 text-[0.9rem] max-w-[34ch] mt-2.5">
-            Augmented Reality Navigation for KITS Ramtek Campus.
+            Augmented Reality Navigation for the Real World.
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-5 gap-y-1 content-start" aria-label="Footer">
@@ -30,8 +30,8 @@ export default function Footer() {
           <Link href="/#about" className={footerLinkClass}>
             About
           </Link>
-          <Link href="/#college" className={footerLinkClass}>
-            Campus
+          <Link href="/#destinations" className={footerLinkClass}>
+            Destinations
           </Link>
           <Link href="/#vision" className={footerLinkClass}>
             Vision
@@ -39,15 +39,6 @@ export default function Footer() {
           <Link href="/#contact" className={footerLinkClass}>
             Contact
           </Link>
-          <a
-            href="https://www.kits.edu/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={footerLinkClass}
-          >
-            kits.edu
-            <span className="sr-only"> (opens in a new tab)</span>
-          </a>
         </nav>
       </div>
       <p className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-3rem)] mx-auto mt-8 pt-5 border-t border-line text-t3 text-[0.84rem]">
