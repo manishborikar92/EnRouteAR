@@ -99,7 +99,7 @@ export default function HeroSection() {
             <span>Launch navigation</span>
           </Button>
           <a
-            href="#about"
+            href="#features"
             className="group inline-flex items-center gap-2 min-h-12 text-t1 font-semibold underline decoration-line-bright underline-offset-6 decoration-2 hover:text-lk hover:decoration-lk transition-colors"
           >
             <span>Learn more</span>

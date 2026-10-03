@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { BrandMark, MenuIcon, CloseIcon } from "@/components/common/Icons";
 import Button from "@/components/common/Button";
 
@@ -12,6 +12,7 @@ export default function Header() {
   const [activeSection, setActiveSection] = useState("");
   const [isLaunching, setIsLaunching] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   // Scroll listener for sticky header background
   useEffect(() => {
@@ -23,9 +24,11 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Section observer for highlighting active nav link
+  // Section observer for highlighting active nav link on home page
   useEffect(() => {
-    const sectionIds = ["how", "about", "destinations", "vision", "contact"];
+    if (pathname !== "/") return;
+
+    const sectionIds = ["how", "features", "destinations", "vision"];
     const sections = sectionIds
       .map((id) => document.getElementById(id))
       .filter(Boolean);
@@ -45,7 +48,7 @@ export default function Header() {
 
     sections.forEach((sec) => observer.observe(sec));
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   // Body scroll lock on mobile menu toggle
   useEffect(() => {
@@ -144,36 +147,36 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-1.5" aria-label="Primary">
             <Link
               href="/#how"
-              className={navLinkClass(activeSection === "how")}
-              aria-current={activeSection === "how" ? "true" : undefined}
+              className={navLinkClass(pathname === "/" && activeSection === "how")}
+              aria-current={pathname === "/" && activeSection === "how" ? "true" : undefined}
             >
               How it works
             </Link>
             <Link
-              href="/#about"
-              className={navLinkClass(activeSection === "about")}
-              aria-current={activeSection === "about" ? "true" : undefined}
+              href="/#features"
+              className={navLinkClass(pathname === "/" && activeSection === "features")}
+              aria-current={pathname === "/" && activeSection === "features" ? "true" : undefined}
             >
-              About
+              Features
             </Link>
             <Link
               href="/#destinations"
-              className={navLinkClass(activeSection === "destinations")}
-              aria-current={activeSection === "destinations" ? "true" : undefined}
+              className={navLinkClass(pathname === "/" && activeSection === "destinations")}
+              aria-current={pathname === "/" && activeSection === "destinations" ? "true" : undefined}
             >
               Destinations
             </Link>
             <Link
-              href="/#vision"
-              className={navLinkClass(activeSection === "vision")}
-              aria-current={activeSection === "vision" ? "true" : undefined}
+              href="/about"
+              className={navLinkClass(pathname === "/about")}
+              aria-current={pathname === "/about" ? "page" : undefined}
             >
-              Vision
+              About
             </Link>
             <Link
-              href="/#contact"
-              className={navLinkClass(activeSection === "contact")}
-              aria-current={activeSection === "contact" ? "true" : undefined}
+              href="/contact"
+              className={navLinkClass(pathname === "/contact")}
+              aria-current={pathname === "/contact" ? "page" : undefined}
             >
               Contact
             </Link>
@@ -222,16 +225,16 @@ export default function Header() {
         <Link href="/#how" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           How it works
         </Link>
-        <Link href="/#about" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
-          About
+        <Link href="/#features" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
+          Features
         </Link>
         <Link href="/#destinations" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           Destinations
         </Link>
-        <Link href="/#vision" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
-          Vision
+        <Link href="/about" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
+          About
         </Link>
-        <Link href="/#contact" onClick={() => setIsMenuOpen(false)} className={`${mobileNavLinkClass} mb-6`}>
+        <Link href="/contact" onClick={() => setIsMenuOpen(false)} className={`${mobileNavLinkClass} mb-6`}>
           Contact
         </Link>
         <Button

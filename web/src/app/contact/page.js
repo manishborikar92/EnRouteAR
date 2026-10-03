@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   MapPin,
   Compass,
-  ExternalLink,
   HelpCircle,
   Clock,
 } from "lucide-react";
@@ -14,14 +13,14 @@ import ContactForm from "@/components/landing/ContactForm";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata = {
-  title: "Contact Us",
+  title: "Contact & Support",
   description:
     "Get in touch with the EnRouteAR team for technical inquiries, deployment discussions, or feedback on AR navigation.",
   alternates: {
     canonical: "/contact",
   },
   openGraph: {
-    title: "Contact Us | EnRouteAR",
+    title: "Contact & Support | EnRouteAR",
     description:
       "Reach out to the developers and team behind EnRouteAR augmented reality navigation.",
     url: "/contact",

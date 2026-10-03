@@ -27,8 +27,8 @@ export default function Footer() {
           <Link href="/#how" className={footerLinkClass}>
             How it works
           </Link>
-          <Link href="/#about" className={footerLinkClass}>
-            About
+          <Link href="/#features" className={footerLinkClass}>
+            Features
           </Link>
           <Link href="/#destinations" className={footerLinkClass}>
             Destinations
@@ -36,7 +36,10 @@ export default function Footer() {
           <Link href="/#vision" className={footerLinkClass}>
             Vision
           </Link>
-          <Link href="/#contact" className={footerLinkClass}>
+          <Link href="/about" className={footerLinkClass}>
+            About
+          </Link>
+          <Link href="/contact" className={footerLinkClass}>
             Contact
           </Link>
         </nav>

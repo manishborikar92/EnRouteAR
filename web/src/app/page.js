@@ -4,11 +4,10 @@ import Header from "@/components/landing/Header";
 import HeroSection from "@/components/landing/HeroSection";
 import TechTicker from "@/components/landing/TechTicker";
 import HowSection from "@/components/landing/HowSection";
-import AboutSection from "@/components/landing/AboutSection";
+import FeaturesSection from "@/components/landing/FeaturesSection";
 import DestinationsSection from "@/components/landing/DestinationsSection";
 import VisionSection from "@/components/landing/VisionSection";
 import CtaSection from "@/components/landing/CtaSection";
-import ContactSection from "@/components/landing/ContactSection";
 import Footer from "@/components/landing/Footer";
 import MobileDock from "@/components/landing/MobileDock";
 
@@ -35,11 +34,10 @@ export default function HomePage() {
         <HeroSection />
         <TechTicker />
         <HowSection />
-        <AboutSection />
+        <FeaturesSection />
         <DestinationsSection />
         <VisionSection />
         <CtaSection />
-        <ContactSection />
       </main>
 
       {/* Footer */}

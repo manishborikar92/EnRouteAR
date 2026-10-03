@@ -5,26 +5,24 @@ import {
   Cpu,
   Smartphone,
   MapPin,
-  ExternalLink,
   ShieldCheck,
 } from "lucide-react";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import Atmosphere from "@/components/common/Atmosphere";
 import SpotlightTracker from "@/components/common/SpotlightTracker";
-import { PlayIcon } from "@/components/common/Icons";
-import Button from "@/components/common/Button";
+import CtaSection from "@/components/landing/CtaSection";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata = {
-  title: "About",
+  title: "About & Architecture",
   description:
     "Discover the architecture, WebXR spatial computing, and real-time navigation technology powering EnRouteAR.",
   alternates: {
     canonical: "/about",
   },
   openGraph: {
-    title: "About | EnRouteAR",
+    title: "About & Architecture | EnRouteAR",
     description:
       "Explore the spatial computing architecture, WebXR rendering, and real-time GPS tracking behind EnRouteAR.",
     url: "/about",
@@ -244,27 +242,11 @@ export default function AboutPage() {
           </section>
 
           {/* Call to Action Banner */}
-          <section className="py-0 relative z-1">
-            <div className="w-full relative overflow-hidden grid gap-7 items-center p-[clamp(32px,6vw,64px)] rounded-[32px] border border-[rgba(160,195,255,0.35)] bg-[radial-gradient(600px_300px_at_100%_0,rgba(255,197,61,0.22),transparent_60%),linear-gradient(135deg,#1E4FD6,#0F2F8F_55%,#0A1D5A)] shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_40px_80px_-30px_rgba(42,100,245,0.6)] min-[53.75em]:grid-cols-[1fr_auto] before:content-[''] before:absolute before:inset-0 before:pointer-events-none before:[background:repeating-radial-gradient(circle_at_92%_8%,transparent_0_34px,rgba(255,255,255,0.09)_35px_36px)] before:[mask-image:radial-gradient(circle_at_92%_8%,#000,transparent_70%)] [&>*]:relative">
-              <div>
-                <h2 className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white mb-3">
-                  Ready to navigate in AR?
-                </h2>
-                <p className="text-[#D2DEF5] max-w-[50ch] text-[1.08rem] [text-wrap:pretty]">
-                  Launch the live AR experience directly in your browser. Grant location
-                  and camera permissions to begin real-time navigation.
-                </p>
-              </div>
-              <Button
-                variant="signal"
-                href="/navigate"
-                className="w-full min-[53.75em]:w-auto min-h-14 px-8 text-base shrink-0"
-              >
-                <PlayIcon className="w-5 h-5 shrink-0" />
-                <span>Launch navigation</span>
-              </Button>
-            </div>
-          </section>
+          <CtaSection
+            title="Ready to navigate in AR?"
+            description="Launch the live AR experience directly in your browser. Grant location and camera permissions to begin real-time navigation."
+            showContactPrompt={true}
+          />
         </div>
       </main>
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   PinIcon,
   ScreenIcon,
@@ -7,7 +8,7 @@ import {
   FlagIcon,
 } from "@/components/common/Icons";
 
-export default function AboutSection() {
+export default function FeaturesSection() {
   const features = [
     {
       icon: PinIcon,
@@ -43,19 +44,35 @@ export default function AboutSection() {
 
   return (
     <section
-      className="py-[clamp(64px,9vw,120px)] relative z-1 bg-gradient-to-b from-white/[0.04] to-white/[0.008] border-y border-line"
-      id="about"
-      aria-labelledby="about-h"
+      className="py-[clamp(64px,9vw,120px)] relative z-1 bg-gradient-to-b from-white/[0.04] to-white/[0.008] border-y border-line scroll-mt-20"
+      id="features"
+      aria-labelledby="features-h"
     >
+      {/* Invisible anchor target for legacy #about links */}
+      <span id="about" className="absolute -top-24" aria-hidden="true" />
+
       <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto grid gap-[clamp(28px,4vw,48px)] items-start">
-        <div>
-          <h2
-            id="about-h"
-            className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em]"
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <p className="font-display text-[0.8rem] tracking-[0.14em] uppercase text-route font-bold mb-2">
+              Platform Features
+            </p>
+            <h2
+              id="features-h"
+              className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em]"
+            >
+              What is EnRouteAR?
+            </h2>
+          </div>
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-lk hover:text-white transition-colors group"
           >
-            What is EnRouteAR?
-          </h2>
+            <span>System architecture</span>
+            <span className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
+          </Link>
         </div>
+
         <ul className="grid gap-4 list-none p-0 sm:grid-cols-2 min-[60em]:grid-cols-3">
           {features.map((feat, idx) => {
             const Icon = feat.icon;
