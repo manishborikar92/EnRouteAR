@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PlayIcon } from "@/components/common/Icons";
+import Button from "@/components/common/Button";
 
 export default function MobileDock() {
   const [showDock, setShowDock] = useState(false);
@@ -83,16 +84,21 @@ export default function MobileDock() {
   };
 
   return (
-    <div className={`dock ${showDock ? "show" : ""}`} id="dock">
-      <button
+    <div
+      className={`fixed inset-x-0 bottom-0 z-[90] px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] bg-gradient-to-t from-[#07111E]/96 to-[#07111E]/72 backdrop-blur-md border-t border-line transition-[transform,visibility] duration-350 ease-smooth lg:hidden ${
+        showDock ? "translate-y-0 visible delay-0" : "translate-y-[110%] invisible delay-350"
+      }`}
+      id="dock"
+    >
+      <Button
         onClick={handleLaunch}
-        className="btn"
         id="dock-launch-btn"
-        aria-busy={isLaunching}
+        busy={isLaunching}
+        className="w-full min-h-[52px]"
       >
-        <PlayIcon className="i" />
-        Launch AR
-      </button>
+        <PlayIcon className="w-5 h-5 shrink-0" />
+        <span>Launch AR</span>
+      </Button>
     </div>
   );
 }

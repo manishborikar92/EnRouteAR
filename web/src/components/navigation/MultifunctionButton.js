@@ -15,7 +15,7 @@ export default function MultifunctionButton({ mode = "centered", onClick }) {
         onClick={onClick}
         title="Multifunction Navigation Control"
         aria-label={`Navigation state: ${currentMode}`}
-        className={`multifunction-button ${currentMode} w-full h-full flex justify-center items-center p-0 bg-[rgba(7,17,30,0.92)] backdrop-blur-[14px] border border-[rgba(150,185,235,0.25)] rounded-full cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.6),0_0_16px_rgba(76,141,255,0.2)] transition-all hover:border-route hover:shadow-[0_0_24px_rgba(76,141,255,0.4)] hover:scale-[1.06] active:scale-[0.96]`}
+        className={`w-full h-full flex justify-center items-center p-0 bg-[#07111E]/92 backdrop-blur-[14px] border border-line-bright/70 rounded-full cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.6),0_0_16px_rgba(76,141,255,0.2)] transition-all hover:border-route hover:shadow-[0_0_24px_rgba(76,141,255,0.4)] hover:scale-[1.06] active:scale-[0.96]`}
       >
         <svg
           id="centeredImage"

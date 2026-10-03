@@ -200,14 +200,14 @@ export default function ARViewport({
 
   if (loadError) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-bg/90 text-text-1 z-1 px-6 text-center">
-        <div className="p-6 bg-surface border border-border rounded-lg max-w-[420px]">
-          <div className="text-accent font-display text-sm mb-2">AR ENGINE ERROR</div>
-          <p className="text-xs text-text-2 mb-4">{loadError}</p>
+      <div className="absolute inset-0 flex items-center justify-center bg-bg/90 text-t1 z-1 px-6 text-center">
+        <div className="p-6 bg-bg-alt border border-line rounded-xl max-w-[420px]">
+          <div className="text-signal font-display text-sm mb-2 font-bold tracking-wider">AR ENGINE ERROR</div>
+          <p className="text-xs text-t2 mb-4">{loadError}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-bg font-display text-xs font-semibold rounded-md"
+            className="px-4 py-2 bg-route text-white font-display text-xs font-semibold rounded-md hover:bg-route/90 transition-colors"
           >
             Retry Loading
           </button>
@@ -218,10 +218,10 @@ export default function ARViewport({
 
   if (!scriptsLoaded) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-bg/80 backdrop-blur-sm text-text-1 z-1 pointer-events-none">
+      <div className="absolute inset-0 flex items-center justify-center bg-bg/80 backdrop-blur-sm text-t1 z-1 pointer-events-none">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-          <div className="font-display text-[0.68rem] tracking-[0.2em] text-primary uppercase animate-pulse">
+          <div className="w-8 h-8 rounded-full border-2 border-route border-t-transparent animate-spin" />
+          <div className="font-display text-[0.68rem] tracking-[0.2em] text-route uppercase animate-pulse font-bold">
             INITIALIZING AR ENGINE...
           </div>
         </div>

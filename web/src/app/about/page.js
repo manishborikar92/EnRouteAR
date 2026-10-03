@@ -7,13 +7,13 @@ import {
   MapPin,
   ExternalLink,
   ShieldCheck,
-  Navigation,
 } from "lucide-react";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import Atmosphere from "@/components/common/Atmosphere";
 import SpotlightTracker from "@/components/common/SpotlightTracker";
 import { PlayIcon } from "@/components/common/Icons";
+import Button from "@/components/common/Button";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata = {
@@ -95,6 +95,9 @@ export default function AboutPage() {
     { name: "About", path: "/about" },
   ];
 
+  const glassCardClass =
+    "group relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] transition-[border-color,transform] duration-250 ease-smooth hover:border-line-bright hover:-translate-y-[3px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100";
+
   return (
     <>
       <BreadcrumbJsonLd items={breadcrumbs} />
@@ -102,11 +105,11 @@ export default function AboutPage() {
       <SpotlightTracker />
       <Header />
 
-      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24">
-        <div className="wrap">
+      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24 relative z-1">
+        <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto">
           {/* Breadcrumb Navigation */}
           <nav aria-label="Breadcrumb" className="mb-8">
-            <ol className="flex items-center gap-2 font-display text-[0.8rem] tracking-[0.04em] text-t3">
+            <ol className="flex items-center gap-2 font-display text-[0.8rem] tracking-[0.04em] text-t3 list-none p-0">
               <li>
                 <Link
                   href="/"
@@ -124,14 +127,14 @@ export default function AboutPage() {
 
           {/* Page Hero */}
           <div className="mb-20 max-w-[840px]">
-            <p className="status mb-6">
-              <span className="dot" />
+            <p className="inline-flex items-center gap-2.5 px-3.5 py-[7px] border border-line-bright rounded-full bg-white/[0.05] backdrop-blur-md text-[0.84rem] font-semibold text-t2 mb-6">
+              <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_10px_var(--color-green)] animate-[ping-dot_2.4s_infinite]" />
               System Specification &amp; Architecture
             </p>
-            <h1>
+            <h1 className="font-display text-[clamp(2.3rem,5.5vw,4.2rem)] font-extrabold leading-[1.05] tracking-[-0.035em] mb-5 bg-gradient-to-b from-white via-white via-35% to-[#9DBBE8] bg-clip-text text-transparent [text-wrap:balance]">
               Pioneering spatial computing for campus navigation
             </h1>
-            <p className="lead mt-6 text-t2 text-lg">
+            <p className="text-t2 text-[1.08rem] max-w-[56ch] mt-6 [text-wrap:pretty]">
               EnRouteAR is an open augmented reality wayfinding platform developed
               for Kavikulguru Institute of Technology and Science (KITS), Ramtek.
               By fusing browser-based spatial computing with live satellite mapping,
@@ -145,7 +148,7 @@ export default function AboutPage() {
               <span className="w-8 h-[2px] bg-route" />
               Engineering Foundation
             </div>
-            <h2 className="mb-10 text-3xl font-bold">
+            <h2 className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em] mb-10">
               Core Architectural Stack
             </h2>
 
@@ -155,14 +158,14 @@ export default function AboutPage() {
                 return (
                   <div
                     key={tech.title}
-                    className="panel glass-spotlight p-8 flex flex-col justify-between"
+                    className={`${glassCardClass} p-8 flex flex-col justify-between`}
                   >
                     <div>
                       <div className="flex items-center justify-between gap-4 mb-5">
-                        <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-[#A9CBFF] bg-[linear-gradient(145deg,rgba(76,141,255,0.32),rgba(76,141,255,0.08))] border border-[rgba(120,170,255,0.38)] shadow-[0_0_24px_-4px_rgba(76,141,255,0.55)]">
+                        <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-[#A9CBFF] bg-gradient-to-br from-[rgba(76,141,255,0.32)] to-[rgba(76,141,255,0.08)] border border-[rgba(120,170,255,0.38)] shadow-[0_0_24px_-4px_rgba(76,141,255,0.55)]">
                           <Icon className="w-6 h-6" />
                         </div>
-                        <span className="chip px-3 py-1 rounded-full text-[0.72rem] font-bold tracking-[0.08em] bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.38)] text-[#FFD978]">
+                        <span className="px-3 py-1 rounded-full text-[0.72rem] font-bold tracking-[0.08em] bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.38)] text-[#FFD978]">
                           {tech.badge}
                         </span>
                       </div>
@@ -185,7 +188,7 @@ export default function AboutPage() {
               <span className="w-8 h-[2px] bg-route" />
               Feature Architecture
             </div>
-            <h2 className="mb-10 text-3xl font-bold">
+            <h2 className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em] mb-10">
               Navigation Capabilities
             </h2>
 
@@ -193,7 +196,7 @@ export default function AboutPage() {
               {CAPABILITIES.map((cap) => (
                 <div
                   key={cap.number}
-                  className="panel glass-spotlight p-7 flex items-start gap-5"
+                  className={`${glassCardClass} p-7 flex items-start gap-5`}
                 >
                   <span className="font-display text-3xl font-extrabold text-route/40 shrink-0">
                     {cap.number}
@@ -212,12 +215,12 @@ export default function AboutPage() {
           </section>
 
           {/* Institutional Campus Focus */}
-          <section className="mb-24 panel p-10 max-md:p-6 border border-line">
+          <section className="mb-24 relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] p-10 max-md:p-6 before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100">
             <div className="flex items-center gap-2 text-signal font-display text-[0.8rem] tracking-[0.14em] uppercase font-bold mb-3">
               <ShieldCheck className="w-5 h-5 text-signal" />
               Campus Context
             </div>
-            <h2 className="text-2xl font-bold mb-4">
+            <h2 className="font-display text-2xl font-bold mb-4 text-t1">
               Kavikulguru Institute of Technology &amp; Science (KITS), Ramtek
             </h2>
             <p className="text-t2 text-[0.96rem] leading-[1.8] mb-6 max-w-[800px]">
@@ -246,19 +249,25 @@ export default function AboutPage() {
           </section>
 
           {/* Call to Action Banner */}
-          <section className="sec cta on-ink p-0">
-            <div className="wrap">
+          <section className="py-0 relative z-1">
+            <div className="w-full relative overflow-hidden grid gap-7 items-center p-[clamp(32px,6vw,64px)] rounded-[32px] border border-[rgba(160,195,255,0.35)] bg-[radial-gradient(600px_300px_at_100%_0,rgba(255,197,61,0.22),transparent_60%),linear-gradient(135deg,#1E4FD6,#0F2F8F_55%,#0A1D5A)] shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_40px_80px_-30px_rgba(42,100,245,0.6)] min-[53.75em]:grid-cols-[1fr_auto] before:content-[''] before:absolute before:inset-0 before:pointer-events-none before:[background:repeating-radial-gradient(circle_at_92%_8%,transparent_0_34px,rgba(255,255,255,0.09)_35px_36px)] before:[mask-image:radial-gradient(circle_at_92%_8%,#000,transparent_70%)] [&>*]:relative">
               <div>
-                <h2>Ready to navigate in AR?</h2>
-                <p>
+                <h2 className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white mb-3">
+                  Ready to navigate in AR?
+                </h2>
+                <p className="text-[#D2DEF5] max-w-[50ch] text-[1.08rem] [text-wrap:pretty]">
                   Launch the live AR experience directly in your browser. Grant location
                   and camera permissions to begin real-time navigation.
                 </p>
               </div>
-              <Link href="/navigate" className="btn signal">
-                <PlayIcon className="i" />
-                Launch navigation
-              </Link>
+              <Button
+                variant="signal"
+                href="/navigate"
+                className="min-h-14 px-8 text-base shrink-0"
+              >
+                <PlayIcon className="w-5 h-5 shrink-0" />
+                <span>Launch navigation</span>
+              </Button>
             </div>
           </section>
         </div>

@@ -55,7 +55,7 @@ export default function MapPanel({
       currentLocationMarkerRef.current.setLngLat([longitude, latitude]);
     } else {
       const markerEl = document.createElement("div");
-      markerEl.className = "custom-marker";
+      markerEl.className = "bg-cover rounded-full";
       markerEl.style.backgroundImage = "url(/icons/current.svg)";
       markerEl.style.width = "30px";
       markerEl.style.height = "30px";
@@ -332,7 +332,7 @@ export default function MapPanel({
   return (
     <div
       id="map-container"
-      className="fixed bottom-0 left-0 right-0 w-full h-[180px] border-t border-border shadow-[0_-8px_32px_rgba(0,0,0,0.5)] z-2 pointer-events-auto touch-none"
+      className="fixed bottom-0 left-0 right-0 w-full h-[180px] border-t border-line shadow-[0_-8px_32px_rgba(0,0,0,0.5)] z-2 pointer-events-auto touch-none"
     >
       <div
         ref={mapContainerRef}

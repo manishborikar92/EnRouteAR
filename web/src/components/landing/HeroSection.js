@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PlayIcon, DownIcon } from "@/components/common/Icons";
+import Button from "@/components/common/Button";
 
 export default function HeroSection() {
   const router = useRouter();
@@ -10,7 +11,7 @@ export default function HeroSection() {
   const vfFrameRef = useRef(null);
   const vfContainerRef = useRef(null);
 
-  // Gentle 3D perspective tilt on pointer movement (matching reference script)
+  // Gentle 3D perspective tilt on pointer movement
   useEffect(() => {
     const container = vfContainerRef.current;
     const frame = vfFrameRef.current;
@@ -71,52 +72,73 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="wrap hero" id="hero">
+    <div
+      className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto grid gap-[clamp(32px,5vw,64px)] items-center pt-[calc(var(--hdr)+24px)] pb-[clamp(40px,6vw,72px)] min-[56.25em]:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] min-[56.25em]:min-h-[calc(100svh-var(--hdr))]"
+      id="hero"
+    >
       <div>
-        <p className="status">
-          <span className="dot" />
+        <p className="inline-flex items-center gap-2.5 px-3.5 py-[7px] border border-line-bright rounded-full bg-white/[0.05] backdrop-blur-md text-[0.84rem] font-semibold text-t2 mb-6 animate-[up_0.8s_cubic-bezier(0.2,0.7,0.2,1)_both]">
+          <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_10px_var(--color-green)] animate-[ping-dot_2.4s_infinite]" />
           Live GPS enabled
         </p>
-        <h1>Navigate the real world in augmented reality</h1>
-        <p className="lead">
+        <h1 className="font-display text-[clamp(2.3rem,5.5vw,4.2rem)] font-extrabold leading-[1.05] tracking-[-0.035em] mb-5 bg-gradient-to-b from-white via-white via-35% to-[#9DBBE8] bg-clip-text text-transparent [text-wrap:balance] animate-[up_0.8s_0.08s_cubic-bezier(0.2,0.7,0.2,1)_both]">
+          Navigate the real world in augmented reality
+        </h1>
+        <p className="text-t2 text-[1.08rem] max-w-[56ch] mb-7 [text-wrap:pretty] animate-[up_0.8s_0.16s_cubic-bezier(0.2,0.7,0.2,1)_both]">
           Overlay digital waypoints, 3D markers, and turn-by-turn directions
           directly onto your camera feed. Built for KITS Ramtek campus — powered
           by A-Frame, AR.js &amp; Mapbox.
         </p>
-        <div className="cta-row">
-          <button
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-8 animate-[up_0.8s_0.24s_cubic-bezier(0.2,0.7,0.2,1)_both]">
+          <Button
             onClick={handleLaunchNavigation}
-            className="btn"
             id="turnOnLocationBtn"
-            aria-busy={isLaunching}
+            busy={isLaunching}
           >
-            <PlayIcon className="i" />
-            Launch navigation
-          </button>
-          <a href="#about" className="link">
-            Learn more
-            <DownIcon className="i" />
+            <PlayIcon className="w-5 h-5 shrink-0" />
+            <span>Launch navigation</span>
+          </Button>
+          <a
+            href="#about"
+            className="group inline-flex items-center gap-2 min-h-12 text-t1 font-semibold underline decoration-line-bright underline-offset-6 decoration-2 hover:text-lk hover:decoration-lk transition-colors"
+          >
+            <span>Learn more</span>
+            <DownIcon className="w-5 h-5 shrink-0 transition-transform duration-200 ease-smooth group-hover:translate-y-0.5" />
           </a>
         </div>
-        <dl className="facts">
-          <div>
-            <dt>14+</dt>
-            <dd>Campus locations</dd>
+        <dl className="flex flex-wrap gap-x-9 gap-y-4 pt-5 border-t border-line animate-[up_0.8s_0.32s_cubic-bezier(0.2,0.7,0.2,1)_both]">
+          <div className="flex flex-col">
+            <dt className="font-display font-extrabold text-[2rem] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
+              14+
+            </dt>
+            <dd className="text-[0.88rem] text-t3 mt-1">Campus locations</dd>
           </div>
-          <div>
-            <dt>3D</dt>
-            <dd>AR waypoints</dd>
+          <div className="flex flex-col">
+            <dt className="font-display font-extrabold text-[2rem] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
+              3D
+            </dt>
+            <dd className="text-[0.88rem] text-t3 mt-1">AR waypoints</dd>
           </div>
-          <div>
-            <dt>Live</dt>
-            <dd>Real-time GPS</dd>
+          <div className="flex flex-col">
+            <dt className="font-display font-extrabold text-[2rem] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
+              Live
+            </dt>
+            <dd className="text-[0.88rem] text-t3 mt-1">Real-time GPS</dd>
           </div>
         </dl>
       </div>
 
-      <figure className="vf" ref={vfContainerRef}>
-        <div className="vf-frame" ref={vfFrameRef}>
+      <figure
+        className="relative isolate m-0 justify-self-center w-[min(100%,360px)] before:content-[''] before:absolute before:-z-10 before:-inset-x-[34%] before:-inset-y-[14%] before:[background:repeating-radial-gradient(circle_at_50%_46%,transparent_0_52px,rgba(120,170,255,0.14)_53px_54px)] before:[mask-image:radial-gradient(circle_at_50%_46%,#000_12%,transparent_68%)] after:content-[''] after:absolute after:-z-10 after:left-[10%] after:right-[10%] after:top-[18%] after:bottom-[6%] after:[background:radial-gradient(closest-side,rgba(47,107,255,0.55),transparent)] after:blur-[40px]"
+        ref={vfContainerRef}
+      >
+        <div
+          className="border-8 border-[#0B1626] rounded-[38px] overflow-hidden aspect-[9/12] bg-[#0B1626] outline-1 outline-line-bright shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_50px_80px_-30px_rgba(0,0,0,0.8),0_0_80px_-20px_rgba(47,107,255,0.5)] transition-transform duration-250 ease-smooth"
+          style={{ transform: "perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))" }}
+          ref={vfFrameRef}
+        >
           <svg
+            className="w-full h-full"
             viewBox="0 0 360 480"
             role="img"
             aria-label="Preview of the AR view: a blue route leads ahead to the Library, 42 metres away, and the CS Department, 87 metres away."
@@ -151,14 +173,14 @@ export default function HeroSection() {
 
             {/* Perspective AR Route Ribbon */}
             <path
-              className="ribbon"
+              className="animate-[rise_1.1s_0.35s_cubic-bezier(0.2,0.7,0.2,1)_both]"
               d="M128 480h122C236 380 214 280 202 202h-12c0 80-34 180-62 278z"
               fill="#2F7BFF"
             />
 
             {/* Animated Flowing Dashed Route Centerline */}
             <path
-              className="ribbon flow"
+              className="animate-[rise_1.1s_0.35s_cubic-bezier(0.2,0.7,0.2,1)_both] [stroke-dasharray:10_14] animate-[flow_1.1s_linear_infinite]"
               d="M190 480c14-100 10-190 4-276"
               fill="none"
               stroke="#fff"
@@ -168,7 +190,7 @@ export default function HeroSection() {
 
             {/* 3D AR Waypoint: Library 42m */}
             <g transform="translate(50 108)">
-              <g className="tag t1">
+              <g className="animate-[pop_0.6s_1.2s_cubic-bezier(0.2,0.7,0.2,1)_both]">
                 <path d="M46 44v34" stroke="#fff" strokeWidth="2" />
                 <circle cx="46" cy="80" r="4" fill="#fff" />
                 <rect width="92" height="44" rx="11" fill="#fff" />
@@ -183,7 +205,7 @@ export default function HeroSection() {
 
             {/* 3D AR Waypoint: CS Dept. 87m */}
             <g transform="translate(224 134)">
-              <g className="tag t2">
+              <g className="animate-[pop_0.6s_1.45s_cubic-bezier(0.2,0.7,0.2,1)_both]">
                 <path d="M44 44v28" stroke="#fff" strokeWidth="2" />
                 <circle cx="44" cy="74" r="4" fill="#fff" />
                 <rect width="92" height="44" rx="11" fill="#fff" />
@@ -198,7 +220,7 @@ export default function HeroSection() {
 
             {/* Cyberpunk HUD Bars Overlay */}
             <g
-              className="hud"
+              className="animate-[fade_0.6s_1.7s_both]"
               fontSize="11"
               fontWeight="600"
               fill="#fff"
@@ -224,7 +246,7 @@ export default function HeroSection() {
             </g>
           </svg>
         </div>
-        <figcaption>
+        <figcaption className="mt-5 text-[0.84rem] text-t3 text-center max-w-[36ch] mx-auto">
           Labels show live distance and stay anchored to the place as you walk.
         </figcaption>
       </figure>

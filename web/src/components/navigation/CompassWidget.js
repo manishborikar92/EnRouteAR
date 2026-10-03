@@ -46,7 +46,7 @@ export default function CompassWidget({ heading: externalHeading }) {
     <div id="compass-container" aria-hidden="true" className="pointer-events-auto">
       <div
         ref={needleRef}
-        className="compass"
+        className="w-[42px] h-[42px] absolute bottom-[195px] left-3.5 z-3 rounded-full bg-[#07111E]/92 border border-line-bright bg-[url(/icons/compass.svg)] bg-center bg-no-repeat [background-size:70%] shadow-[0_4px_20px_rgba(0,0,0,0.6),0_0_16px_rgba(76,141,255,0.2)] origin-center"
         style={{
           transition: "transform 0.08s linear",
         }}

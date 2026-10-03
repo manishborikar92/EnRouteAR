@@ -49,6 +49,9 @@ export default function ContactPage() {
     { name: "Contact", path: "/contact" },
   ];
 
+  const glassCardClass =
+    "group relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] p-7 transition-[border-color,transform] duration-250 ease-smooth hover:border-line-bright hover:-translate-y-[3px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100";
+
   return (
     <>
       <BreadcrumbJsonLd items={breadcrumbs} />
@@ -56,11 +59,11 @@ export default function ContactPage() {
       <SpotlightTracker />
       <Header />
 
-      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24">
-        <div className="wrap">
+      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24 relative z-1">
+        <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto">
           {/* Breadcrumb Navigation */}
           <nav aria-label="Breadcrumb" className="mb-8">
-            <ol className="flex items-center gap-2 font-display text-[0.8rem] tracking-[0.04em] text-t3">
+            <ol className="flex items-center gap-2 font-display text-[0.8rem] tracking-[0.04em] text-t3 list-none p-0">
               <li>
                 <Link
                   href="/"
@@ -78,12 +81,14 @@ export default function ContactPage() {
 
           {/* Page Hero */}
           <div className="mb-16 max-w-[800px]">
-            <p className="status mb-6">
-              <span className="dot" />
+            <p className="inline-flex items-center gap-2.5 px-3.5 py-[7px] border border-line-bright rounded-full bg-white/[0.05] backdrop-blur-md text-[0.84rem] font-semibold text-t2 mb-6">
+              <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_10px_var(--color-green)] animate-[ping-dot_2.4s_infinite]" />
               Direct Communication
             </p>
-            <h1>Get in touch</h1>
-            <p className="lead mt-6 text-t2 text-lg">
+            <h1 className="font-display text-[clamp(2.3rem,5.5vw,4.2rem)] font-extrabold leading-[1.05] tracking-[-0.035em] mb-5 bg-gradient-to-b from-white via-white via-35% to-[#9DBBE8] bg-clip-text text-transparent [text-wrap:balance]">
+              Get in touch
+            </h1>
+            <p className="text-t2 text-[1.08rem] max-w-[56ch] mt-6 [text-wrap:pretty]">
               Have inquiries regarding the AR navigation platform, campus integration,
               collaborations, or technical feedback? Reach out using the form or institutional
               channels below.
@@ -95,7 +100,7 @@ export default function ContactPage() {
             {/* Left Column: Details & FAQs */}
             <div className="space-y-6">
               {/* Campus Info Card */}
-              <div className="panel glass-spotlight p-7">
+              <div className={glassCardClass}>
                 <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-4 font-bold">
                   <MapPin className="w-4 h-4 text-signal" />
                   Institutional Headquarters
@@ -113,7 +118,7 @@ export default function ContactPage() {
               </div>
 
               {/* Response Time & Portal Card */}
-              <div className="panel glass-spotlight p-7">
+              <div className={glassCardClass}>
                 <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-3 font-bold">
                   <Clock className="w-4 h-4 text-signal" />
                   Response Dispatch
@@ -138,7 +143,7 @@ export default function ContactPage() {
               </div>
 
               {/* Quick Technical FAQ */}
-              <div className="panel glass-spotlight p-7">
+              <div className={glassCardClass}>
                 <div className="flex items-center gap-2 text-route font-display text-[0.8rem] tracking-[0.12em] uppercase mb-5 font-bold">
                   <HelpCircle className="w-4 h-4 text-signal" />
                   Frequently Asked Questions

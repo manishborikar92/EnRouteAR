@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SendIcon } from "@/components/common/Icons";
+import Button from "@/components/common/Button";
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,10 +56,19 @@ export default function ContactForm() {
     }
   };
 
+  const inputClass =
+    "w-full min-h-12 px-3.5 py-3 border border-line-bright rounded-xl bg-[#030a14]/55 text-t1 font-body text-base transition-[border-color,box-shadow,background] duration-200 placeholder:text-[#7F90A6] focus:outline-none focus:border-route focus:bg-[#030a14]/80 focus:ring-4 focus:ring-route/25 disabled:opacity-50 disabled:cursor-not-allowed";
+
   return (
-    <form id="contact-form" className="glass-form" onSubmit={handleSubmit}>
-      <div className="f">
-        <label htmlFor="name">Name</label>
+    <form
+      id="contact-form"
+      className="relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] grid gap-5 p-[clamp(22px,4vw,36px)] rounded-[26px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100"
+      onSubmit={handleSubmit}
+    >
+      <div className="space-y-2">
+        <label htmlFor="name" className="block font-semibold text-[0.92rem] text-t1">
+          Name
+        </label>
         <input
           type="text"
           id="name"
@@ -69,11 +79,14 @@ export default function ContactForm() {
           placeholder="Your full name"
           required
           disabled={isSubmitting}
+          className={inputClass}
         />
       </div>
 
-      <div className="f">
-        <label htmlFor="email">Email</label>
+      <div className="space-y-2">
+        <label htmlFor="email" className="block font-semibold text-[0.92rem] text-t1">
+          Email
+        </label>
         <input
           type="email"
           id="email"
@@ -84,11 +97,14 @@ export default function ContactForm() {
           placeholder="you@example.com"
           required
           disabled={isSubmitting}
+          className={inputClass}
         />
       </div>
 
-      <div className="f">
-        <label htmlFor="message">Message</label>
+      <div className="space-y-2">
+        <label htmlFor="message" className="block font-semibold text-[0.92rem] text-t1">
+          Message
+        </label>
         <textarea
           id="message"
           name="message"
@@ -98,25 +114,29 @@ export default function ContactForm() {
           placeholder="Tell us what you're thinking…"
           required
           disabled={isSubmitting}
+          className={`${inputClass} min-h-[140px] resize-y`}
         />
       </div>
 
-      <div className="fs">
-        <button
+      <div className="flex flex-wrap items-center gap-4">
+        <Button
           type="submit"
-          className="btn"
           id="send"
-          aria-busy={isSubmitting}
+          busy={isSubmitting}
           disabled={isSubmitting}
         >
-          <SendIcon className="i" />
+          <SendIcon className="w-5 h-5 shrink-0" />
           <span>{isSubmitting ? "Sending…" : "Send message"}</span>
-        </button>
+        </Button>
       </div>
 
       {status.message && (
         <p
-          className={`msg ${status.type === "ok" ? "ok" : "bad"}`}
+          className={`p-3.5 rounded-xl font-medium text-[0.94rem] ${
+            status.type === "ok"
+              ? "bg-[rgba(61,220,151,0.12)] border border-[rgba(61,220,151,0.35)] text-[#8CEBC0]"
+              : "bg-[rgba(255,145,136,0.12)] border border-[rgba(255,145,136,0.35)] text-[#FFB8B1]"
+          }`}
           id="form-status"
           role="status"
           aria-live="polite"

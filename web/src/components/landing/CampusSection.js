@@ -1,4 +1,5 @@
 import { ExternalIcon } from "@/components/common/Icons";
+import Button from "@/components/common/Button";
 
 export default function CampusSection() {
   const stops = [
@@ -13,53 +14,76 @@ export default function CampusSection() {
   ];
 
   return (
-    <section className="sec campus" id="college" aria-labelledby="college-h">
-      <div className="wrap split b">
+    <section
+      className="py-[clamp(64px,9vw,120px)] relative z-1"
+      id="college"
+      aria-labelledby="college-h"
+    >
+      <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto grid gap-[clamp(32px,6vw,80px)] items-start min-[56.25em]:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
         <div>
-          <h2 id="college-h" className="mb-7">
+          <h2
+            id="college-h"
+            className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em] mb-7"
+          >
             Kavikulguru Institute of Technology &amp; Science
           </h2>
-          <p>
+          <p className="text-t2 text-[0.96rem] leading-[1.7] max-w-[60ch]">
             KITS Ramtek is a private un-aided institution run by Vodithala
             Education Society, Hyderabad. Founded in 1985 with a foundation stone
             laid by former Prime Minister Late Sri P. V. Narsimha Rao, the
             institute has grown into a distinguished technical institution
             serving rural students across Central India.
           </p>
-          <p>
+          <p className="text-t2 text-[0.96rem] leading-[1.7] max-w-[60ch] mt-4">
             Permanently affiliated to RTMNU Nagpur, KITS offers B.E., B.Arch.,
             M.Tech. and Ph.D. programs across its lush 48.96-acre pollution-free
             campus. Awarded &apos;A&apos; Grade twice by Maharashtra State
             Government, accredited by NBA, and NAAC-rated B++.
           </p>
-          <ul className="chips" aria-label="Accreditations">
-            <li>NAAC B++</li>
-            <li>NBA Accredited</li>
-            <li>&apos;A&apos; Grade × 2</li>
-            <li>RTMNU Affiliated</li>
+          <ul className="flex flex-wrap gap-2.5 my-7 list-none p-0" aria-label="Accreditations">
+            <li className="px-3.5 py-1.5 rounded-full bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.38)] text-[#FFD978] text-[0.84rem] font-semibold">
+              NAAC B++
+            </li>
+            <li className="px-3.5 py-1.5 rounded-full bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.38)] text-[#FFD978] text-[0.84rem] font-semibold">
+              NBA Accredited
+            </li>
+            <li className="px-3.5 py-1.5 rounded-full bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.38)] text-[#FFD978] text-[0.84rem] font-semibold">
+              &apos;A&apos; Grade × 2
+            </li>
+            <li className="px-3.5 py-1.5 rounded-full bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.38)] text-[#FFD978] text-[0.84rem] font-semibold">
+              RTMNU Affiliated
+            </li>
           </ul>
-          <a
-            className="btn ghost"
+          <Button
+            as="a"
+            variant="ghost"
             href="https://www.kits.edu/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Visit kits.edu
-            <ExternalIcon className="i" />
+            <span>Visit kits.edu</span>
+            <ExternalIcon className="w-4 h-4 shrink-0" />
             <span className="sr-only">(opens in a new tab)</span>
-          </a>
+          </Button>
         </div>
-        <div className="panel">
-          <h3>
-            <span className="dot" />
+        <div className="relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[26px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100">
+          <h3 className="flex items-center gap-2.5 px-6 py-4.5 font-body font-bold text-base tracking-normal border-b border-line bg-white/[0.04] text-t1 m-0">
+            <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_10px_var(--color-green)] animate-[ping-dot_2.4s_infinite]" />
             KITS Campus, Ramtek
           </h3>
-          <ul className="stops">
+          <ul className="relative px-6 py-3 list-none m-0 before:content-[''] before:absolute before:left-[30px] before:top-[30px] before:bottom-[30px] before:w-0.5 before:bg-gradient-to-b before:from-route before:to-[rgba(76,141,255,0.15)]">
             {stops.map((stop) => (
-              <li key={stop}>{stop}</li>
+              <li
+                key={stop}
+                className="relative py-[11px] pl-[30px] pr-0 text-t2 text-[0.96rem] before:content-[''] before:absolute before:left-[1px] before:top-1/2 before:-translate-y-1/2 before:w-3 before:h-3 before:rounded-full before:bg-bg before:border-[3px] before:border-route before:shadow-[0_0_12px_rgba(76,141,255,0.7)]"
+              >
+                {stop}
+              </li>
             ))}
           </ul>
-          <p className="coord">21.385°N, 79.306°E</p>
+          <p className="px-6 py-3.5 border-t border-line text-[0.84rem] text-t3 tabular-nums bg-black/18 m-0">
+            21.385°N, 79.306°E
+          </p>
         </div>
       </div>
     </section>

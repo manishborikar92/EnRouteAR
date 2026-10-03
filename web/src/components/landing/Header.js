@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrandMark, MenuIcon, CloseIcon } from "@/components/common/Icons";
+import Button from "@/components/common/Button";
 
 export default function Header() {
   const [isStuck, setIsStuck] = useState(false);
@@ -49,12 +50,12 @@ export default function Header() {
   // Body scroll lock on mobile menu toggle
   useEffect(() => {
     if (isMenuOpen) {
-      document.body.classList.add("menu-open");
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.classList.remove("menu-open");
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.classList.remove("menu-open");
+      document.body.style.overflow = "";
     };
   }, [isMenuOpen]);
 
@@ -98,107 +99,149 @@ export default function Header() {
     setIsMenuOpen(false);
   };
 
+  const navLinkClass = (isActive) =>
+    `relative px-3 py-2.5 text-t2 font-medium text-[0.92rem] no-underline transition-colors hover:text-t1 after:content-[''] after:absolute after:left-3 after:right-3 after:bottom-1 after:h-0.5 after:bg-route after:scale-x-0 after:origin-left after:transition-transform after:duration-250 hover:after:scale-x-100 ${
+      isActive ? "text-t1 after:scale-x-100" : ""
+    }`;
+
+  const mobileNavLinkClass =
+    "flex items-center min-h-16 text-t1 font-display font-bold text-[1.6rem] tracking-[-0.02em] no-underline border-b border-line";
+
   return (
     <>
-      <a className="skip" href="#main">
+      <a
+        className="fixed left-4 -top-20 focus:top-3 z-[200] bg-signal text-[#0A1626] px-[18px] py-3 rounded-[10px] font-semibold no-underline transition-[top] duration-200 ease-smooth"
+        href="#main"
+      >
         Skip to content
       </a>
 
-      <header className={`top ${isStuck ? "stuck" : ""}`} id="top">
-        <div className="wrap bar">
-          <Link href="/" className="brand" aria-label="EnRouteAR, home">
-            <BrandMark className="mk" />
+      <header
+        className={`fixed inset-x-0 top-0 z-[100] transition-[background,box-shadow,backdrop-filter] duration-250 ${
+          isMenuOpen
+            ? "bg-[#07111e]/[0.97] shadow-[0_1px_0_var(--color-line)]"
+            : isStuck
+            ? "bg-[#07111e]/72 backdrop-blur-md backdrop-saturate-150 shadow-[0_1px_0_var(--color-line)]"
+            : ""
+        }`}
+        id="top"
+      >
+        <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto h-[var(--hdr)] flex items-center justify-between gap-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2.5 text-t1 no-underline font-display font-extrabold text-[1.3rem] leading-none tracking-[-0.03em] min-w-0"
+            aria-label="EnRouteAR, home"
+          >
+            <BrandMark className="w-[34px] h-[34px] shrink-0" />
             <span>
-              EnRoute<b>AR</b>
-              <small>Augmented reality navigation</small>
+              EnRoute<b className="text-route font-extrabold">AR</b>
+              <small className="block font-body font-medium text-[0.66rem] leading-tight tracking-[0.01em] text-t3 mt-[3px] whitespace-nowrap">
+                Augmented reality navigation
+              </small>
             </span>
           </Link>
 
-          <nav className="nav" aria-label="Primary">
+          <nav className="hidden lg:flex items-center gap-1.5" aria-label="Primary">
             <Link
               href="/#how"
+              className={navLinkClass(activeSection === "how")}
               aria-current={activeSection === "how" ? "true" : undefined}
             >
               How it works
             </Link>
             <Link
               href="/#about"
+              className={navLinkClass(activeSection === "about")}
               aria-current={activeSection === "about" ? "true" : undefined}
             >
               About
             </Link>
             <Link
               href="/#college"
+              className={navLinkClass(activeSection === "college")}
               aria-current={activeSection === "college" ? "true" : undefined}
             >
               Campus
             </Link>
             <Link
               href="/#vision"
+              className={navLinkClass(activeSection === "vision")}
               aria-current={activeSection === "vision" ? "true" : undefined}
             >
               Vision
             </Link>
             <Link
               href="/#contact"
+              className={navLinkClass(activeSection === "contact")}
               aria-current={activeSection === "contact" ? "true" : undefined}
             >
               Contact
             </Link>
-            <button
+            <Button
+              size="sm"
               onClick={handleLaunchAR}
-              className="btn sm"
               id="nav-launch-btn"
-              aria-busy={isLaunching}
+              busy={isLaunching}
+              className="ml-2.5"
             >
               Launch AR
-            </button>
+            </Button>
           </nav>
 
           <button
-            className="burger"
+            className="grid place-items-center w-11 h-11 border border-line-bright rounded-xl bg-white/[0.06] text-t1 cursor-pointer shrink-0 z-[101] lg:hidden"
             id="mobile-menu-btn"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-nav"
             aria-label="Menu"
             onClick={() => setIsMenuOpen((prev) => !prev)}
           >
-            <MenuIcon className="i m" />
-            <CloseIcon className="i x" />
+            <MenuIcon
+              className={`[grid-area:1/1] w-[22px] h-[22px] transition-[opacity,transform] duration-250 ease-smooth ${
+                isMenuOpen ? "opacity-0 rotate-90" : "opacity-100 rotate-0"
+              }`}
+            />
+            <CloseIcon
+              className={`[grid-area:1/1] w-[22px] h-[22px] transition-[opacity,transform] duration-250 ease-smooth ${
+                isMenuOpen ? "opacity-100 rotate-0" : "opacity-0 -rotate-90"
+              }`}
+            />
           </button>
         </div>
       </header>
 
       {/* Mobile Fullscreen Drawer */}
       <nav
-        className="mnav"
+        className={`fixed z-[99] inset-x-0 top-[var(--hdr)] bottom-0 flex flex-col overflow-y-auto overscroll-contain px-6 pt-3 pb-[calc(24px+env(safe-area-inset-bottom))] bg-[#07111e]/[0.97] backdrop-blur-lg animate-[fade_0.2s] lg:hidden ${
+          !isMenuOpen ? "hidden" : ""
+        }`}
         id="mobile-nav"
         aria-label="Mobile"
         hidden={!isMenuOpen}
       >
-        <Link href="/#how" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/#how" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           How it works
         </Link>
-        <Link href="/#about" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/#about" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           About
         </Link>
-        <Link href="/#college" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/#college" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           Campus
         </Link>
-        <Link href="/#vision" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/#vision" onClick={() => setIsMenuOpen(false)} className={mobileNavLinkClass}>
           Vision
         </Link>
-        <Link href="/#contact" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/#contact" onClick={() => setIsMenuOpen(false)} className={`${mobileNavLinkClass} mb-6`}>
           Contact
         </Link>
-        <button
+        <Button
           onClick={handleLaunchAR}
-          className="btn"
           id="mobile-launch-btn"
-          aria-busy={isLaunching}
+          busy={isLaunching}
+          className="w-full min-h-14 mt-auto"
         >
           Launch AR
-        </button>
+        </Button>
       </nav>
     </>
   );

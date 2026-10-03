@@ -42,19 +42,37 @@ export default function AboutSection() {
   ];
 
   return (
-    <section className="sec white" id="about" aria-labelledby="about-h">
-      <div className="wrap split a">
+    <section
+      className="py-[clamp(64px,9vw,120px)] relative z-1 bg-gradient-to-b from-white/[0.04] to-white/[0.008] border-y border-line"
+      id="about"
+      aria-labelledby="about-h"
+    >
+      <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto grid gap-[clamp(28px,4vw,48px)] items-start">
         <div>
-          <h2 id="about-h">What is EnRouteAR?</h2>
+          <h2
+            id="about-h"
+            className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em]"
+          >
+            What is EnRouteAR?
+          </h2>
         </div>
-        <ul className="feats">
+        <ul className="grid gap-4 list-none p-0 sm:grid-cols-2 min-[60em]:grid-cols-3">
           {features.map((feat, idx) => {
             const Icon = feat.icon;
             return (
-              <li key={idx}>
-                <Icon className="feat-icon" />
-                <h3>{feat.title}</h3>
-                <p>{feat.desc}</p>
+              <li
+                key={idx}
+                className="group relative isolate overflow-hidden border border-line bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09),0_24px_48px_-28px_rgba(0,0,0,0.7)] rounded-[22px] p-7 transition-[border-color,transform] duration-250 ease-smooth hover:border-line-bright hover:-translate-y-[3px] before:content-[''] before:absolute before:inset-0 before:-z-10 before:opacity-0 before:pointer-events-none before:[background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,0),rgba(76,141,255,0.22),transparent_65%)] before:transition-opacity before:duration-300 hover:before:opacity-100 sm:[&:nth-child(1)]:col-span-2 sm:[&:nth-child(6)]:col-span-2 min-[60em]:[&:nth-child(1)]:col-span-2 min-[60em]:[&:nth-child(4)]:col-span-2 min-[60em]:[&:nth-child(5)]:col-span-2 min-[60em]:[&:nth-child(6)]:col-auto"
+              >
+                <div className="w-12 h-12 p-3 mb-5 rounded-[14px] text-[#A9CBFF] bg-gradient-to-br from-[rgba(76,141,255,0.32)] to-[rgba(76,141,255,0.08)] border border-[rgba(120,170,255,0.38)] shadow-[0_0_28px_-4px_rgba(76,141,255,0.55)] flex items-center justify-center">
+                  <Icon className="w-6 h-6 shrink-0" />
+                </div>
+                <h3 className="font-display text-[1.2rem] font-bold mb-2 tracking-[-0.015em] text-t1 group-first:text-[1.6rem]">
+                  {feat.title}
+                </h3>
+                <p className="text-t2 text-[0.96rem] max-w-[46ch]">
+                  {feat.desc}
+                </p>
               </li>
             );
           })}
