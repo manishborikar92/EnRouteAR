@@ -17,7 +17,7 @@ export default function NotFound() {
 
       <main
         id="main"
-        className="min-h-[calc(100vh-var(--hdr)-140px)] flex items-center justify-center pt-[calc(var(--hdr)+40px)] pb-20 relative z-1"
+        className="min-h-[calc(100vh-var(--hdr)-140px)] flex items-center justify-center pt-[calc(var(--hdr)+40px)] pb-[calc(5rem+env(safe-area-inset-bottom,0px))] relative z-1"
       >
         <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto text-center max-w-[640px] px-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(255,197,61,0.1)] border border-[rgba(255,197,61,0.3)] text-signal font-mono text-[0.8rem] font-semibold mb-6">
@@ -35,11 +35,11 @@ export default function NotFound() {
           </p>
 
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Button href="/">
+            <Button href="/" className="w-full sm:w-auto">
               <Home className="w-4 h-4 shrink-0" />
               <span>Return to Campus Home</span>
             </Button>
-            <Button variant="signal" href="/navigate">
+            <Button variant="signal" href="/navigate" className="w-full sm:w-auto">
               <Compass className="w-4 h-4 shrink-0" />
               <span>Launch AR Wayfinding</span>
             </Button>

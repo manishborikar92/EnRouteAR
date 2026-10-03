@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { PlayIcon } from "@/components/common/Icons";
 import Button from "@/components/common/Button";
@@ -10,29 +10,45 @@ export default function MobileDock() {
   const [isLaunching, setIsLaunching] = useState(false);
   const router = useRouter();
 
+  const isHeroPastRef = useRef(false);
+  const isBottomVisibleRef = useRef(false);
+  const lastScrollYRef = useRef(0);
+  const scrollIdleTimerRef = useRef(null);
+
+  const recomputeVisibility = useCallback((isScrollingDown = false) => {
+    // If hero is still in view or bottom CTA/contact/footer is visible, always hide dock
+    if (!isHeroPastRef.current || isBottomVisibleRef.current) {
+      setShowDock(false);
+      return;
+    }
+
+    // While actively scrolling down to read, tuck dock away so step 3 / cards are not obscured
+    if (isScrollingDown) {
+      setShowDock(false);
+    } else {
+      // When scrolling up or pausing, reveal dock
+      setShowDock(true);
+    }
+  }, []);
+
   useEffect(() => {
-    const heroBtn = document.getElementById("turnOnLocationBtn");
-    if (!heroBtn) return;
+    const heroEl = document.getElementById("hero");
+    if (!heroEl) return;
 
     const seenBottom = new Set();
-    let isHeroVisible = true;
-
-    const updateVisibility = () => {
-      setShowDock(!isHeroVisible && seenBottom.size === 0);
-    };
 
     const heroObserver = new IntersectionObserver(
       ([entry]) => {
-        isHeroVisible = entry.isIntersecting;
-        updateVisibility();
+        // Hero is past when it is not intersecting and its bottom has scrolled above the header
+        isHeroPastRef.current = !entry.isIntersecting && entry.boundingClientRect.bottom <= 120;
+        recomputeVisibility(false);
       },
-      { threshold: 0.1 }
+      { threshold: [0, 0.1, 0.2] }
     );
-
-    heroObserver.observe(heroBtn);
+    heroObserver.observe(heroEl);
 
     const bottomElements = document.querySelectorAll(
-      ".cta, #contact, footer"
+      ".cta, #cta, #contact, footer"
     );
     const bottomObserver = new IntersectionObserver(
       (entries) => {
@@ -43,18 +59,41 @@ export default function MobileDock() {
             seenBottom.delete(entry.target);
           }
         });
-        updateVisibility();
+        isBottomVisibleRef.current = seenBottom.size > 0;
+        recomputeVisibility(false);
       },
       { threshold: 0.05 }
     );
-
     bottomElements.forEach((el) => bottomObserver.observe(el));
+
+    // Scroll listener for directional auto-hide
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollYRef.current;
+
+      // Filter out micro-movements
+      if (Math.abs(diff) > 8) {
+        const isDown = diff > 0 && currentScrollY > 160;
+        recomputeVisibility(isDown);
+        lastScrollYRef.current = currentScrollY;
+
+        // When reading/scroll pauses for 850ms, gently slide dock back up
+        if (scrollIdleTimerRef.current) clearTimeout(scrollIdleTimerRef.current);
+        scrollIdleTimerRef.current = setTimeout(() => {
+          recomputeVisibility(false);
+        }, 850);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       heroObserver.disconnect();
       bottomObserver.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      if (scrollIdleTimerRef.current) clearTimeout(scrollIdleTimerRef.current);
     };
-  }, []);
+  }, [recomputeVisibility]);
 
   const handleLaunch = (e) => {
     e.preventDefault();

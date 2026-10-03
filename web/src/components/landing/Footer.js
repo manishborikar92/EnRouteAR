@@ -7,7 +7,7 @@ export default function Footer() {
     "py-2 text-t2 font-medium text-[0.92rem] no-underline hover:text-lk hover:underline transition-colors";
 
   return (
-    <footer className="pt-12 pb-8 border-t border-line bg-gradient-to-b from-transparent to-black/25 relative z-1">
+    <footer className="pt-12 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] border-t border-line bg-gradient-to-b from-transparent to-black/25 relative z-1">
       <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto flex flex-wrap justify-between gap-7">
         <div>
           <Link

@@ -207,7 +207,7 @@ export default function ARViewport({
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-route text-white font-display text-xs font-semibold rounded-md hover:bg-route/90 transition-colors"
+            className="min-h-10 px-5 py-2.5 bg-route text-white font-display text-sm font-semibold rounded-xl hover:bg-route/90 transition-colors cursor-pointer"
           >
             Retry Loading
           </button>

@@ -44,9 +44,16 @@
 }
 
 @keyframes reel {
-  to {
-    transform: translateX(-50%);
+  from {
+    transform: translate3d(0, 0, 0);
   }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-reel {
+  animation: reel var(--dur, 35s) linear infinite;
 }
 
 @keyframes rise {
@@ -106,12 +113,18 @@
 
 :root {
   color-scheme: dark;
-  --hdr: 68px;
+  --hdr: calc(68px + env(safe-area-inset-top, 0px));
+}
+
+html,
+body {
+  overflow-x: clip;
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--hdr) + 16px);
+  scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   -webkit-text-size-adjust: 100%;
 }
 
@@ -248,6 +261,21 @@ canvas.a-canvas {
 
 .mapboxgl-ctrl-attrib {
   font-size: 9px !important;
+}
+
+.mapboxgl-ctrl-attrib-button {
+  min-width: 36px !important;
+  min-height: 36px !important;
+}
+
+.mapboxgl-ctrl-bottom-left {
+  bottom: env(safe-area-inset-bottom, 0px) !important;
+  left: max(0.5rem, env(safe-area-inset-left, 0px)) !important;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  bottom: env(safe-area-inset-bottom, 0px) !important;
+  right: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
 }
 
 #select-destination option {

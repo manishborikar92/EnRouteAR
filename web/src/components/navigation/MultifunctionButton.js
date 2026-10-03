@@ -7,7 +7,7 @@ export default function MultifunctionButton({ mode = "centered", onClick }) {
   return (
     <div
       id="multifunction-container"
-      className="absolute bottom-[195px] right-3.5 w-[44px] h-[44px] rounded-full origin-center z-3 pointer-events-auto"
+      className="absolute bottom-[195px] right-[max(0.875rem,env(safe-area-inset-right))] w-[44px] h-[44px] rounded-full origin-center z-3 pointer-events-auto"
     >
       <button
         id="multifunction-button"

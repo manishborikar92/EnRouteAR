@@ -13,7 +13,7 @@ export default function Error({ error, reset }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-bg text-t1 px-6 text-center relative">
       <Atmosphere />
-      <div className="glass-panel max-w-[480px] w-full p-8 rounded-2xl flex flex-col items-center gap-4 relative z-10">
+      <div className="glass-panel max-w-[480px] w-full p-6 sm:p-8 rounded-2xl flex flex-col items-center gap-4 relative z-10">
         <div className="w-14 h-14 rounded-full bg-[rgba(255,145,136,0.12)] border border-[rgba(255,145,136,0.35)] flex items-center justify-center text-err shadow-[0_0_24px_rgba(255,145,136,0.25)]">
           <AlertTriangle className="w-7 h-7 shrink-0" />
         </div>
@@ -24,7 +24,7 @@ export default function Error({ error, reset }) {
           An unexpected issue occurred while rendering the page. You can attempt to
           reload the view.
         </p>
-        <Button onClick={() => reset()} className="mt-2">
+        <Button onClick={() => reset()} className="mt-2 w-full sm:w-auto">
           <RotateCcw className="w-4 h-4 shrink-0" />
           <span>Try Again</span>
         </Button>

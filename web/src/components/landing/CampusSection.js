@@ -75,7 +75,7 @@ export default function CampusSection() {
             {stops.map((stop) => (
               <li
                 key={stop}
-                className="relative py-[11px] pl-[30px] pr-0 text-t2 text-[0.96rem] before:content-[''] before:absolute before:left-[1px] before:top-1/2 before:-translate-y-1/2 before:w-3 before:h-3 before:rounded-full before:bg-bg before:border-[3px] before:border-route before:shadow-[0_0_12px_rgba(76,141,255,0.7)]"
+                className="relative py-[11px] pl-[30px] pr-0 text-t2 text-[0.96rem] before:content-[''] before:absolute before:left-[1px] before:top-[17px] before:w-3 before:h-3 before:rounded-full before:bg-bg before:border-[3px] before:border-route before:shadow-[0_0_12px_rgba(76,141,255,0.7)]"
               >
                 {stop}
               </li>

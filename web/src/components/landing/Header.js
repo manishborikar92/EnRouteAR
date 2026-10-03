@@ -126,7 +126,7 @@ export default function Header() {
         }`}
         id="top"
       >
-        <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto h-[var(--hdr)] flex items-center justify-between gap-6">
+        <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto h-[var(--hdr)] pt-[env(safe-area-inset-top,0px)] flex items-center justify-between gap-6">
           <Link
             href="/"
             className="inline-flex items-center gap-2.5 text-t1 no-underline font-display font-extrabold text-[1.3rem] leading-none tracking-[-0.03em] min-w-0"

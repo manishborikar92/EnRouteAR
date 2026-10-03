@@ -13,7 +13,7 @@ export default function ContactError({ error, reset }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg text-t1 px-6 relative">
       <Atmosphere />
-      <div className="glass-panel max-w-[480px] w-full p-8 rounded-2xl text-center relative z-10">
+      <div className="glass-panel max-w-[480px] w-full p-6 sm:p-8 rounded-2xl text-center relative z-10">
         <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[rgba(255,197,61,0.12)] border border-[rgba(255,197,61,0.35)] flex items-center justify-center text-signal shadow-[0_0_24px_rgba(255,197,61,0.25)]">
           <AlertTriangle className="w-7 h-7 shrink-0" />
         </div>
@@ -28,6 +28,7 @@ export default function ContactError({ error, reset }) {
             type="button"
             size="sm"
             onClick={() => reset()}
+            className="w-full sm:w-auto"
           >
             <RotateCcw className="w-4 h-4 shrink-0" />
             <span>Retry</span>
@@ -36,6 +37,7 @@ export default function ContactError({ error, reset }) {
             size="sm"
             variant="ghost"
             href="/"
+            className="w-full sm:w-auto"
           >
             <Home className="w-4 h-4 shrink-0" />
             <span>Home</span>

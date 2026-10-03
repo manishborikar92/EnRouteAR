@@ -73,7 +73,7 @@ export default function HeroSection() {
 
   return (
     <div
-      className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto grid gap-[clamp(32px,5vw,64px)] items-center pt-[calc(var(--hdr)+24px)] pb-[clamp(40px,6vw,72px)] min-[56.25em]:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] min-[56.25em]:min-h-[calc(100svh-var(--hdr))]"
+      className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto grid gap-[clamp(32px,5vw,64px)] items-center pt-[calc(var(--hdr)+20px)] pb-[clamp(36px,5vw,64px)] min-[56.25em]:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] min-[56.25em]:min-h-[calc(100svh-var(--hdr))] overflow-x-clip"
       id="hero"
     >
       <div>
@@ -89,7 +89,7 @@ export default function HeroSection() {
           directly onto your camera feed. Built for KITS Ramtek campus — powered
           by A-Frame, AR.js &amp; Mapbox.
         </p>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-8 animate-[up_0.8s_0.24s_cubic-bezier(0.2,0.7,0.2,1)_both]">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 animate-[up_0.8s_0.24s_cubic-bezier(0.2,0.7,0.2,1)_both]">
           <Button
             onClick={handleLaunchNavigation}
             id="turnOnLocationBtn"
@@ -106,30 +106,30 @@ export default function HeroSection() {
             <DownIcon className="w-5 h-5 shrink-0 transition-transform duration-200 ease-smooth group-hover:translate-y-0.5" />
           </a>
         </div>
-        <dl className="flex flex-wrap gap-x-9 gap-y-4 pt-5 border-t border-line animate-[up_0.8s_0.32s_cubic-bezier(0.2,0.7,0.2,1)_both]">
+        <dl className="grid grid-cols-3 gap-x-2 sm:gap-x-8 pt-5 border-t border-line animate-[up_0.8s_0.32s_cubic-bezier(0.2,0.7,0.2,1)_both]">
           <div className="flex flex-col">
-            <dt className="font-display font-extrabold text-[2rem] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
+            <dt className="font-display font-extrabold text-[clamp(1.5rem,5vw,2rem)] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
               14+
             </dt>
-            <dd className="text-[0.88rem] text-t3 mt-1">Campus locations</dd>
+            <dd className="text-xs sm:text-[0.88rem] text-t3 mt-1.5 leading-tight">Campus locations</dd>
           </div>
           <div className="flex flex-col">
-            <dt className="font-display font-extrabold text-[2rem] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
+            <dt className="font-display font-extrabold text-[clamp(1.5rem,5vw,2rem)] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
               3D
             </dt>
-            <dd className="text-[0.88rem] text-t3 mt-1">AR waypoints</dd>
+            <dd className="text-xs sm:text-[0.88rem] text-t3 mt-1.5 leading-tight">AR waypoints</dd>
           </div>
           <div className="flex flex-col">
-            <dt className="font-display font-extrabold text-[2rem] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
+            <dt className="font-display font-extrabold text-[clamp(1.5rem,5vw,2rem)] leading-none tracking-[-0.03em] text-signal [text-shadow:0_0_28px_rgba(255,197,61,0.35)]">
               Live
             </dt>
-            <dd className="text-[0.88rem] text-t3 mt-1">Real-time GPS</dd>
+            <dd className="text-xs sm:text-[0.88rem] text-t3 mt-1.5 leading-tight">Real-time GPS</dd>
           </div>
         </dl>
       </div>
 
       <figure
-        className="relative isolate m-0 justify-self-center w-[min(100%,360px)] before:content-[''] before:absolute before:-z-10 before:-inset-x-[34%] before:-inset-y-[14%] before:[background:repeating-radial-gradient(circle_at_50%_46%,transparent_0_52px,rgba(120,170,255,0.14)_53px_54px)] before:[mask-image:radial-gradient(circle_at_50%_46%,#000_12%,transparent_68%)] after:content-[''] after:absolute after:-z-10 after:left-[10%] after:right-[10%] after:top-[18%] after:bottom-[6%] after:[background:radial-gradient(closest-side,rgba(47,107,255,0.55),transparent)] after:blur-[40px]"
+        className="relative isolate m-0 justify-self-center w-[min(100%,360px)] before:content-[''] before:absolute before:-z-10 before:inset-x-0 sm:before:-inset-x-[20%] md:before:-inset-x-[34%] before:-inset-y-[14%] before:[background:repeating-radial-gradient(circle_at_50%_46%,transparent_0_52px,rgba(120,170,255,0.14)_53px_54px)] before:[mask-image:radial-gradient(circle_at_50%_46%,#000_12%,transparent_68%)] after:content-[''] after:absolute after:-z-10 after:left-[10%] after:right-[10%] after:top-[18%] after:bottom-[6%] after:[background:radial-gradient(closest-side,rgba(47,107,255,0.55),transparent)] after:blur-[40px]"
         ref={vfContainerRef}
       >
         <div

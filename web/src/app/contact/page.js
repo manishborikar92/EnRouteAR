@@ -58,7 +58,7 @@ export default function ContactPage() {
       <SpotlightTracker />
       <Header />
 
-      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24 relative z-1">
+      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-[calc(6rem+env(safe-area-inset-bottom,0px))] relative z-1">
         <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto">
           {/* Breadcrumb Navigation */}
           <nav aria-label="Breadcrumb" className="mb-8">
@@ -66,7 +66,7 @@ export default function ContactPage() {
               <li>
                 <Link
                   href="/"
-                  className="hover:text-t1 transition-colors no-underline text-t3"
+                  className="inline-flex items-center min-h-[36px] py-1 text-t3 hover:text-t1 transition-colors no-underline"
                 >
                   Home
                 </Link>
@@ -133,7 +133,7 @@ export default function ContactPage() {
                     href="https://www.kits.edu"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-route hover:text-white transition-colors no-underline font-semibold"
+                    className="inline-flex items-center gap-1.5 min-h-[36px] py-1 text-route hover:text-white transition-colors no-underline font-semibold"
                   >
                     <span>kits.edu</span>
                     <ExternalLink className="w-3.5 h-3.5" />

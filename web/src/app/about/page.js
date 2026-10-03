@@ -104,7 +104,7 @@ export default function AboutPage() {
       <SpotlightTracker />
       <Header />
 
-      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-24 relative z-1">
+      <main id="main" className="pt-[calc(var(--hdr)+36px)] pb-[calc(6rem+env(safe-area-inset-bottom,0px))] relative z-1">
         <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto">
           {/* Breadcrumb Navigation */}
           <nav aria-label="Breadcrumb" className="mb-8">
@@ -112,7 +112,7 @@ export default function AboutPage() {
               <li>
                 <Link
                   href="/"
-                  className="hover:text-t1 transition-colors no-underline text-t3"
+                  className="inline-flex items-center min-h-[36px] py-1 text-t3 hover:text-t1 transition-colors no-underline"
                 >
                   Home
                 </Link>
@@ -264,7 +264,7 @@ export default function AboutPage() {
               <Button
                 variant="signal"
                 href="/navigate"
-                className="min-h-14 px-8 text-base shrink-0"
+                className="w-full min-[53.75em]:w-auto min-h-14 px-8 text-base shrink-0"
               >
                 <PlayIcon className="w-5 h-5 shrink-0" />
                 <span>Launch navigation</span>

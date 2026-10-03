@@ -63,7 +63,7 @@ export default function AboutSection() {
               <li
                 key={idx}
                 data-spotlight="true"
-                className="glass-spotlight rounded-[22px] p-7 sm:[&:nth-child(1)]:col-span-2 sm:[&:nth-child(6)]:col-span-2 min-[60em]:[&:nth-child(1)]:col-span-2 min-[60em]:[&:nth-child(4)]:col-span-2 min-[60em]:[&:nth-child(5)]:col-span-2 min-[60em]:[&:nth-child(6)]:col-auto"
+                className="glass-spotlight rounded-[22px] p-6 sm:p-7 sm:[&:nth-child(1)]:col-span-2 sm:[&:nth-child(6)]:col-span-2 min-[60em]:[&:nth-child(1)]:col-span-2 min-[60em]:[&:nth-child(4)]:col-span-2 min-[60em]:[&:nth-child(5)]:col-span-2 min-[60em]:[&:nth-child(6)]:col-auto"
               >
                 <div className="w-12 h-12 p-3 mb-5 rounded-[14px] text-[#A9CBFF] bg-gradient-to-br from-[rgba(76,141,255,0.32)] to-[rgba(76,141,255,0.08)] border border-[rgba(120,170,255,0.38)] shadow-[0_0_28px_-4px_rgba(76,141,255,0.55)] flex items-center justify-center">
                   <Icon className="w-6 h-6 shrink-0" />

@@ -31,7 +31,7 @@ export default function HomePage() {
       <Header />
 
       {/* Main Landmark */}
-      <main id="main">
+      <main id="main" className="overflow-x-clip pb-12 sm:pb-0">
         <HeroSection />
         <TechTicker />
         <HowSection />

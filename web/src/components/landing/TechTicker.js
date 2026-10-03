@@ -25,22 +25,22 @@ export default function TechTicker() {
 
   return (
     <div
-      className={`border-y border-line bg-white/[0.025] relative z-1 cursor-pointer select-none ${
+      className={`border-y border-line bg-white/[0.025] relative z-1 cursor-pointer select-none overflow-hidden ${
         isPaused ? "[&_.reel]:[animation-play-state:paused]" : ""
       }`}
       id="stack"
       onClick={() => setIsPaused((prev) => !prev)}
       title="Click to pause/play marquee"
     >
-      <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto flex items-center gap-5 py-4">
+      <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto flex items-center gap-5 py-4 overflow-hidden">
         <div
-          className="flex-1 min-w-0 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)] hover:[&_.reel]:[animation-play-state:paused]"
+          className="flex-1 min-w-0 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)] hover:[&_.reel]:[animation-play-state:paused]"
           role="region"
           aria-label="Technologies"
           tabIndex={0}
         >
           <ul
-            className="reel flex w-max animate-[reel_35s_linear_infinite]"
+            className="reel flex w-max animate-reel will-change-transform"
             style={{ "--dur": "35s" }}
           >
             {repeatedTech.map((tech, idx) => (
