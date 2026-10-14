@@ -1,186 +1,218 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #020c16;
-  --color-bg-alt: #041528;
-  --color-surface: rgba(4, 26, 42, 0.75);
-  --color-surface-hi: rgba(0, 180, 255, 0.06);
-  --color-border: rgba(0, 180, 255, 0.15);
-  --color-border-hi: rgba(0, 180, 255, 0.35);
-  --color-primary: #00b4ff;
-  --color-primary-dk: #007ab8;
-  --color-accent: #facf0e;
-  --color-accent-dk: #c8a400;
-  --color-text-1: #e8f4ff;
-  --color-text-2: #7ab8d9;
-  --color-text-3: #3d7a9b;
+  --color-bg: #07111E;
+  --color-bg-alt: #0A1627;
+  --color-t1: #EAF0F8;
+  --color-t2: #B1C0D4;
+  --color-t3: #8EA0B8;
+  --color-line: rgba(150, 185, 235, 0.16);
+  --color-line-bright: rgba(150, 185, 235, 0.34);
+  --color-route: #4C8DFF;
+  --color-lk: #8DB8FF;
+  --color-blue: #2A64F5;
+  --color-blue-dk: #1E4FD6;
+  --color-signal: #FFC53D;
+  --color-green: #3DDC97;
+  --color-err: #FF9188;
 
-  --font-display: var(--font-orbitron), "Orbitron", monospace;
-  --font-body: var(--font-outfit), "Outfit", sans-serif;
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: var(--font-public-sans), "Public Sans", system-ui, sans-serif;
 
-  --radius-sm: 6px;
+  --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
   --radius-xl: 32px;
+  --radius-2xl: 24px;
+  --radius-3xl: 26px;
+  --radius-4xl: 38px;
 
-  --shadow-glow: 0 0 40px rgba(0, 180, 255, 0.12);
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45);
-  --shadow-deep: 0 24px 64px rgba(0, 0, 0, 0.6);
+  --ease-smooth: cubic-bezier(0.2, 0.7, 0.2, 1);
 
-  --ease-custom: cubic-bezier(0.4, 0, 0.2, 1);
+  --z-1: 1;
+  --z-2: 2;
+  --z-3: 3;
+  --z-5: 5;
 
-  --animate-pulse-ring: pulse-ring 2s ease infinite;
-  --animate-grid-scroll: grid-scroll 8s linear infinite;
-  --animate-wp-pulse: wp-pulse 3s ease-in-out infinite;
-  --animate-trail-grow: trail-grow 2s ease-in-out infinite;
-  --animate-ticker: ticker 25s linear infinite;
+  --animate-reel: reel var(--dur, 35s) linear infinite;
+  --animate-rise: rise 1.1s 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-flow: flow 1.1s linear infinite;
+  --animate-pop: pop 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade: fade 0.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-up: up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-ping-dot: ping-dot 2.4s infinite;
+}
 
-  @keyframes pulse-ring {
-    0% {
-      box-shadow: 0 0 0 0 rgba(0, 180, 255, 0.5);
-    }
-    70% {
-      box-shadow: 0 0 0 8px rgba(0, 180, 255, 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(0, 180, 255, 0);
-    }
+@keyframes reel {
+  from {
+    transform: translate3d(0, 0, 0);
   }
-
-  @keyframes grid-scroll {
-    0% {
-      background-position: 0 0;
-    }
-    100% {
-      background-position: 0 20px;
-    }
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
+}
 
-  @keyframes wp-pulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.85;
-      transform: scale(1.06);
-    }
+.animate-reel {
+  animation: reel var(--dur, 35s) linear infinite;
+}
+
+@keyframes rise {
+  from {
+    clip-path: inset(100% 0 0 0);
   }
-
-  @keyframes trail-grow {
-    0%, 100% {
-      opacity: 1;
-      height: 25%;
-    }
-    50% {
-      opacity: 0.6;
-      height: 28%;
-    }
+  to {
+    clip-path: inset(0);
   }
+}
 
-  @keyframes ticker {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
+@keyframes flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ping-dot {
+  70% {
+    box-shadow: 0 0 0 9px rgba(61, 220, 151, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(61, 220, 151, 0);
   }
 }
 
 :root {
-  --bg: #020c16;
-  --bg-alt: #041528;
-  --surface: rgba(4, 26, 42, 0.75);
-  --surface-hi: rgba(0, 180, 255, 0.06);
-  --border: rgba(0, 180, 255, 0.15);
-  --border-hi: rgba(0, 180, 255, 0.35);
-  --primary: #00b4ff;
-  --primary-dk: #007ab8;
-  --accent: #facf0e;
-  --text-1: #e8f4ff;
-  --text-2: #7ab8d9;
-  --text-3: #3d7a9b;
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 32px;
-  --shadow-glow: 0 0 40px #00b4ff1f;
-  --shadow-card: 0 8px 32px #00000073;
-  --shadow-deep: 0 24px 64px #0009;
+  color-scheme: dark;
+  --hdr: calc(68px + env(safe-area-inset-top, 0px));
+}
+
+html,
+body {
+  overflow-x: clip;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--hdr) + 16px);
+  scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  -webkit-text-size-adjust: 100%;
 }
 
-body {
-  background-color: var(--color-bg, #020c16);
-  color: var(--color-text-1, #e8f4ff);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  background: #041528;
-  width: 6px;
-}
-::-webkit-scrollbar-thumb {
-  background: #007ab8;
-  border-radius: 99px;
-}
-
-/* Scan-line overlay */
-.scanlines {
-  background: repeating-linear-gradient(
-    rgba(0, 0, 0, 0) 0 3px,
-    rgba(0, 0, 0, 0.05) 3px 4px
-  );
-}
-
-/* Header scrolled state */
-#site-header.scrolled .header-inner {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 180, 255, 0.15);
-  background: rgba(2, 12, 22, 0.92);
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
-
-@media (max-width: 768px) {
-  #site-header.scrolled .header-inner {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-}
-
-/* Scroll reveal helper */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1), transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* AR grid pattern for mockup */
-.ar-grid {
-  background-image: linear-gradient(rgba(0, 180, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 180, 255, 0.08) 1px, transparent 1px);
-  background-size: 20px 20px;
+a, button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Navigation HUD & AR Viewport Styles
+   Glass Surfaces & Cursor Spotlight Utilities
    ───────────────────────────────────────────────────────────── */
 
-/* Camera video feed background for AR.js - full mobile viewport coverage */
+@utility glass-spotlight {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 24px 48px -28px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.25s, transform 0.35s var(--ease-smooth);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0), rgba(76, 141, 255, 0.22), transparent 65%);
+    transition: opacity 0.3s;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &:hover {
+    border-color: var(--color-line-bright);
+    transform: translateY(-3px);
+  }
+}
+
+@utility glass-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 24px 48px -28px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.25s;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0), rgba(76, 141, 255, 0.22), transparent 65%);
+    transition: opacity 0.3s;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .glass-spotlight:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   External Third-Party DOM Overrides (AR.js, A-Frame, Mapbox GL)
+   These elements are injected dynamically by external scripts
+   directly into the DOM outside React's render tree.
+   ───────────────────────────────────────────────────────────── */
+
 video#arjs-video,
 body > video,
 video {
@@ -202,7 +234,6 @@ video {
   display: block !important;
 }
 
-/* Transparent A-Frame scene overlay */
 a-scene {
   background: transparent !important;
   position: fixed !important;
@@ -228,48 +259,30 @@ canvas.a-canvas {
   pointer-events: none !important;
 }
 
-/* Mapbox control styling */
 .mapboxgl-ctrl-attrib {
   font-size: 9px !important;
 }
 
-/* Dynamic orientation compass */
-.compass {
-  background-color: rgba(4, 26, 42, 0.93);
-  border: 1px solid rgba(0, 180, 255, 0.2);
-  transform-origin: 50% 50%;
-  z-index: 3;
-  background-image: url(/icons/compass.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 70%;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  position: absolute;
-  bottom: 195px;
-  left: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+.mapboxgl-ctrl-attrib-button {
+  min-width: 36px !important;
+  min-height: 36px !important;
 }
 
-.custom-marker {
-  background-size: cover;
-  border-radius: 50%;
+.mapboxgl-ctrl-bottom-left {
+  bottom: env(safe-area-inset-bottom, 0px) !important;
+  left: max(0.5rem, env(safe-area-inset-left, 0px)) !important;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  bottom: env(safe-area-inset-bottom, 0px) !important;
+  right: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
 }
 
 #select-destination option {
-  color: #e8f4ff;
-  background: #041528;
+  color: #EAF0F8;
+  background: #0B1626;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #get-direction-button,
-  #multifunction-button {
-    transition: none;
-  }
-}
-
-/* Prevent viewport bounce, scroll, and horizontal overflow on navigation page */
 html:has(#destination-select-container),
 body:has(#destination-select-container) {
   overflow: hidden !important;
@@ -283,14 +296,3 @@ body:has(#destination-select-container) {
   background: transparent !important;
   background-color: transparent !important;
 }
-
-/* Explicit HUD stacking layers matching vanilla navigation */
-.z-0 { z-index: 0; }
-.z-1 { z-index: 1; }
-.z-2 { z-index: 2; }
-.z-3 { z-index: 3; }
-.z-5 { z-index: 5; }
-.z-10 { z-index: 10; }
-.z-20 { z-index: 20; }
-
-

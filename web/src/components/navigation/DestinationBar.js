@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { places } from "@/lib/places";
+import Button from "@/components/common/Button";
 
 export default function DestinationBar({
   selectedDestination,
@@ -13,15 +14,15 @@ export default function DestinationBar({
   return (
     <div
       id="destination-select-container"
-      className="absolute top-[2%] left-[1%] right-[1%] flex justify-between items-center gap-2 px-2.5 py-2 bg-[rgba(4,26,42,0.93)] border border-border rounded-[18px] text-text-1 shadow-[0_8px_32px_rgba(0,0,0,0.55)] z-5 pointer-events-auto"
+      className="absolute top-[max(0.75rem,env(safe-area-inset-top))] left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] flex justify-between items-center gap-2.5 px-3 py-2.5 bg-[#07111E]/92 backdrop-blur-[16px] border border-line-bright/70 rounded-[18px] text-t1 shadow-[0_12px_40px_rgba(0,0,0,0.65)] z-5 pointer-events-auto"
     >
       <Link
         href="/"
         title="Return to Home"
         aria-label="Return to Home"
-        className="w-8 h-8 shrink-0 flex items-center justify-center rounded-[8px] bg-[rgba(0,0,0,0.40)] border border-border text-primary hover:text-white hover:border-primary transition-colors no-underline"
+        className="w-10 h-10 shrink-0 flex items-center justify-center rounded-xl bg-white/[0.06] border border-line-bright/60 text-lk hover:text-white hover:border-route transition-all no-underline"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-5 h-5" />
       </Link>
 
       <select
@@ -29,10 +30,10 @@ export default function DestinationBar({
         value={selectedDestination || ""}
         onChange={(e) => onDestinationChange(e.target.value)}
         aria-label="Select destination"
-        className="flex-1 min-w-0 px-3 py-2 bg-[rgba(0,0,0,0.40)] border border-border rounded-[8px] text-text-1 font-body text-[0.9rem] appearance-none cursor-pointer outline-none overflow-hidden text-ellipsis whitespace-nowrap transition-[border-color,box-shadow] duration-[220ms] ease-custom focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,180,255,0.15)] z-5"
+        className="flex-1 min-w-0 pl-3.5 pr-8 py-2.5 bg-[#030a14]/65 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_width=%2216%22_height=%2216%22_viewBox=%220_0_24_24%22_fill=%22none%22_stroke=%22%238EA0B8%22_stroke-width=%222%22_stroke-linecap=%22round%22_stroke-linejoin=%22round%22%3E%3Cpath_d=%22m6_9_6_6_6-6%22/%3E%3C/svg%3E')] bg-[right_10px_center] bg-no-repeat border border-line-bright/60 rounded-xl text-t1 font-body text-base sm:text-[0.92rem] font-medium appearance-none cursor-pointer outline-none overflow-hidden text-ellipsis whitespace-nowrap transition-all focus:border-route focus:ring-4 focus:ring-route/25 z-5"
       >
         <option value="" disabled>
-          Select Destination
+          Select destination
         </option>
         {places.map((place) => (
           <option key={place.name} value={place.name}>
@@ -41,15 +42,16 @@ export default function DestinationBar({
         ))}
       </select>
 
-      <button
+      <Button
         id="get-direction-button"
-        type="button"
+        size="sm"
         onClick={onNavigate}
         disabled={!selectedDestination || isNavigating}
-        className="w-[105px] sm:w-[120px] py-[9px] shrink-0 bg-gradient-to-br from-primary to-primary-dk border-none rounded-[8px] text-white font-display text-[0.62rem] font-bold tracking-[0.1em] text-center cursor-pointer transition-[box-shadow,transform] duration-[220ms] ease-custom hover:shadow-[0_0_20px_rgba(0,180,255,0.5)] hover:-translate-y-px active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 z-5"
+        busy={isNavigating}
+        className="shrink-0 z-5 font-bold !text-[0.85rem] !px-3 sm:!px-4 min-h-10"
       >
-        {isNavigating ? "Routing..." : "Navigate"}
-      </button>
+        {isNavigating ? "Routing…" : "Navigate"}
+      </Button>
     </div>
   );
 }

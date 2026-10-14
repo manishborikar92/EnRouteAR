@@ -1,28 +1,59 @@
+"use client";
+
+import { useState } from "react";
+
+const TECHNOLOGIES = [
+  "A-Frame",
+  "AR.js",
+  "Mapbox GL JS",
+  "WebGL",
+  "Three.js",
+  "GPS Geolocation",
+  "Device Orientation API",
+];
+
 export default function TechTicker() {
-  const technologies = [
-    "A-FRAME",
-    "AR.JS",
-    "MAPBOX GL JS",
-    "WEBGL",
-    "THREE.JS",
-    "GPS GEOLOCATION",
-    "DEVICE ORIENTATION API",
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Repeat items for continuous infinite marquee
+  const repeatedTech = [
+    ...TECHNOLOGIES,
+    ...TECHNOLOGIES,
+    ...TECHNOLOGIES,
+    ...TECHNOLOGIES,
   ];
 
-  // Repeat for continuous seamless marquee
-  const tickerItems = [...technologies, ...technologies];
-
   return (
-    <div className="tech-ticker relative z-10 overflow-hidden py-3.5 bg-[rgba(0,180,255,0.04)] border-y border-border" aria-hidden="true">
-      <div className="ticker-track flex gap-5 whitespace-nowrap animate-ticker">
-        {tickerItems.map((tech, idx) => (
-          <span key={idx} className="flex items-center gap-5 shrink-0">
-            <span className="font-display text-[0.62rem] tracking-[0.15em] text-text-3 shrink-0">
-              {tech}
-            </span>
-            <span className="sep text-primary opacity-50">◆</span>
-          </span>
-        ))}
+    <div
+      className={`border-y border-line bg-white/[0.025] relative z-1 cursor-pointer select-none overflow-hidden ${
+        isPaused ? "[&_.reel]:[animation-play-state:paused]" : ""
+      }`}
+      id="stack"
+      onClick={() => setIsPaused((prev) => !prev)}
+      title="Click to pause/play marquee"
+    >
+      <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto flex items-center gap-5 py-4 overflow-hidden">
+        <div
+          className="flex-1 min-w-0 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)] hover:[&_.reel]:[animation-play-state:paused]"
+          role="region"
+          aria-label="Technologies"
+          tabIndex={0}
+        >
+          <ul
+            className="reel flex w-max animate-reel will-change-transform"
+            style={{ "--dur": "35s" }}
+          >
+            {repeatedTech.map((tech, idx) => (
+              <li
+                key={idx}
+                className="flex items-center whitespace-nowrap font-display font-semibold text-[1.05rem] tracking-[-0.01em] text-t2 after:content-[''] after:w-[7px] after:h-[7px] after:mx-7 after:rotate-45 after:bg-signal after:opacity-70"
+                aria-hidden={idx >= TECHNOLOGIES.length ? "true" : undefined}
+              >
+                {tech}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

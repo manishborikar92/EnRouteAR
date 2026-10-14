@@ -112,10 +112,11 @@ We follow the **Conventional Commits** specification. Please format your commit 
 - **Proxy vs Middleware**: In Next.js 16+, `middleware.js` is deprecated and replaced by `proxy.js` if network boundary routing is needed.
 - **Next.js Link Usage**: Always use `<Link>` from `next/link` for internal navigation. Do not use standard `<a>` tags for internal paths.
 - **Tailwind CSS v4 Tokens**: Maintain consistency with the established theme colors in [`globals.css`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/globals.css):
-  - Primary Cyan: `text-primary`, `bg-primary`, `border-primary`
-  - Accent Yellow: `text-accent`, `bg-accent`
-  - Background: `bg-bg`, `bg-bg-alt`, `bg-surface`
-  - Typography: `font-display` (Orbitron), `font-body` (Outfit)
+  - Route Blue: `text-route`, `bg-route`, `border-route`
+  - Signal Yellow: `text-signal`, `bg-signal`
+  - Text: `text-t1` (primary), `text-t2` (secondary), `text-t3` (muted)
+  - Surfaces: `bg-bg`, `bg-bg-alt`, `@utility glass-spotlight`, `@utility glass-panel`
+  - Typography: `font-display` (Bricolage Grotesque), `font-body` (Public Sans)
 
 ---
 

@@ -3,22 +3,22 @@ import NavigateClient from "@/components/navigation/NavigateClient";
 export const metadata = {
   title: "Navigate in AR",
   description:
-    "Real-world Augmented Reality navigation and interactive satellite wayfinding across KITS Ramtek campus.",
+    "Real-world Augmented Reality navigation and interactive satellite wayfinding with live camera waypoints and interactive 2D tracking.",
   alternates: {
     canonical: "/navigate",
   },
   openGraph: {
     title: "Navigate in AR | EnRouteAR",
     description:
-      "Real-world Augmented Reality navigation and interactive satellite wayfinding across KITS Ramtek campus.",
+      "Real-world Augmented Reality navigation and interactive satellite wayfinding with live camera waypoints and interactive 2D tracking.",
     url: "/navigate",
   },
   keywords: [
     "AR Navigation",
     "Augmented Reality",
-    "KITS Ramtek",
+    "Outdoor Navigation",
     "Wayfinding",
-    "Campus Navigation",
+    "Spatial Wayfinding",
     "A-Frame",
     "AR.js",
   ],

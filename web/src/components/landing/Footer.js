@@ -1,63 +1,52 @@
 import Link from "next/link";
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  const footerLinkClass =
+    "py-2 text-t2 font-medium text-[0.92rem] no-underline hover:text-lk hover:underline transition-colors";
+
   return (
-    <footer className="relative z-10 bg-bg-alt border-t border-border">
-      <div className="footer-inner max-w-[1200px] mx-auto pt-12 pb-8 px-10 max-md:pt-10 max-md:pb-6 max-md:px-6 flex justify-between items-start gap-10 flex-wrap">
-        <div className="footer-brand">
-          <Link href="/" className="logo-mark sm font-display font-bold text-[1rem] tracking-[0.08em] text-text-1 mb-2 inline-block no-underline">
-            <span className="logo-bracket text-primary">[</span>
-            <span className="logo-text">
-              EnRoute<span className="logo-accent text-accent">AR</span>
+    <footer className="pt-12 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] border-t border-line bg-gradient-to-b from-transparent to-black/25 relative z-1">
+      <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto flex flex-wrap justify-between gap-7">
+        <div>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2.5 text-t1 no-underline font-display font-extrabold text-[1.3rem] leading-none tracking-[-0.03em]"
+            aria-label="EnRouteAR, back to top"
+          >
+            <span>
+              EnRoute<b className="text-route font-extrabold">AR</b>
             </span>
-            <span className="logo-bracket text-primary">]</span>
           </Link>
-          <p className="text-[0.82rem] text-text-3 max-w-[260px]">
-            Augmented Reality Navigation for KITS Ramtek Campus.
+          <p className="text-t3 text-[0.9rem] max-w-[34ch] mt-2.5">
+            Augmented Reality Navigation for the Real World.
           </p>
         </div>
-
-        <div className="footer-links flex flex-wrap gap-x-6 gap-y-2">
-          <Link
-            href="/#about"
-            className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
-          >
-            About
+        <nav className="flex flex-wrap gap-x-5 gap-y-1 content-start" aria-label="Footer">
+          <Link href="/#how" className={footerLinkClass}>
+            How it works
           </Link>
-          <Link
-            href="/#college"
-            className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
-          >
-            Campus
+          <Link href="/#features" className={footerLinkClass}>
+            Features
           </Link>
-          <Link
-            href="/#vision"
-            className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
-          >
+          <Link href="/#destinations" className={footerLinkClass}>
+            Destinations
+          </Link>
+          <Link href="/#vision" className={footerLinkClass}>
             Vision
           </Link>
-          <Link
-            href="/#contact"
-            className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
-          >
+          <Link href="/about" className={footerLinkClass}>
+            About
+          </Link>
+          <Link href="/contact" className={footerLinkClass}>
             Contact
           </Link>
-          <a
-            href="https://www.kits.edu/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-display text-[0.62rem] tracking-[0.12em] uppercase text-text-3 no-underline hover:text-primary transition-colors duration-250"
-          >
-            kits.edu
-          </a>
-        </div>
+        </nav>
       </div>
-
-      <div className="footer-bottom border-t border-[rgba(0,180,255,0.06)] px-10 py-4 max-md:px-6 max-md:py-3.5 max-w-[1200px] mx-auto">
-        <p className="font-display text-[0.58rem] tracking-[0.12em] text-text-3 text-center">
-          &copy; {new Date().getFullYear()} EnRouteAR — All rights reserved.
-        </p>
-      </div>
+      <p className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-3rem)] mx-auto mt-8 pt-5 border-t border-line text-t3 text-[0.84rem]">
+        &copy; <span>{currentYear}</span> EnRouteAR. All rights reserved.
+      </p>
     </footer>
   );
 }

@@ -33,15 +33,13 @@ The original EnRouteAR project was developed as a static prototype inside the `v
 ### Phase 2 — Landing Page Migration
 - **Work Performed**:
   - Migrated `vanilla/index.html` into semantic, modular React components located in [`web/src/components/landing/`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/components/landing):
-    - `Header.js`: Fixed blurred navigation bar with mobile drawer toggle.
+    - `Header.js`: Fixed blurred navigation bar with mobile drawer toggle and route-aware active states.
     - `HeroSection.js`: Luminous title, GPS status badge, action buttons, stats counters, and interactive 3D phone mockup.
     - `TechTicker.js`: Continuous marquee showcasing underlying technology protocols.
-    - `AboutSection.js`: Feature grid highlighting camera AR, 3D overlays, and live route tracking.
-    - `CampusSection.js`: KITS Ramtek narrative, accreditation badges, and interactive campus destination list.
+    - `FeaturesSection.js`: Feature grid highlighting camera AR, 3D overlays, live route tracking, compass heading, satellite map, and destination waypoints.
+    - `DestinationsSection.js`: Physical environment wayfinding overview and waypoint network preview.
     - `VisionSection.js`: Core philosophical pillars.
-    - `CtaSection.js` & `ContactSection.js`: Launch AR trigger and Formspree contact form.
-    - `StarfieldCanvas.js`: High-performance background particle canvas with scanlines.
-    - `ScrollReveal.js`: Lightweight IntersectionObserver triggering fade-and-slide reveals.
+    - `CtaSection.js`: High-converting launch AR trigger and direct contact dispatch bridge.
   - **Fidelity Audit**: Conducted an exhaustive corner radius audit across cards (`rounded-lg`), badges (`rounded-full`), inputs (`rounded-md`), and buttons (`rounded-sm` / `rounded-md`) to ensure 100% visual parity with vanilla tokens.
 
 ### Phase 3 — AR Navigation Migration (`/navigate`)
@@ -54,15 +52,15 @@ The original EnRouteAR project was developed as a static prototype inside the `v
     - `CompassWidget.js`: Hardware heading tracker rotating the HUD dial via GPU-accelerated CSS transforms.
     - `MultifunctionButton.js`: 4-mode tactile navigation state machine.
   - Extracted math formulas (Haversine, waypoint interpolation, Mapbox client) into [`web/src/lib/geo.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/lib/geo.js).
-  - Extracted campus destination coordinates into [`web/src/lib/places.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/lib/places.js).
+  - Extracted verified destination coordinates into [`web/src/lib/places.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/lib/places.js).
 
 ### Phase 4 — Supporting Pages, SEO & Technical Requirements
 - **Work Performed**:
-  - Created dedicated route [`/about`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/about) with technical architecture cards, campus context, and AR launch CTA.
-  - Created dedicated route [`/contact`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/contact) with institutional headquarters info, FAQs, and functional Formspree contact dispatch.
-  - Added Orbitron-themed loading screens (`loading.js`) and client error boundaries (`error.js`) for all routes.
+  - Created dedicated route [`/about`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/about) with technical architecture cards, navigation capabilities, and spatial computing philosophy.
+  - Created dedicated route [`/contact`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/contact) with platform accessibility specs, FAQs, and functional Formspree contact dispatch.
+  - Added loading screens (`loading.js`) and client error boundaries (`error.js`) for all routes.
   - Created [`robots.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/robots.js) and [`sitemap.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/app/sitemap.js) metadata routes.
-  - Created [`web/src/components/seo/JsonLd.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/components/seo/JsonLd.js) generating Schema.org `WebApplication`, `CollegeOrUniversity`, and `BreadcrumbList` structured data.
+  - Created [`web/src/components/seo/JsonLd.js`](file:///c:/Users/manis/Projects/EnRouteAR/web/src/components/seo/JsonLd.js) generating Schema.org `WebApplication`, `Organization`, and `BreadcrumbList` structured data.
 
 ### Phase 5 — End-to-End Testing & Verification
 - **Work Performed**:
@@ -155,4 +153,24 @@ All Phase 7 assets were tested across:
 2. **Production Build (`npm run build`)**: 13/13 static routes generated successfully.
 3. **End-to-End Server Suite**: All routes, SVG sprite symbols, compass rotation, Mapbox marker orientation, and 404 responses for deleted PNGs verified.
 4. **Visual Parity**: Vector SVG artwork verified pixel-perfect against original PNGs via CairoSVG test renders and mobile viewport testing.
+
+---
+
+## 6. Phase 8 — IA Unification, Location Independence & Roadmap
+
+### 1. Information Architecture Unification
+- **Problem**: The site previously maintained duplicate `#about` / `/about` and `#contact` / `/contact` flows, creating duplicate contact forms and orphaned subpages.
+- **Solution**:
+  - Restructured the landing page into a clean product conversion funnel: Hero &rarr; How it works (`#how`) &rarr; Features (`#features` with bridge to `/about`) &rarr; Destinations (`#destinations`) &rarr; Vision (`#vision`) &rarr; CTA (`#cta` with contact bridge to `/contact`).
+  - Elevated `/about` to the single source of truth for 3D spatial computing architecture, geospatial anchoring, and navigation specifications.
+  - Elevated `/contact` to the centralized developer dispatch hub containing sensor requirements, FAQs, and the interactive Formspree submission form.
+  - Retained backward-compatible hash anchors (`#about`, `#contact`) to prevent broken external links.
+
+### 2. Location-Independent Evolution
+- **Decoupling from Institutions**: All UI elements, page metadata, descriptions, JSON-LD schemas, and navigation labels were completely decoupled from any specific college or campus context. EnRouteAR is now positioned as a universal AR wayfinding platform for any physical space worldwide.
+- **Sample Coordinate Test Suite**: The 15 pre-calibrated coordinates in `lib/places.js` are retained as a verified sample test suite for outdoor GPS validation and Haversine interpolation testing.
+
+### 3. Future Roadmap: Global Location Search
+- **Search-Based Discovery**: In the next phase, the static destination dropdown will be replaced with an interactive search system powered by the Mapbox Geocoding & Search API.
+- **Universal Wayfinding**: Users will be able to search and route to any address, point of interest, or custom coordinate globally, making the platform fully dynamic and location-independent end-to-end.
 

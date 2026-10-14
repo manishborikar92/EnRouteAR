@@ -1,13 +1,12 @@
 # EnRouteAR — Project Overview
 
-> **Browser-Native Augmented Reality Campus Navigation Platform**  
-> *Developed for Kavikulguru Institute of Technology and Science (KITS), Ramtek*
+> **Browser-Native Augmented Reality Wayfinding & Spatial Navigation Platform**
 
 ---
 
 ## 1. Executive Summary
 
-**EnRouteAR** is a modern, web-based augmented reality (AR) wayfinding and campus exploration application. Built on **Next.js 16** with **React 19**, **A-Frame**, **AR.js**, and **Mapbox GL JS v3**, EnRouteAR enables students, faculty, and campus visitors to navigate physical university grounds with sub-meter accuracy directly inside standard mobile web browsers—eliminating the friction of native app store downloads or proprietary scanning hardware.
+**EnRouteAR** is a modern, web-based augmented reality (AR) wayfinding and spatial navigation application. Built on **Next.js 16** with **React 19**, **A-Frame**, **AR.js**, and **Mapbox GL JS v3**, EnRouteAR enables visitors, pedestrians, and travelers to navigate physical outdoor environments, complexes, and architectural grounds with sub-meter accuracy directly inside standard mobile web browsers—eliminating the friction of native app store downloads or proprietary scanning hardware.
 
 By fusing real-time device sensor streams (**Camera**, **High-Accuracy GPS Geolocation**, and **DeviceOrientation compass headings**) with interactive satellite cartography and hardware-accelerated WebGL/WebXR rendering, EnRouteAR overlays luminous 3D directional waypoints and animated destination markers onto the physical world.
 
@@ -37,8 +36,8 @@ By fusing real-time device sensor streams (**Camera**, **High-Accuracy GPS Geolo
 - **Free Pan (`recenter`)**: Decouples camera follow when the user touches or pans the map manually, providing a one-tap recenter control.
 - **Active Navigation Reset (`reset-all`)**: Clears active AR waypoints, route polylines, and destination state, returning the system to idle scanning.
 
-### 🏫 15 Pre-Mapped Campus Destinations
-- Comprehensive coordinate index of academic departments, administrative buildings, laboratories, workshops, library, hostels, and athletic complexes across the 50-acre KITS Ramtek campus.
+### 📍 15 Pre-Mapped Sample Destinations
+- Comprehensive coordinate index of facilities, centers, laboratories, workshops, library, and pavilions used as a verified sample test suite prior to the planned search-based location discovery system.
 
 ### 🌐 High-Performance Modern Web Architecture
 - Fully responsive design matching sci-fi HUD aesthetics across mobile, tablet, and desktop viewports.
@@ -92,7 +91,7 @@ EnRouteAR/
     │   │
     │   └── lib/
     │       ├── geo.js              # Haversine distance, interpolation, and routing API
-    │       └── places.js           # Predefined campus coordinates index
+    │       └── places.js           # Predefined sample coordinates index
     │
     ├── package.json                # Project dependencies and npm scripts
     └── next.config.mjs             # Next.js build and Turbopack configuration
@@ -100,8 +99,15 @@ EnRouteAR/
 
 ---
 
-## 4. Key Target Audience & Use Cases
+## 4. Primary Use Cases
 
-1. **Campus Visitors & Guests**: Self-guided AR tour and navigation from campus entrances to administrative offices, departments, or conference venues.
-2. **New Students**: Seamless discovery of lecture halls, specialized laboratories, library resources, and student hostels without physical maps.
-3. **Campus Facilities & Operations**: Digital reference framework for physical asset tagging and spatial location referencing.
+1. **Complex Venues & Architectural Facilities**: Frictionless wayfinding across multi-building complexes, corporate centers, convention facilities, and research centers.
+2. **Pedestrian Exploration & Tourism**: Turn-by-turn augmented reality visual trails guiding visitors across outdoor parks, historic landmarks, and city districts.
+3. **Event Grounds & Arenas**: Real-time camera waypoint overlay helping attendees navigate sports complexes, open-air festivals, and exhibition grounds.
+
+---
+
+## 5. Architectural Roadmap: Search-Based Global Navigation
+
+- **Current State**: Location-independent presentation with 15 pre-mapped sample waypoints in `lib/places.js` acting as a verified testing suite for outdoor GPS fix accuracy, Haversine interpolation, and Mapbox routing.
+- **Upcoming Phase**: Integration of **Mapbox Geocoding & Search API**, enabling dynamic search-based location discovery. Users will be able to query and navigate to any address, venue, or coordinate worldwide without predefined datasets.

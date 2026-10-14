@@ -1,45 +1,75 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Play } from "lucide-react";
+import { PlayIcon } from "@/components/common/Icons";
+import Button from "@/components/common/Button";
 
-export default function CtaSection() {
+export default function CtaSection({
+  title = "Ready to navigate in AR?",
+  description = "Point your phone, pick a destination, and walk toward a new era of wayfinding.",
+  showContactPrompt = true,
+}) {
   const router = useRouter();
+  const [isLaunching, setIsLaunching] = useState(false);
 
   const handleLaunch = (e) => {
     e.preventDefault();
+    if (isLaunching) return;
+
+    const navigateToApp = () => {
+      router.push("/navigate");
+    };
+
     if (typeof navigator !== "undefined" && "geolocation" in navigator) {
+      setIsLaunching(true);
       navigator.geolocation.getCurrentPosition(
-        () => router.push("/navigate"),
+        () => {
+          setIsLaunching(false);
+          navigateToApp();
+        },
         (err) => {
           console.warn("Geolocation warning:", err.message);
-          router.push("/navigate");
+          setIsLaunching(false);
+          navigateToApp();
         },
         { enableHighAccuracy: false, timeout: 8000 }
       );
     } else {
-      router.push("/navigate");
+      navigateToApp();
     }
   };
 
   return (
-    <section className="cta-section relative z-10 py-[100px] px-10 max-md:py-[72px] max-md:px-6 overflow-hidden">
-      <div className="cta-inner reveal max-w-[700px] mx-auto text-center relative">
-        <div className="cta-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse,rgba(0,180,255,0.1),transparent_70%)] pointer-events-none" />
-        <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-text-1 mb-4">
-          Ready to navigate in AR?
-        </h2>
-        <p className="text-[1.05rem] text-text-2 mb-9">
-          Point your phone, pick a destination, and walk toward a new era of wayfinding.
-        </p>
-        <button
+    <section id="cta" className="cta py-[clamp(64px,9vw,120px)] relative z-1" aria-labelledby="cta-h">
+      <div className="w-[min(1180px,100%-1.5rem)] sm:w-[min(1180px,100%-2.5rem)] mx-auto relative overflow-hidden grid gap-7 items-center p-[clamp(32px,6vw,64px)] rounded-[32px] border border-[rgba(160,195,255,0.35)] bg-[radial-gradient(600px_300px_at_100%_0,rgba(255,197,61,0.22),transparent_60%),linear-gradient(135deg,#1E4FD6,#0F2F8F_55%,#0A1D5A)] shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_40px_80px_-30px_rgba(42,100,245,0.6)] min-[53.75em]:grid-cols-[1fr_auto] before:content-[''] before:absolute before:inset-0 before:pointer-events-none before:[background:repeating-radial-gradient(circle_at_92%_8%,transparent_0_34px,rgba(255,255,255,0.09)_35px_36px)] before:[mask-image:radial-gradient(circle_at_92%_8%,#000,transparent_70%)] [&>*]:relative">
+        <div>
+          <h2 id="cta-h" className="font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white mb-3">
+            {title}
+          </h2>
+          <p className="text-[#D2DEF5] max-w-[50ch] text-[1.08rem] [text-wrap:pretty]">
+            {description}
+          </p>
+          {showContactPrompt && (
+            <div id="contact" className="mt-5 pt-4 border-t border-white/15 text-sm text-[#D2DEF5] flex items-center gap-2 flex-wrap scroll-mt-28">
+              <span>Have technical questions or deployment inquiries?</span>
+              <Link href="/contact" className="text-signal hover:text-white underline font-semibold transition-colors">
+                Contact our team &rarr;
+              </Link>
+            </div>
+          )}
+        </div>
+        <Button
+          variant="signal"
           onClick={handleLaunch}
-          className="btn-primary btn-large inline-flex items-center gap-2.5 bg-gradient-to-br from-primary to-primary-dk text-white no-underline font-display text-[0.82rem] font-semibold tracking-[0.1em] px-9 py-[18px] rounded-md border-none cursor-pointer relative overflow-hidden transition-[box-shadow,transform] duration-250 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,180,255,0.4)] active:translate-y-0 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[rgba(255,255,255,0.15)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-250 hover:before:opacity-100"
           id="cta-launch-btn"
+          busy={isLaunching}
+          className="w-full min-[53.75em]:w-auto min-h-14 px-8 text-base shrink-0"
         >
-          <Play className="w-4 h-4 shrink-0 fill-current" />
-          Launch EnRouteAR
-        </button>
+          <PlayIcon className="w-5 h-5 shrink-0" />
+          <span>Launch EnRouteAR</span>
+        </Button>
       </div>
     </section>
   );
